@@ -92,3 +92,9 @@ export type {
 } from './optimizer/problems/farmTarget.js';
 export { makeTeamCompositionProblem } from './optimizer/problems/teamComposition.js';
 export type { TeamCompositionInputs } from './optimizer/problems/teamComposition.js';
+export { makeGearAllocationProblem } from './optimizer/problems/gearAllocation.js';
+export type {
+  GearAllocationInputs,
+  GearAssignment,
+  GearPlacement,
+} from './optimizer/problems/gearAllocation.js';
