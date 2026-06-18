@@ -45,7 +45,7 @@ export type { CombatStrategy } from './sim/strategy.js';
 
 // ── Sim — Stat pipeline (WP-B) ───────────────────────────────────────────────
 export { deriveCombatContext } from './sim/stats.js';
-export type { StatDerivationInput } from './sim/stats.js';
+export type { StatDerivationInput, GlobalModifiers } from './sim/stats.js';
 
 // ── Sim — Combat strategies (WP-F) ───────────────────────────────────────────
 export { DeterministicExpectedStrategy, MonteCarloStrategy } from './sim/strategies.js';
