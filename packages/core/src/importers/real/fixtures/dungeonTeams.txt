@@ -1,0 +1,2 @@
+---DungeonTeamsStart---
+0:Cat=1,Dog=2,Tanuki=4,Nothing=5,Ghost=6,Carno=3,;1:Alien=2,Witch=5,Clam=6,MistSphere=4,BlackTortoise=3,Undine=1,;2:VermilionPheasant=2,Vampire=3,Balrog=6,Squirrel=5,Ape=1,Salamander=4,;3:Valkyrie=1,CardboardBox=3,Hourglass=4,Fairy=5,Sylph=6,Cherub=2,;4:Spoon=4,Basilisk=5,AzureDragon=2,LuckyCoin=3,Crocodile=6,Gnome=1,;---DungeonTeamsEnd---
