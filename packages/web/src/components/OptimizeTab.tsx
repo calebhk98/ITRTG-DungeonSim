@@ -15,6 +15,8 @@ import {
   DEFAULT_CONSTANTS,
   makeFarmTargetProblem,
   makeTeamCompositionProblem,
+  makeMultiTeamProblem,
+  summarizeMultiTeamPlan,
   EnumerationOptimizer,
   GreedyOptimizer,
   BeamSearchOptimizer,
@@ -22,9 +24,9 @@ import {
   mulberry32,
 } from '@itrtg-sim/core';
 import type { FarmTargetCandidate } from '@itrtg-sim/core';
-import type { Team } from '@itrtg-sim/core';
+import type { Team, MultiTeamPlan, TeamPlanSummary } from '@itrtg-sim/core';
 
-type Dimension = 'farm' | 'team' | 'joint';
+type Dimension = 'farm' | 'team' | 'multiteam' | 'joint';
 type Algorithm = 'enumerate' | 'greedy' | 'beam';
 
 interface OptimizeTabProps {
@@ -54,7 +56,15 @@ interface JointResultWrapped {
   result: JointResult;
 }
 
-type OptResult = FarmResult | TeamResult | JointResultWrapped;
+interface MultiTeamResultWrapped {
+  kind: 'multiteam';
+  score: number;
+  summaries: TeamPlanSummary[];
+  trace: ScoreTrace;
+  roster: ReadonlyMap<PetId, Pet>;
+}
+
+type OptResult = FarmResult | TeamResult | MultiTeamResultWrapped | JointResultWrapped;
 
 export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactElement {
   const [dimension, setDimension] = useState<Dimension>('farm');
@@ -64,6 +74,7 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
   const [depth, setDepth] = useState<Depth>(1);
   const [difficulty, setDifficulty] = useState<Difficulty>(0);
   const [rooms, setRooms] = useState(16);
+  const [teamCount, setTeamCount] = useState(6);
   const [result, setResult] = useState<OptResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
@@ -146,6 +157,19 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
 
         setResult({ kind: 'team', best: res.best, score: res.score, trace: res.trace, roster });
 
+      } else if (dimension === 'multiteam') {
+        const mtInputs = {
+          roster,
+          dungeon,
+          objective,
+          constants: DEFAULT_CONSTANTS,
+          teamCount,
+        };
+        const problem = makeMultiTeamProblem(mtInputs);
+        const res = new GreedyOptimizer(rng).run(problem, { maxIterations: 400 });
+        const summaries = summarizeMultiTeamPlan(res.best as MultiTeamPlan, mtInputs);
+        setResult({ kind: 'multiteam', score: res.score, summaries, trace: res.trace, roster });
+
       } else {
         // Joint optimization
         const jointResult = optimizeJoint({
@@ -187,6 +211,7 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
             <select value={dimension} onChange={e => setDimension(e.target.value as Dimension)}>
               <option value="farm">Farm Target (depth/difficulty/rooms)</option>
               <option value="team">Team Composition</option>
+              <option value="multiteam">Multi-Team (split roster across teams)</option>
               <option value="joint">Joint (all dimensions)</option>
             </select>
           </div>
@@ -202,7 +227,7 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
               {DUNGEON_IDS.map(id => <option key={id} value={id}>{id}</option>)}
             </select>
           </div>
-          {dimension !== 'joint' && (
+          {dimension !== 'joint' && dimension !== 'multiteam' && (
             <div className="field">
               <label>Algorithm</label>
               <select value={algorithm} onChange={e => setAlgorithm(e.target.value as Algorithm)}>
@@ -210,6 +235,12 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
                 <option value="greedy">Greedy (hill-climb)</option>
                 <option value="beam">Beam Search</option>
               </select>
+            </div>
+          )}
+          {dimension === 'multiteam' && (
+            <div className="field">
+              <label>Team slots</label>
+              <input type="number" min={1} max={12} value={teamCount} onChange={e => setTeamCount(Math.max(1, Number(e.target.value)))} style={{ width: 80 }} />
             </div>
           )}
           {dimension === 'team' && (
@@ -296,6 +327,42 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
               ))}
             </>
           )}
+        </div>
+      )}
+
+      {result !== null && result.kind === 'multiteam' && (
+        <div className="card">
+          <h2>Multi-Team Result</h2>
+          <div className="success">
+            Aggregate score: <strong>{result.score.toFixed(4)}</strong> | Teams used: {result.summaries.length}
+          </div>
+          {result.summaries.length === 0 && (
+            <div className="warning">No pets were assigned to any team.</div>
+          )}
+          {result.summaries.map((s, i) => (
+            <div key={i} style={{ marginTop: 12 }}>
+              <h3 style={{ marginBottom: 4 }}>
+                Team {i + 1}: D{s.plan.depth}-{s.plan.difficulty}, {s.plan.rooms} rooms{' '}
+                — {s.result.cleared ? '✓ cleared' : `partial (${s.result.roomsCleared} rooms)`}
+                {s.feasible ? '' : ' — infeasible for objective'}
+              </h3>
+              <table>
+                <thead><tr><th>Pet</th><th>Row</th><th>Class</th></tr></thead>
+                <tbody>
+                  {s.plan.team.slots.map(slot => {
+                    const pet = result.roster.get(slot.petId);
+                    return (
+                      <tr key={slot.petId}>
+                        <td>{pet?.displayName ?? slot.petId}</td>
+                        <td>{slot.row}</td>
+                        <td>{slot.assignedClass ?? '—'}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          ))}
         </div>
       )}
 

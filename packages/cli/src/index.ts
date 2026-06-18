@@ -14,6 +14,7 @@ import {
   DEFAULT_CONSTANTS,
   makeFarmTargetProblem,
   makeTeamCompositionProblem,
+  makeMultiTeamProblem,
   EnumerationOptimizer,
   GreedyOptimizer,
   BeamSearchOptimizer,
@@ -29,6 +30,7 @@ import type {
   PetId,
   Team,
   FarmTargetCandidate,
+  MultiTeamPlan,
 } from '@itrtg-sim/core';
 import { parseRosterFile, buildDefaultTeam, parseTeamSpec } from './roster.js';
 import {
@@ -36,6 +38,7 @@ import {
   formatRunResult,
   formatFarmOptimizeResult,
   formatTeamOptimizeResult,
+  formatMultiTeamResult,
   formatTrace,
 } from './format.js';
 
@@ -328,7 +331,7 @@ program
   .requiredOption('--roster <file>', 'normalized pets JSON or raw export file')
   .requiredOption(
     '--dimension <dim>',
-    'optimization dimension: farm | team | gear',
+    'optimization dimension: farm | team | multiteam | gear',
   )
   .requiredOption('--objective <id>', 'objective id (see objectiveRegistry)')
   .option('--dungeon <id>', 'dungeon id (default: Scrapyard)', 'Scrapyard')
@@ -339,6 +342,11 @@ program
   .option('--depth <n>', 'depth tier 1–4 (default: 1)', '1')
   .option('--difficulty <n>', 'difficulty 0–10 (default: 0)', '0')
   .option('--rooms <n>', 'number of rooms (default: 6)', '6')
+  .option(
+    '--teams <n>',
+    'team slots for multiteam dimension (default: 6)',
+    '6',
+  )
   .option('--seed <n>', 'RNG seed for greedy/beam restarts')
   .option('--max-iterations <n>', 'max optimizer iterations (default: 1000)', '1000')
   .action(
@@ -351,6 +359,7 @@ program
       depth: string;
       difficulty: string;
       rooms: string;
+      teams: string;
       seed?: string;
       maxIterations: string;
     }) => {
@@ -358,14 +367,18 @@ program
       if (options.dimension === 'gear') {
         console.log(
           'Gear optimization is not yet wired in CLI. ' +
-            'Use --dimension farm or --dimension team.',
+            'Use --dimension farm, team, or multiteam.',
         );
         process.exit(0);
       }
 
-      if (options.dimension !== 'farm' && options.dimension !== 'team') {
+      if (
+        options.dimension !== 'farm' &&
+        options.dimension !== 'team' &&
+        options.dimension !== 'multiteam'
+      ) {
         console.error(
-          `Error: --dimension must be "farm", "team", or "gear" (got "${options.dimension}")`,
+          `Error: --dimension must be "farm", "team", "multiteam", or "gear" (got "${options.dimension}")`,
         );
         process.exit(1);
       }
@@ -469,6 +482,29 @@ program
         console.log(formatFarmOptimizeResult(best, score, trace.length));
         if (trace.length > 0) {
           console.log(formatTrace(trace));
+        }
+        return;
+      }
+
+      // ── Multi-team dimension ──────────────────────────────────────────────
+      if (options.dimension === 'multiteam') {
+        const teamCount = parsePositiveInt(options.teams, '--teams');
+        const mtInputs = {
+          roster,
+          dungeon,
+          objective,
+          constants: DEFAULT_CONSTANTS,
+          teamCount,
+        };
+        const mtProblem = makeMultiTeamProblem(mtInputs);
+        const mtResult = new GreedyOptimizer(rng).run(mtProblem, {
+          maxIterations,
+          traceVerbosity: 'final',
+        });
+        const plan = mtResult.best as MultiTeamPlan;
+        console.log(formatMultiTeamResult(plan, mtResult.score, mtInputs, roster));
+        if (mtResult.trace.length > 0) {
+          console.log(formatTrace(mtResult.trace));
         }
         return;
       }
