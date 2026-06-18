@@ -1,0 +1,282 @@
+{
+  "_note": "Dungeon+depth -> ordered enemy roster, from xlsx columns AE..BE.",
+  "rosters": {
+    "Newbie Grounds1": [
+      "Slimy",
+      "Frog",
+      "Chick",
+      "Tree",
+      "WalkingCandle",
+      "RogueShadowClone (Boss)",
+      "SuperRogueShadowClone",
+      "LoofSlirpa",
+      "WolfOfNobina",
+      "Wisp",
+      "DeliriousEssenceOfTheForgotten",
+      "Aprils Fool",
+      "ZombieGeneral",
+      "LerneanHydra",
+      "HydraHead"
+    ],
+    "Scrapyard1": [
+      "AngelSlimy",
+      "MetalSlimy",
+      "NinjaSlimy",
+      "RoboSlimy",
+      "CyborgSlimy",
+      "GhostSlimy",
+      "OozingInventor (Boss)"
+    ],
+    "Scrapyard2": [
+      "ScrapWorm",
+      "Sentry",
+      "Scavanger",
+      "RoboHound",
+      "Microbots",
+      "BulwarkGolem",
+      "Displacer",
+      "SwordSoldier",
+      "MURDER (Boss)",
+      "Nothing",
+      "Chameleon-SY"
+    ],
+    "Scrapyard3": [
+      "Constructor",
+      "Compactor",
+      "Replacer",
+      "Slayer",
+      "Arbiter",
+      "Reclaimer",
+      "Repurposer",
+      "Sanitizer",
+      "AlienWreckage (Boss)",
+      "MetalMind (Boss)",
+      "Mimic"
+    ],
+    "Scrapyard4": [
+      "Nanobots",
+      "AlienDrone",
+      "RestorationBot",
+      "CyberBears",
+      "Terraformer",
+      "ShieldGenerator",
+      "LandBattleship",
+      "Oblitorator",
+      "YogSothoth",
+      "RoboOverlord"
+    ],
+    "Water Temple1": [
+      "SeaweedSprite",
+      "Piranha",
+      "Mermaid",
+      "Makara",
+      "Nymph",
+      "Naiad",
+      "Vodyanoy",
+      "Godzilly (Boss)"
+    ],
+    "Water Temple2": [
+      "Kappa",
+      "Jellyfish",
+      "SeaSpirit",
+      "WaterElemental",
+      "FireCoralReef",
+      "WaterGoblin",
+      "Hippocamp",
+      "Sharktopus",
+      "Kraken (Boss)",
+      "Chameleon-WT"
+    ],
+    "Water Temple3": [
+      "Hydra",
+      "Shen",
+      "LivingWhirlpool",
+      "Zaratan",
+      "CursedPirate",
+      "Siren",
+      "DrownedPriest",
+      "SeafloorRaiser",
+      "Leviathan (Boss)",
+      "Behemoth (Boss)",
+      "Mimic"
+    ],
+    "Water Temple4": [
+      "Megalodon",
+      "Mosasaurs",
+      "SeaVoid",
+      "Lobstromous",
+      "Dragonfish",
+      "SniperEel",
+      "VampireSquid",
+      "DeepSeaUndine",
+      "Cthulu",
+      "CursedPirateKing"
+    ],
+    "Volcano1": [
+      "Firefly",
+      "Salamander",
+      "Imp",
+      "FlameSprite",
+      "MagmaBeetle",
+      "CinderSpider",
+      "AcolyteOfFlames",
+      "FireLord (Boss)"
+    ],
+    "Volcano2": [
+      "Minotaur",
+      "FlameScorpion",
+      "FireWalker",
+      "Hellhound",
+      "BurningElemental",
+      "FlameHawk",
+      "LavaWorm",
+      "CrazedSteamSpirit",
+      "Seraphim (Boss)",
+      "Chameleon-V"
+    ],
+    "Volcano3": [
+      "Incinerator",
+      "Ifrit",
+      "BurningReaper",
+      "FlamingSwords",
+      "FireDragon",
+      "LavaGolem",
+      "AshStorm",
+      "SlagElemental",
+      "SunSpirit (Boss)",
+      "Balrog (Boss)",
+      "Mimic",
+      "EvolvedBalrog",
+      "EvolvedBalrog-No catalyst",
+      "EvolvedBalrog-One catalyst"
+    ],
+    "Volcano4": [
+      "SolarWolf",
+      "MagmaDemon",
+      "HellRabbit",
+      "AncientLavamancer",
+      "LivingCore",
+      "SteamSwarm",
+      "ObsidianGiant",
+      "InfernalSalamander",
+      "Cthugha",
+      "HellKing"
+    ],
+    "Mountain1": [
+      "Crow",
+      "Cockatrice",
+      "Wyvern",
+      "Thunderhawk",
+      "Whelpling",
+      "Harpy",
+      "TricksterSprite",
+      "ScreechingGralk (Boss)"
+    ],
+    "Mountain2": [
+      "SkyBlade",
+      "SkyPriest",
+      "StormCaller",
+      "RainSpeaker",
+      "Vampire",
+      "Manticore",
+      "CloudShaper",
+      "WindLord",
+      "SoaringPrelate (Boss)",
+      "Chameleon-M"
+    ],
+    "Mountain3": [
+      "Ziz",
+      "SkyDragon",
+      "Chimera",
+      "Roc",
+      "Hippogriff",
+      "Gryphon",
+      "Djinn",
+      "LivingGlacier",
+      "LightningRevenant (Boss)",
+      "UnboundHurricane (Boss)",
+      "Mimic"
+    ],
+    "Mountain4": [
+      "ExoDragon",
+      "ArchStormWizard",
+      "VacuumSpirit",
+      "SpaceDrones",
+      "SolarHawk",
+      "ElderCyclopes",
+      "Caladrius",
+      "HurricaneSylph",
+      "Nyarlathotep",
+      "MountainKing"
+    ],
+    "Forest1": [
+      "Wolf",
+      "Goblin",
+      "CreepingVine",
+      "PoisonFrog",
+      "SleepyFlowers",
+      "Troll",
+      "DruidApprentice",
+      "GroveWarden (Boss)"
+    ],
+    "Forest2": [
+      "Treant",
+      "Unicorn",
+      "Ogre",
+      "Giant",
+      "Gargoyle",
+      "StoneGolem",
+      "SwampyAncient",
+      "ShroomWizard",
+      "MossyShambler (Boss)",
+      "Chameleon-F"
+    ],
+    "Forest3": [
+      "CrazedArchDruid",
+      "DarkenedAncient",
+      "StalwartAncient",
+      "NightmareAncient",
+      "LumberingAncient",
+      "PetrifiedAncient",
+      "HowlingAncient",
+      "BlazingAncient",
+      "AgonizedForestSoul (Boss)",
+      "RottingWorldTree (Boss)",
+      "Mimic"
+    ],
+    "Forest4": [
+      "AncientCosmicDruid",
+      "Arachne",
+      "VoidBears",
+      "ColossusBeetle",
+      "VineSwarm",
+      "DeathLily",
+      "Ulama",
+      "CosmicGnome",
+      "ShubNiggurath",
+      "CorruptFairyQueen"
+    ],
+    "ElementalTower": [
+      "MirrorOfRuin",
+      "IceQueen",
+      "FlareLord",
+      "SkyKing",
+      "UnbreakableArmor"
+    ],
+    "NeutralTower": [
+      "MirrorOfRuin"
+    ],
+    "WaterTower": [
+      "IceQueen"
+    ],
+    "FireTower": [
+      "FlareLord"
+    ],
+    "WindTower": [
+      "SkyKing"
+    ],
+    "EarthTower": [
+      "UnbreakableArmor"
+    ]
+  }
+}
