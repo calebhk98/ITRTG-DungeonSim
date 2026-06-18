@@ -1,4 +1,5 @@
 import type { Element } from './element.js';
+import type { EnemyArchetype } from './enemy.js';
 
 /**
  * Depth tier of a dungeon, 1–4 (research §3, §7.1).
@@ -95,4 +96,13 @@ export interface Dungeon {
    * Keys: 1 (room 6), 2 (room 16), 3 (room 30), 4 (room 60).
    */
   readonly bossArchetypeId: Readonly<Partial<Record<Depth, string>>>;
+  /**
+   * Flat lookup map of every `EnemyArchetype` that can appear in this dungeon,
+   * keyed by `EnemyArchetype.id`.
+   *
+   * Every `enemyId` in `enemyTable` entries and every value in `bossArchetypeId`
+   * must resolve here.  The run executor uses exclusively this map — it never
+   * scans `enemyTable` for embedded archetype objects.
+   */
+  readonly archetypes: Readonly<Record<string, EnemyArchetype>>;
 }
