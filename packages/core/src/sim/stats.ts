@@ -154,6 +154,16 @@ export interface StatDerivationInput {
    * See {@link GlobalModifiers} for the full source → field mapping.
    */
   globals?: GlobalModifiers;
+  /**
+   * When `true`, bypass `pet.observed` and always re-derive stats via the
+   * formula. Useful for the what-if / gear-optimization path where per-piece
+   * formula breakdown matters. Defaults to `false`.
+   *
+   * Has no effect when `pet.observed` is absent (formula is used regardless).
+   *
+   * @see {@link Pet.observed}
+   */
+  forceDerive?: boolean;
 }
 
 // ── Implementation ────────────────────────────────────────────────────────────
@@ -175,6 +185,26 @@ export interface StatDerivationInput {
  */
 export function deriveCombatContext(input: StatDerivationInput): CombatContext {
   const { pet, assignedClass, row, constants } = input;
+
+  // ── Observed-stats fast path ────────────────────────────────────────────────
+  // If the pet carries game-reported stats (from the real pet export) AND the
+  // caller has not set forceDerive, skip the formula entirely and use those
+  // values directly. Row, assignedClass, and abilities still come from the input
+  // so team-slot decisions are honoured.
+  if (pet.observed !== undefined && input.forceDerive !== true) {
+    const { stats, elementLevels } = pet.observed;
+    return {
+      petId: pet.id,
+      stats,
+      elementLevels,
+      element: pet.primaryElement,
+      assignedClass,
+      row,
+      abilities: pet.abilities,
+      currentHp: stats.hp,
+    };
+  }
+
   const globals = input.globals ?? {};
 
   const statMultiplier      = globals.statMultiplier      ?? 1;

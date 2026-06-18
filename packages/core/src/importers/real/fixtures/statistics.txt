@@ -1,0 +1,348 @@
+Idling to Rule the Gods - statistics export for カレブ, Steam version.
+
+Overall Game Progress: 51.83% (61.1)
+God Progress: 48.1% (67.29)
+God Power Progress: 51.68% (51.68)
+Pet Progress: 52.64% (53.71)
+Challenge Progress: 54.82% (67)
+
+Available GP: 115747
+Total GP spent: 2100935
+GP spent for stats multi: 6450
+Max Shadow Clones: 300.000 E+6
+Creating Speed: 15.939 E+6 %, (100 % base + 1.000 E+6 % from god power + 825,770 % from crystal power) * 2.16918 from pet equip * 1.5 from spacedim * 2.22751 from RTI * 1.1 from chp * 1.095 from hard mode chp * 1 from adventure.
+Creation Speed including all temporary boosts (bonus from godly liquids (* 1), offline/ad point bonus, creating stat (* 11.4), challenge modifiers): 545.142 E+6 %
+Building Speed: 71.947 E+6 %, (100 % base + 200% from Museum + 1.100 E+6 % from god power + 825,770 % from crystal power) * 2.46045 from pet equip * 2.47 equipped crystals * 1.5 from spacedim * 2.22751 from RTI * 1.12 from chp * 1.25 from UfCC * 1 from adventure * 1.095 from hard mode chp * 1.2 (Museum).
+Building Speed including all temporary boosts (bonus from chakra pills (* 1), challenge modifiers): 71.947 E+6 %
+Crystal Power: 204,439
+Creation Count: 15,001
+Lucky Draws: 5,205
+Lucky Draws Opened: 4,011
+
+Time online: 1366 days, 3:01:21 hours
+Time offline: 344 days, 18:49:43 hours
+God Power / hour since beginning: 53.98 (2.216 E+6)
+God Power / hour since 3 days, 17:49:51 hours: 139.5 (12,531)
+Crystal Power / hour since beginning: 4.98 (1.651 E+6)
+Crystal Power / hour since 1710 days, 21:51:10 hours: 4.95 (203,438)
+Pet Growth / hour since beginning: 791.94 (32.518 E+6)
+Pet Growth / hour since 1412 days, 13:19:59 hours: 937.74 (31.790 E+6)
+Might / hour since beginning: 316.54 (12.997 E+6)
+Might / hour since 1412 days, 13:19:57 hours: 376.29 (12.756 E+6)
+Light Clones: 2.771 E+6
+Light Clones / hour since 1710 days, 21:51:10 hours: 60.2 (2.472 E+6)
+
+Total Spacedim Levels: 11.326 E+6
+
+UBV2 Kills: 11,229
+Fastest time to defeat ITRTGV4: 4:38:15 hours
+UBV4 points: 4,628
+
+Rebirths: 7,402
+Total Might: 12.997 E+6
+Strongest God defeated: 187 (P. Baal v 159)
+
+AFK Clones killed: 2.788 E+12
+Highest Afky God Power: 831.000 E+6
+Afky exp multi: 1
+
+Unlocked Pets: 126
+Evolved Pets: 122
+Total Pet Dungeon Levels: 14,595
+Total Pet growth: 32.518 E+6
+Pet Stones: 285,061
+
+Dungeon Rooms beaten: 449,314
+Dungeon Enemies defeated: 3.804 E+6
+Dungeon Bosses defeated: 33,688
+
+Pet equip hp bonus: 3,268.52%
+Pet equip attack bonus: 1,950%
+Pet equip mystic bonus: 700%
+Pet equip regen bonus: 10%
+Pet equip building speed bonus: 146.05%
+Pet equip creating speed bonus: 116.92%
+
+Pet Village
+
+Fishing Level: 42
+Fish Power: 167.645 E+6
+Quest Points: 235,009
+
+Dojo
+
+Dungeon exp: 100%
+Other exp: 100%
+Pet attack: 99%
+Pet health: 99%
+Pet speed: 98%
+Pet speed damage: 65%
+Pet water: 5%
+Pet fire: 5%
+Pet earth: 5%
+Pet wind: 5%
+Pet physical: 0%
+Pet mystic: 0%
+Pet battle: 0%
+Pet rebirth multi: 0%
+
+Strategy Room
+
+Health: 70,469
+Attack: 8,601
+Defense: 2,430
+Speed: 5,866
+Water: 34.65%
+Fire: 35.24%
+Wind: 33.7%
+Earth: 35.41%
+4th lowest growth pet: 鷲（わし） (144,296)
+Strategy Books: 81,897
+
+Pet things
+
+Growth from Vesuvius: 140,747
+Growth from Golden Dragon: 1.585 E+6
+Growth from Owl: 534,916
+Growth from Bag: 0
+Bonus Exp from Owl: 4.100 E+9
+Crystals for Dwarf: 0
+T3/T4/T5 gear bonus for Elf: 162/188/3 (max 2000 count for elf)
+Ants: 9.460 E+6
+Acorns: 138,038
+Honey: 782
+Vampire Blood Potions consumed: 0
+Craziness: 0
+Chocobear hours: 6,577
+Mimic Points: 142,480
+Ancient Mimic Points: 0
+Tenko Amazing Fortunes: 5
+Earth Eater Earthlike planets eaten: 21.525 E+6
+Lucky Coin Damage: 848.139 E+6
+White Tiger Kills: 0
+Eyeball Marked kills: 6,885
+Caterpillar materials upgraded: 0
+Strategist Strategy Books given: 0
+Octopus Hammers: 7
+
+Challenge Points: 30,149
+
+Chp Planet Level: 0
+Chp Divinity boost: 0%
+Chp Damage Reduction UBs: 25%
+Chp Faster UB spawn: 5 min
+Chp Crystal Upgrade boost: 5%
+Chp Damage Boost V2s: 0%
+Chp CP boost: 20%
+Chp Crystal Sacrifice boost: 50%
+Chp BS boost: 12%
+Chp CS boost: 10%
+Chp TBS Level Loss decrease: 5%
+Chp Pet Stone Drop boost: 2%
+Chp Stone Pet improvement: False
+Chp Adv EXP boost: 20%
+Chp Dungeon Drop boost: 20%
+Chp Dungeon Exp boost: 20%
+Chp Dungeon Overtime: 0%
+Chp Quest Overtime: True
+Chp D4 boss room: 60
+Chp Crafting boost: 20%
+Chp SpaceDim boost: 10%
+Chp Self Replicating AI boost: 0%
+
+Hard mode Challenge points: 38
+
+Overflow Points left: 23
+OfP Black Hole: 55
+OfP Black Hole Upgrade: 65
+OfP Gem Cap: 15
+OfP Gem Gain: 8%
+OfP V2 Auto Kill: 215
+OfP Hp Regen: 5%
+OfP Crystal Power: 70%
+OfP Space Dim: 4%
+OfP Creating Stat: 14%
+OfP Powersurge: 0%
+OfP Creation Count: 0%
+OfP Might Speed: 0%
+OfP Stats Multi: 0%
+
+Ultimate Overflow Points left: 12
+Dungeon Slot: Available
+Multiverse Rebirth Multi Increase: 1%
+Multiverse GP Increase: 2%
+Multiverse Growth Percent Increase: 1%
+Multiverse Growth Increase Levels: 2
+Higher P Baal: 0
+
+RTI
+
+Physical perm level: 1.110 E+6
+Mystic perm level: 1.110 E+6
+Battle perm level: 1.110 E+6
+Creating perm level: 1.110 E+6
+TBS perm level: 1.110 E+6
+God Crystal perm level: 1.110 E+6
+Space Dim perm level: 1.110 E+6
+Divinity perm level: 1.110 E+6
+Building Speed perm level: 1.110 E+6
+Creating Speed perm level: 1.110 E+6
+
+Museum
+
+Additive bonuses:
+Building Speed: 200%
+Pet campaigns: 20%
+
+Multiplicative bonuses:
+Crystal Power multi: 1.2
+Monument Stats multi: 1.4
+Black Hole GP generation multi: 2
+Building Speed multi: 1.2
+Might Speed multi: 1.2
+RTI Speed multi: 1.2
+SpaceDim Speed multi: 1.2
+Overflow Points multi: 1.2
+Crafting Speed multi: 1.2
+Research Speed multi: 1.2
+
+Adventure Mode
+
+Main Level: 315
+Newbie Level: 20
+Student Level: 37
+Mage Level: 69
+Adventurer Level: 50
+Squire Level: 35
+Fighter Level: 55
+Cleric Level: 62
+Archer Level: 63
+Pyromancer Level: 140
+Warrior Level: 55
+Thief Level: 55
+Sniper Level: 90
+Assassin Level: 100
+Knight Level: 140
+Priest Level: 119
+Hunter Level: 122
+Rogue Level: 138
+Geomancer Level: 90
+Scholar Level: 105
+
+Crafting Level: 38
+Smithing Level: 33
+Alchemy Level: 40
+
+Researches:
+God HP Level: 0
+God Attack Level: 0
+God Mystic Level: 0
+Building Speed Level: 0
+Creating Speed Level: 0
+Core Drop Rate Level: 45
+Core Quality Level: 163
+Drop Rate Level: 0
+Exp Gain Level: 20
+Equip Attack Level: 0
+Equip Def Level: 0
+Equip Int Level: 0
+Equip Res Level: 0
+Equip Hit Level: 0
+Equip Speed Level: 0
+Crafting Exp Level: 10
+Crafting Speed Level: 11
+Smithing Exp Level: 2
+Smithing Speed Level: 7
+Alchemy Exp Level: 4
+Alchemy Speed Level: 11
+Equip Quality Min Level: 7
+Equip Quality Multi Level: 7
+Active Skill Slot Level: 1
+Passive Skill Slot Level: 1
+Research Speed Level: 44
+Research Slots Level: 3
+Pet Stats Level: 0
+Equip Hp Level: 4
+Might Speed Level: 0
+Spacedim Speed Level: 0
+Multiverse Speed Level: 0
+Max Class Lv Level: 20
+Side Crafting Speed Level: 10
+Min Pow Level: 0
+Enemy Min Lv Level: 1
+Reduce Class Lv Req Level: 10
+Crit Chance Level: 1
+Crit Dam Level: 1
+No Overkill Crit Level: 1
+Max Skill Lv Level: 2
+
+1K Clones Black Hole Ch.s: 20 / 20
+All Achievements Challenges: 53 / 28
+Base Speed Challenges: 0 / 25
+Black Hole Challenges: 40 / 40
+Crystal Power Challenges: 31 / 30
+Div Gen Challenges: 16 / 25
+Expensive Monument Challenges: 2 / 25
+God Power Accumulation Challenges: 25 / 25
+God Power Challenges: 25 / 25
+Greedy God Challenges: 17 / 26
+Limited Clone v4 Challenges: 0 / 10
+Max Crystal Challenges: 30 / 30
+Might Accumulation Challenges: 20 / 20
+Monument Multi Challenges: 41 / 40
+No Div Monument Challenges: 21 / 21
+Pet Crafting Challenges: 0 / 20
+Pet Level Challenges: 25 / 25
+Planet Multi Challenges: 61 / 60
+Powerful Unleash Challenges: 10 / 10
+Powersurge Challenges: 0 / 20
+RTI Temp Level Challenges: 20 / 20
+SpaceDim Accumulation Challenges: 25 / 25
+SpaceDim Challenges: 20 / 20
+SpaceDim Reset Challenges: 0 / 30
+Super Divinity Generator Challenges: 0 / 20
+Super Pet Level Challenges: 0 / 20
+Total Might Challenges: 26 / 25
+Ultimate Beings V2 Challenges: 11 / 10
+Ultimate Beings V4 Challenges: 6 / 5
+Ultimate Multiverse Challenges: 21 / 21
+Ultimate Pet Challenges: 20 / 20
+Ultimate Stats Challenges: 25 / 25
+Ultimate Universe Challenges: 55 / 55
+Universes for Clones Challenges: 25 / 25
+1000 Clones Challenges: 50 / 50
+Clone Creator Challenges: 0 / 20
+Double Rebirth Challenges: 30 / 30
+Exhausted Training Challenges: 1 / 27
+God Skip Challenges: 32 / 31
+Light Clone Challenges: 0 / 25
+Limited Clone No Rebirth Challenges: 0 / 10
+Monster Queen Challenges: 20 / 20
+No Divinity Challenges: 30 / 30
+No Might No Rebirth Challenges: 0 / 20
+No Rebirth Challenges: 25 / 25
+No Rebirth CP Challenges: 8 / 25
+No Rebirth Dungeon Challenges: 21 / 20
+No Training Challenges: 20 / 20
+One CC Challenges: 1 / 25
+P. Baal Challenges: 50 / 50
+True God Skip Challenges: 26 / 26
+Ultimate Gods Challenges: 20 / 20
+Clone Buildup Challenges: 30 / 30
+Patreon Gods Challenges: 0 / 25
+Ultimate Arty Challenges: 1 / 2
+Ultimate Baal Challenges: 50 / 50
+Overflow Challenges: 0 / 9,999
+Total Growth Challenges: 19 / 9,999
+Ultimate Being V1 Challenges: 16 / 9,999
+Ultimate Black Hole Challenges: 10 / 9,999
+Ultimate Challenge Challenges: 20 / 159
+Ultimate Overflow Challenges: 1 / 9,999
+Day Baal Challenge highest Baal: 105
+Day Might Challenge highest might: 112,927
+Day Multiverse Challenge highest Total MV level: 38
+Day No Divinity Challenge highest points: 1.359 E+9
+Day No Rebirth Challenge highest god defeated: 34
+Day Pet Challenge highest multi: 529.114 E+12
+Day Universe Challenge highest universes: 44.353 E+9
+Road to Infinity highest Baal: 149

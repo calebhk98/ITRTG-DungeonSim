@@ -36,4 +36,11 @@ export default [
       ],
     },
   },
+  {
+    // Tests are not shipped runtime code — they may read fixtures via node:fs etc.
+    files: ['packages/core/src/**/*.{test,spec}.ts'],
+    rules: {
+      'no-restricted-imports': 'off',
+    },
+  },
 ];

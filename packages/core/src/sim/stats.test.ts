@@ -594,6 +594,128 @@ describe('GlobalModifiers — elementLevelMultiplier', () => {
   });
 });
 
+// ── Test 11a: Observed-stats fast path ───────────────────────────────────────
+//
+// When pet.observed is present and forceDerive is not true, deriveCombatContext
+// must return the exact observed stats/element levels without running the formula.
+
+describe('Observed-stats fast path', () => {
+  const observedStats = { hp: 111_557, atk: 3_801, def: 11_253, spd: 1_197 };
+  const observedElements = { Fire: 214, Water: -114, Wind: 161, Earth: 1_632 };
+
+  const petWithObserved = makePet({
+    primaryElement: 'Earth',
+    dungeonLevel: 295,
+    classLevel: 62,
+    totalGrowth: 289_900,
+    evolvedClass: 'Blacksmith',
+    observed: {
+      stats: observedStats,
+      elementLevels: observedElements,
+    },
+  });
+
+  it('returns exact observed stats when pet.observed is set (no forceDerive)', () => {
+    const ctx = deriveCombatContext({
+      pet: petWithObserved,
+      assignedClass: 'Blacksmith',
+      row: 'front',
+      constants: DEFAULT_CONSTANTS,
+    });
+
+    expect(ctx.stats.hp).toBe(observedStats.hp);
+    expect(ctx.stats.atk).toBe(observedStats.atk);
+    expect(ctx.stats.def).toBe(observedStats.def);
+    expect(ctx.stats.spd).toBe(observedStats.spd);
+  });
+
+  it('returns exact observed element levels when pet.observed is set', () => {
+    const ctx = deriveCombatContext({
+      pet: petWithObserved,
+      assignedClass: 'Blacksmith',
+      row: 'front',
+      constants: DEFAULT_CONSTANTS,
+    });
+
+    expect(ctx.elementLevels.Fire).toBe(observedElements.Fire);
+    expect(ctx.elementLevels.Water).toBe(observedElements.Water);
+    expect(ctx.elementLevels.Wind).toBe(observedElements.Wind);
+    expect(ctx.elementLevels.Earth).toBe(observedElements.Earth);
+  });
+
+  it('currentHp equals observed hp', () => {
+    const ctx = deriveCombatContext({
+      pet: petWithObserved,
+      assignedClass: 'Blacksmith',
+      row: 'front',
+      constants: DEFAULT_CONSTANTS,
+    });
+    expect(ctx.currentHp).toBe(observedStats.hp);
+  });
+
+  it('still carries correct assignedClass, row, element, abilities from input', () => {
+    const ctx = deriveCombatContext({
+      pet: petWithObserved,
+      assignedClass: 'Blacksmith',
+      row: 'back',
+      constants: DEFAULT_CONSTANTS,
+    });
+    expect(ctx.assignedClass).toBe('Blacksmith');
+    expect(ctx.row).toBe('back');
+    expect(ctx.element).toBe('Earth');
+    expect(ctx.abilities).toEqual([]);
+  });
+
+  it('forceDerive=true bypasses observed and uses the formula instead', () => {
+    const ctx = deriveCombatContext({
+      pet: petWithObserved,
+      assignedClass: 'Blacksmith',
+      row: 'front',
+      constants: DEFAULT_CONSTANTS,
+      forceDerive: true,
+    });
+
+    // Formula-derived HP at DL=295, growth=289900, Blacksmith classMod.hp=1.0
+    // hpBase = 10 + 24 × 295 = 7090
+    // growthFactor = 1 + 289900 / 200000 = 2.4495
+    // equipMod = 1 (no gear on this pet object)
+    // hp = 7090 × 2.4495 × 1 × 1 × 1 = ~17367
+    // That is very different from observed 111557.
+    expect(ctx.stats.hp).not.toBe(observedStats.hp);
+    expect(ctx.stats.hp).toBeGreaterThan(0);
+    // The formula value should be much smaller than the game-reported value
+    // (game value includes all external bonuses).
+    expect(ctx.stats.hp).toBeLessThan(observedStats.hp);
+  });
+
+  it('pet WITHOUT observed always uses the formula (forceDerive has no effect)', () => {
+    const petNoObs = makePet({
+      primaryElement: 'Earth',
+      dungeonLevel: 295,
+      classLevel: 62,
+      totalGrowth: 289_900,
+    });
+
+    const ctx1 = deriveCombatContext({
+      pet: petNoObs,
+      assignedClass: 'Blacksmith',
+      row: 'front',
+      constants: DEFAULT_CONSTANTS,
+    });
+    const ctx2 = deriveCombatContext({
+      pet: petNoObs,
+      assignedClass: 'Blacksmith',
+      row: 'front',
+      constants: DEFAULT_CONSTANTS,
+      forceDerive: true,
+    });
+
+    // Both paths use the formula, so results must be identical.
+    expect(ctx1.stats).toEqual(ctx2.stats);
+    expect(ctx1.elementLevels).toEqual(ctx2.elementLevels);
+  });
+});
+
 // ── Test 11: Identity guarantee — empty globals equals omitted globals ─────────
 //
 // The most important regression guard: passing `globals: {}` must produce

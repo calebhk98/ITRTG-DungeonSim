@@ -35,6 +35,19 @@ export {
   ImporterError,
 } from './importers/index.js';
 export type { ImportResult, PetImporter } from './importers/index.js';
+// Real ITRTG statistics export → global world state / modifiers.
+export { parseStatisticsExport, toGlobalModifiers } from './importers/real/statistics.js';
+export type {
+  WorldState,
+  DojoState,
+  StrategyRoomState,
+  ChallengePoints,
+  PetEquipBonus,
+  PetTotals,
+} from './importers/real/statistics.js';
+
+// ── Content — dungeon registry ────────────────────────────────────────────────
+export { getDungeon, DUNGEON_REGISTRY } from './content/index.js';
 
 // ── Sim — RNG ─────────────────────────────────────────────────────────────────
 export type { Rng } from './sim/rng.js';

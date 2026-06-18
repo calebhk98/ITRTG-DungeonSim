@@ -117,4 +117,51 @@ export interface Pet {
     /** `PetImporter.version` of the importer that created this record. */
     readonly importerVersion: number;
   };
+
+  // ── Observed stats (real-export fast path) ─────────────────────────────────
+
+  /**
+   * The game's already-computed combat stats and element levels, read directly
+   * from the in-game pet export. When present, `deriveCombatContext` uses these
+   * values instead of the formula (unless `forceDerive: true` is passed).
+   *
+   * **Why optional?** Synthetic/test pets built from formulas omit this field.
+   * Only pets imported from the real ITRTG pet export carry it.
+   *
+   * **What's baked in?** HP/Attack/Defense/Speed already include DL, growth,
+   * gear (statMultiplierBonus), Dojo, and Strategy Room contributions. Element
+   * levels include gem enchants, Dojo element buffs, and Strategy Room element
+   * slots. This is the correct simulation starting point for the current roster.
+   *
+   * **What-if / optimization path:** set `forceDerive: true` in the
+   * `StatDerivationInput` to bypass `observed` and re-derive stats via the
+   * formula. Useful for gear-swap optimizations where the formula's per-piece
+   * breakdown is needed.
+   *
+   * @see {@link StatDerivationInput.forceDerive}
+   */
+  readonly observed?: {
+    /**
+     * Game-reported combat stats (HP/Attack/Defense/Speed).
+     * Intentionally inlined rather than importing `CombatStats` from
+     * `domain/combat.ts` to avoid a circular dependency (combat.ts → pet.ts).
+     */
+    readonly stats: {
+      readonly hp: number;
+      readonly atk: number;
+      readonly def: number;
+      readonly spd: number;
+    };
+    /**
+     * Game-reported elemental levels.
+     * Note: Dark and Light columns from the export are ignored — the dungeon
+     * simulation does not model those dimensions.
+     */
+    readonly elementLevels: {
+      readonly Fire: number;
+      readonly Water: number;
+      readonly Wind: number;
+      readonly Earth: number;
+    };
+  };
 }
