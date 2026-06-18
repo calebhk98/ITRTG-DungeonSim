@@ -501,34 +501,39 @@ Things a faithful sim needs to model:
 
 ## 11. Depth unlocks, wipe penalty, and run consumables
 
-### 11.1 Depth unlocks — room thresholds
+### 11.1 Depth unlocks — sequential, within-run ramp
 
-**How depths become available:** Rather than an explicit unlock event, players access
-higher depths by **reaching specific room milestones** in their runs. Depth gates are
-soft — a player can always attempt a run at any depth (the game doesn't lock D2/D3/D4),
-but narrative progression and tutorial guidance suggest depths in order.
+> **CORRECTION (player-confirmed).** An earlier draft of this section guessed that
+> D1–D3 had no hard gate. That is **wrong**. Depths are a **strict sequential gate**:
+> you cannot do Depth N until you have killed the Depth N-1 **boss**.
 
-**Room thresholds per depth:**
+**How a run works (player-confirmed):** A run does **not** play every room at the
+selected depth. Instead it **ramps up through the depths**, and you must clear each
+depth's boss to proceed to the next. A run targeting Depth D plays Depth-1 rooms up to
+the D1 boss, then Depth-2 rooms up to the D2 boss, …, then Depth-D rooms; any rooms past
+the D boss keep farming Depth D. Concretely, with the documented boss rooms:
 
-| Depth | Boss room | Time (no NRDC) | Time (20 NRDCs) | Requirement to unlock next |
-|---|---|---|---|---|
-| **D1** | Room 6 (90 min) | 90 min | ~72 min | None; available from start |
-| **D2** | Room 16 (4 h) | 240 min | ~192 min | Informally "~15 rooms" to D2; access via running 6+ rooms at D1 |
-| **D3** | Room 30 (7.5 h) | 450 min | ~360 min | Informally "~30 rooms" to D3; access via running 16+ rooms at D2 |
-| **D4** | Room 60 (12 h) | 900 min | ~720 min | **All 20 NRDCs completed** (research §2, §3) |
+| Segment | Rooms | Boss at | Must clear to proceed |
+|---|---|---|---|
+| **Depth 1** | 1–6 | room 6 | D1 boss → unlocks D2 rooms |
+| **Depth 2** | 7–16 | room 16 | D2 boss → unlocks D3 rooms |
+| **Depth 3** | 17–30 | room 30 | D3 boss → unlocks D4 rooms |
+| **Depth 4** | 31–60 | room 60 | — (also requires all 20 NRDCs to access at all) |
 
-**Interpretation (community-reported):** The player's report of "15 rooms to D2, 30 rooms
-to D3" appears to describe *recommended progression* (rough totals) rather than a hard
-gate. In practice, depths 1–3 are **accessible immediately** once a player owns 6 pets
-(research §2). **Depth 4 is strictly locked until all 20 NRDCs are cleared** — the only
-hard constraint documented.
+So a 60-room "D3 run" spends its early rooms on D1, then D2, then D3 (the player's
+"15 D1, then 15 for D2, then the last 30 D3" — exact split approximate; the boss rooms
+6/16/30/60 are the wiki figures). A team that cannot beat, say, the **D2 boss** never
+reaches D3 enemies, regardless of the selected depth.
 
-**Wiki-confirmed** (Dungeons, Introduction to Dungeons): "Depth 4 requires clearing all
-No Rebirth Dungeon Challenges." Depths 1–3 have no explicit unlock gate beyond the
-initial 6-pet requirement.
+**Consequences:**
+- The sequential prerequisite ("kill D1 before D2", "D2 boss before D3") is enforced
+  **automatically** by simulating the ramp — clearing Depth D *requires* clearing the
+  bosses of depths 1..D-1 in the same run.
+- **Depth 4 additionally requires all 20 NRDCs** to be accessible at all (research §2,
+  §3) — modelled as an account-level unlock cap in the optimizer.
 
-**Confidence:** high for D4 gate (all NRDCs required); medium for D1–D3 (no hard gate
-found, only recommendation).
+**Confidence:** high (player-confirmed mechanic). Exact per-depth room counts use the
+wiki boss-room figures (6/16/30/60); the player notes the split numbers approximately.
 
 ### 11.2 Team-wipe rest penalty
 

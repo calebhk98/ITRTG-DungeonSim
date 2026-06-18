@@ -86,7 +86,13 @@ const DEFAULT_MAX_TEAM_SIZE = 6;
 
 const DEFAULT_DEPTH_CHOICES: readonly Depth[] = [1, 2, 3, 4];
 const DEFAULT_DIFFICULTY_CHOICES: readonly Difficulty[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const DEFAULT_ROOM_CHOICES: readonly number[] = [16];
+// Default run lengths = the depth boss rooms (research §11.1). A run ramps through
+// depths, so to actually farm Depth D you must run to its boss (6/16/30/60).
+const DEFAULT_ROOM_CHOICES: readonly number[] = [6, 16, 30, 60];
+
+/** Room you must reach to clear a given depth's boss (research §11.1). */
+const BOSS_ROOM_FOR_DEPTH: Readonly<Record<Depth, number>> = { 1: 6, 2: 16, 3: 30, 4: 60 };
+const bossRoomFor = (depth: Depth): number => BOSS_ROOM_FOR_DEPTH[depth];
 
 // ── Public types ──────────────────────────────────────────────────────────────
 
@@ -224,11 +230,10 @@ export function makeMultiTeamProblem(
 
   const defaultTarget = (
     dungeonId: DungeonId,
-  ): { depth: Depth; difficulty: Difficulty; rooms: number } => ({
-    depth: validDepthsFor(dungeonId)[0] ?? 1,
-    difficulty: difficultyChoices[0] ?? 0,
-    rooms: roomChoices[0] ?? 16,
-  });
+  ): { depth: Depth; difficulty: Difficulty; rooms: number } => {
+    const depth = validDepthsFor(dungeonId)[0] ?? 1;
+    return { depth, difficulty: difficultyChoices[0] ?? 0, rooms: bossRoomFor(depth) };
+  };
 
   function allowedClasses(pet: Pet): PetClassName[] {
     if (inputs.allowedClassesPerPet !== undefined) {
@@ -447,7 +452,8 @@ export function makeMultiTeamProblem(
       const depth = validDepths[rng.int(validDepths.length)] ?? validDepths[0] ?? 1;
       const difficulty =
         difficultyChoices[rng.int(difficultyChoices.length)] ?? 0;
-      const rooms = roomChoices[rng.int(roomChoices.length)] ?? 16;
+      // Run to the depth's boss so the target depth is actually reached.
+      const rooms = bossRoomFor(depth);
       return { team: { slots }, dungeonId, depth, difficulty, rooms };
     });
     return { teams };
@@ -564,7 +570,8 @@ export function makeMultiTeamProblem(
       const di = teamDepths.indexOf(tp.depth);
       for (const ndi of [di - 1, di + 1]) {
         const d = teamDepths[ndi];
-        if (d !== undefined) yield withTarget(plan, ti, { depth: d });
+        // Moving the target depth also moves run length to that depth's boss.
+        if (d !== undefined) yield withTarget(plan, ti, { depth: d, rooms: bossRoomFor(d) });
       }
       const fi = difficultyChoices.indexOf(tp.difficulty);
       for (const nfi of [fi - 1, fi + 1]) {
@@ -586,7 +593,8 @@ export function makeMultiTeamProblem(
         if (did === tp.dungeonId) continue;
         if (occupied.has(did)) continue; // one team per dungeon
         const teams = plan.teams.slice();
-        teams[ti] = { ...tp, dungeonId: did, depth: clampDepth(did, tp.depth) };
+        const newDepth = clampDepth(did, tp.depth);
+        teams[ti] = { ...tp, dungeonId: did, depth: newDepth, rooms: bossRoomFor(newDepth) };
         yield { teams };
       }
     }

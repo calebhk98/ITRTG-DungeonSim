@@ -138,3 +138,32 @@ describe('Sim calibration — clearable depth scales with pet strength', () => {
     expect(clears(strong, 2, 0)).toBe(true);
   });
 });
+
+describe('Sim calibration — difficulty thresholds (a team has a difficulty ceiling)', () => {
+  // Same DL/CL, different growth → different difficulty ceilings at D2.
+  const diffLow = squad('difflow', 100, 40, 90_000);
+  const diffMid = squad('diffmid', 100, 40, 150_000);
+
+  it('a squad can clear D2-3 but not D2-5', () => {
+    expect(clears(diffLow, 2, 3)).toBe(true);
+    expect(clears(diffLow, 2, 5)).toBe(false);
+  });
+
+  it('a stronger squad clears D2-5 but not D2-8', () => {
+    expect(clears(diffMid, 2, 5)).toBe(true);
+    expect(clears(diffMid, 2, 8)).toBe(false);
+  });
+
+  it('clear ability within a depth is monotonic in difficulty', () => {
+    // If it clears a difficulty, it clears every lower one too.
+    for (const squadUnderTest of [diffLow, diffMid]) {
+      let lastClearable = -1;
+      for (let d = 0; d <= 10; d++) {
+        if (clears(squadUnderTest, 2, d as Difficulty)) lastClearable = d;
+      }
+      for (let d = 0; d <= lastClearable; d++) {
+        expect(clears(squadUnderTest, 2, d as Difficulty)).toBe(true);
+      }
+    }
+  });
+});

@@ -213,13 +213,18 @@ function runSingleTrial(
 
   // ── Reward accumulators ────────────────────────────────────────────────────
   let totalXp = 0;
-  // Material tier for regular enemies = depth; bosses also use depth tier.
-  const materialTier = config.depth as 1 | 2 | 3 | 4;
+  // Materials accrue per depth tier actually visited (the run ramps through
+  // lower depths — see below), so track them per-tier rather than at one depth.
   const dungeonElement: Element = dungeon.element;
-  let materialCount = 0;
+  const materialByTier = new Map<1 | 2 | 3 | 4, number>();
 
   // ── Step 3: Room loop ──────────────────────────────────────────────────────
-  const bossRoom = BOSS_ROOM_FOR_DEPTH[config.depth];
+  // A run RAMPS through depths (research §3, §11.1): rooms 1–6 are Depth 1
+  // (boss at room 6), 7–16 Depth 2 (boss 16), 17–30 Depth 3 (boss 30), 31–60
+  // Depth 4 (boss 60), capped at the target `config.depth`. So a "D3 run" must
+  // clear the D1 and D2 bosses before reaching D3 enemies — encoding the
+  // sequential depth prerequisite directly in the run. Rooms beyond the target
+  // depth's boss keep farming the target depth.
   let roomsCleared = 0;
 
   // Phoenix Feather pool — a run-wide shared budget (research §6.6.4). Each
@@ -233,13 +238,15 @@ function runSingleTrial(
     const livingAllies = allies.filter(a => a.currentHp > 0);
     if (livingAllies.length === 0) break;
 
-    const isBossRoom = room === bossRoom;
+    // Depth ramps with room number, capped at the run's target depth.
+    const roomDepth = depthForRoom(room, config.depth);
+    const isBossRoom = isBossRoomForTarget(room, config.depth);
 
-    // Build the enemy list for this room.
+    // Build the enemy list for this room (at this room's depth).
     const enemies: CombatContext[] = buildRoomEnemies(
       room,
       isBossRoom,
-      config.depth,
+      roomDepth,
       config.difficulty,
       dungeon,
       allies,
@@ -347,8 +354,8 @@ function runSingleTrial(
                 }
               }
             }
-            // Accrue materials: 1 per regular enemy, 3 per boss.
-            materialCount += isBossRoom ? 3 : 1;
+            // Accrue materials at THIS room's depth tier: 1 per regular, 3 per boss.
+            materialByTier.set(roomDepth, (materialByTier.get(roomDepth) ?? 0) + (isBossRoom ? 3 : 1));
           }
         }
       }
@@ -392,17 +399,20 @@ function runSingleTrial(
   const elapsedMinutes = roomsCleared * timePerRoom + wipeRest;
 
   // ── Step 5: Assemble rewards ──────────────────────────────────────────────
-  // Accrued materials: sparse record for the dungeon element at the depth tier.
+  // Accrued materials: sparse record for the dungeon element, by depth tier
+  // actually visited during the run's depth ramp.
   // TODO: full reward modelling per research §8 — events (≥6-room), GP, Lucky Draws,
   // pet stones, equipment drops, key materials, runes. These are zero for now.
   const materialRecord: Partial<Record<1 | 2 | 3 | 4, number>> = {};
-  if (materialCount > 0) {
-    materialRecord[materialTier] = materialCount;
+  let materialTotal = 0;
+  for (const [tier, count] of materialByTier) {
+    if (count > 0) {
+      materialRecord[tier] = count;
+      materialTotal += count;
+    }
   }
   const materials: Partial<Record<Element, Partial<Record<1 | 2 | 3 | 4, number>>>> =
-    materialCount > 0
-      ? { [dungeonElement]: materialRecord }
-      : {};
+    materialTotal > 0 ? { [dungeonElement]: materialRecord } : {};
 
   const rewards: RewardBundle = {
     godPower: 0,       // TODO: model GP rewards from events/rooms (research §8.1)
@@ -450,6 +460,42 @@ const BOSS_ROOM_FOR_DEPTH: Readonly<Record<Depth, number>> = {
   3: 30,
   4: 60,
 } as const;
+
+/**
+ * The depth of a given room within the run's depth ramp (research §3, §11.1),
+ * capped at the run's `targetDepth`.
+ *
+ * Rooms 1–6 are Depth 1, 7–16 Depth 2, 17–30 Depth 3, 31+ Depth 4 — but never
+ * deeper than the target. Rooms past the target depth's boss keep farming the
+ * target depth.
+ */
+function depthForRoom(room: number, targetDepth: Depth): Depth {
+  let segment: Depth;
+  if (room <= BOSS_ROOM_FOR_DEPTH[1]) segment = 1;
+  else if (room <= BOSS_ROOM_FOR_DEPTH[2]) segment = 2;
+  else if (room <= BOSS_ROOM_FOR_DEPTH[3]) segment = 3;
+  else segment = 4;
+  return (segment < targetDepth ? segment : targetDepth) as Depth;
+}
+
+/** Room → the depth whose boss sits there (6→1, 16→2, 30→3, 60→4), else undefined. */
+const BOSS_DEPTH_AT_ROOM: ReadonlyMap<number, Depth> = new Map([
+  [BOSS_ROOM_FOR_DEPTH[1], 1],
+  [BOSS_ROOM_FOR_DEPTH[2], 2],
+  [BOSS_ROOM_FOR_DEPTH[3], 3],
+  [BOSS_ROOM_FOR_DEPTH[4], 4],
+]);
+
+/**
+ * Whether `room` is a boss checkpoint that is actually reached on the way to
+ * `targetDepth`. The Depth-d boss at its checkpoint room only appears when the
+ * run is going at least that deep (so a D2-capped run never spawns the D3 boss,
+ * even if it farms past room 16).
+ */
+function isBossRoomForTarget(room: number, targetDepth: Depth): boolean {
+  const bossDepth = BOSS_DEPTH_AT_ROOM.get(room);
+  return bossDepth !== undefined && bossDepth <= targetDepth;
+}
 
 // ── Room enemy construction ───────────────────────────────────────────────────
 
