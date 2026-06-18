@@ -233,11 +233,20 @@ export function scaleEnemyToContext(
   const stats = scaleEnemyStats(archetype, opts, constants);
   const effectiveLevel = opts.effectiveLevel ?? 1;
 
-  // Compute element levels using the pet formula (research §5.3).
-  // Assumption: enemy element levels scale with `effectiveLevel` the same way
-  // pet element levels scale with DL. See JSDoc on ScaleEnemyToContextOpts.
+  // Compute element levels.
+  //
+  // If the archetype carries real element levels (populated by the data-driven
+  // builder from the enemy spreadsheet), use them directly — they are the source
+  // of truth for enemies whose levels are known.
+  //
+  // Otherwise fall back to the formula-estimated values (research §5.3 pet analogy):
+  //   Neutral: each element = 0.75 × effectiveLevel
+  //   Non-neutral: primary = 50 + 3 × effectiveLevel; weakness = -50; others = 0
   let elementLevels: ElementLevels;
-  if (archetype.element === 'Neutral') {
+  if (archetype.elementLevels !== undefined) {
+    // Use the real element levels from the data.
+    elementLevels = archetype.elementLevels;
+  } else if (archetype.element === 'Neutral') {
     const lvl = 0.75 * effectiveLevel;
     elementLevels = { Fire: lvl, Water: lvl, Wind: lvl, Earth: lvl };
   } else {

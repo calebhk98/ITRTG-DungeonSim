@@ -1,5 +1,6 @@
 import type { Element } from './element.js';
 import type { CombatStats } from './combat.js';
+import type { ElementLevels } from './gear.js';
 
 /**
  * Discriminated union describing how an enemy's stats scale with game variables.
@@ -88,6 +89,17 @@ export interface EnemyArchetype {
   readonly baseStats: CombatStats;
   /** Element of this enemy — determines elemental factor in the damage formula (research §6.2). */
   readonly element: Element;
+  /**
+   * Elemental levels for this enemy — used in the damage formula when present.
+   *
+   * When set (e.g. from the data-driven enemy table), `scaleEnemyToContext` uses
+   * these literal values instead of estimating them from `effectiveLevel`.
+   * Each value is a signed integer: positive = strength, negative = weakness.
+   *
+   * Optional because legacy hand-authored archetypes do not carry element levels;
+   * those fall back to the formula-estimated values in `scaleEnemyToContext`.
+   */
+  readonly elementLevels?: ElementLevels;
   /**
    * How this enemy's stats scale with difficulty or tower floor.
    * Discriminated union because no single formula covers all enemies (research §7).

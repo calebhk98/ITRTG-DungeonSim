@@ -1,0 +1,7872 @@
+{
+  "_note": "Extracted verbatim from user xlsx (ITRTG_Enemies.xlsx). Master enemy stat table.",
+  "count": 215,
+  "enemies": [
+    {
+      "name": "Slimy",
+      "description": "The weakest monster on the newbie grounds, it basically can't hurt your pets.",
+      "hp": 20,
+      "attack": 1,
+      "defense": 1,
+      "speed": 1,
+      "elements": {
+        "Fire": 0,
+        "Water": 0,
+        "Wind": 0,
+        "Earth": 0
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 2,
+      "drops": [
+        {
+          "item": "Herb",
+          "chance": 10
+        },
+        {
+          "item": "IronOre",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 2
+    },
+    {
+      "name": "Frog",
+      "description": "A little stronger than slimy. It might even do some damage.",
+      "hp": 45,
+      "attack": 4,
+      "defense": 4,
+      "speed": 2,
+      "elements": {
+        "Fire": 0,
+        "Water": 20,
+        "Wind": 0,
+        "Earth": -20
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 5,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 3
+    },
+    {
+      "name": "Chick",
+      "description": "Likes to run away a lot.",
+      "hp": 30,
+      "attack": 3,
+      "defense": 3,
+      "speed": 9,
+      "elements": {
+        "Fire": -20,
+        "Water": 0,
+        "Wind": 20,
+        "Earth": 0
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 5,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 4
+    },
+    {
+      "name": "Tree",
+      "description": "It just stands there. Don't dare to attack it!",
+      "hp": 100,
+      "attack": 1,
+      "defense": 9,
+      "speed": 0,
+      "elements": {
+        "Fire": 0,
+        "Water": 0,
+        "Wind": -20,
+        "Earth": 20
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 5,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 5
+    },
+    {
+      "name": "WalkingCandle",
+      "description": "Tries to burn everything down. It can even breath fire!",
+      "hp": 45,
+      "attack": 7,
+      "defense": 2,
+      "speed": 4,
+      "elements": {
+        "Fire": 20,
+        "Water": -20,
+        "Wind": 0,
+        "Earth": 0
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 5,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 6
+    },
+    {
+      "name": "RogueShadowClone (Boss)",
+      "description": "Good thing your pets already have a lot of experience fighting these.",
+      "hp": 250,
+      "attack": 8,
+      "defense": 12,
+      "speed": 5,
+      "elements": {
+        "Fire": 0,
+        "Water": 0,
+        "Wind": 0,
+        "Earth": 0
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 25,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 20
+        },
+        {
+          "item": "HotStone",
+          "chance": 20
+        },
+        {
+          "item": "IceBlock",
+          "chance": 20
+        },
+        {
+          "item": "Wood",
+          "chance": 20
+        },
+        {
+          "item": "Feather",
+          "chance": 20
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 7
+    },
+    {
+      "name": "AngelSlimy",
+      "description": "A slimy with wings. It can even fly a bit. Where did it get them?",
+      "hp": 120,
+      "attack": 15,
+      "defense": 8,
+      "speed": 14,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Heal",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 15,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 2
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 10
+    },
+    {
+      "name": "MetalSlimy",
+      "description": "A slimy which ate too much scrap. It has very high defense and is immune against speed damage!",
+      "hp": 10,
+      "attack": 20,
+      "defense": 200,
+      "speed": 1,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 30,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 50
+        },
+        {
+          "item": "IronBar",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 11
+    },
+    {
+      "name": "NinjaSlimy",
+      "description": "You might think it is as weak as a normal slimy, but only the fastest and most skilled slimys can evade the Oozing Inventor",
+      "hp": 90,
+      "attack": 15,
+      "defense": 8,
+      "speed": 30,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 18,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 4
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 12
+    },
+    {
+      "name": "RoboSlimy",
+      "description": "The Inventor must have run out of slimys. This is an entirely robotic replacement of one!",
+      "hp": 160,
+      "attack": 18,
+      "defense": 18,
+      "speed": 18,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 22,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 4
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 13
+    },
+    {
+      "name": "CyborgSlimy",
+      "description": "A terrifying slimy with whirling blades fused into its flesh. It moves on spiderlike metal legs",
+      "hp": 120,
+      "attack": 16,
+      "defense": 12,
+      "speed": 18,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 18,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 4
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 14
+    },
+    {
+      "name": "GhostSlimy",
+      "description": "This slimy did not survive the Inventor's experiments",
+      "hp": 99,
+      "attack": 0,
+      "defense": 20,
+      "speed": 9999,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": "Scare",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 15,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 5
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 15
+    },
+    {
+      "name": "UnstableSlimy",
+      "description": "Something has gone terribly wrong with this slimy. It looks like its about to explode...",
+      "hp": 90,
+      "attack": 999,
+      "defense": 0,
+      "speed": 0,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": "Explode",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 15,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 5
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 16
+    },
+    {
+      "name": "OozingInventor (Boss)",
+      "description": "You can barely make out this creatures form because he is so covered in slime. He brought all the slimys to the surface of the Scrapyard to perform evil experiments on. Be careful, there are sure to be many of his creations that will join him in this fight.",
+      "hp": 1000,
+      "attack": 1,
+      "defense": 40,
+      "speed": 30,
+      "elements": {
+        "Fire": 15,
+        "Water": 15,
+        "Wind": 15,
+        "Earth": 15
+      },
+      "attackElement": "Neutral",
+      "attackType": "Summon",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 150,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        },
+        {
+          "item": "MagicHerb",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": true,
+      "row": 18
+    },
+    {
+      "name": "ScrapWorm",
+      "description": "A giant worm that breaks down large scrap into small scrap.",
+      "hp": 650,
+      "attack": 88,
+      "defense": 70,
+      "speed": 65,
+      "elements": {
+        "Fire": 40,
+        "Water": 40,
+        "Wind": 40,
+        "Earth": 40
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 35,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 30
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 20
+    },
+    {
+      "name": "Sentry",
+      "description": "A small robot that will alert other denizens of the Scrapyard to your presence if you don't defeat it quickly.",
+      "hp": 565,
+      "attack": 79,
+      "defense": 78,
+      "speed": 75,
+      "elements": {
+        "Fire": 40,
+        "Water": 40,
+        "Wind": 40,
+        "Earth": 40
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Summon",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 36,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 35
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "IronBar",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 21
+    },
+    {
+      "name": "Scavanger",
+      "description": "These elusive creature's have snuck into the Scrapyard to pilfer supplies for themselves. They do not want to be discovered and will attack your pets ferociously.",
+      "hp": 420,
+      "attack": 98,
+      "defense": 35,
+      "speed": 85,
+      "elements": {
+        "Fire": 40,
+        "Water": 40,
+        "Wind": 40,
+        "Earth": 40
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 34,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 35
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "IronBar",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 22
+    },
+    {
+      "name": "RoboHound",
+      "description": "Very fast. Very dangerous. They roam the Scrapyard searching for intruders to tear apart with their metal claws.",
+      "hp": 480,
+      "attack": 105,
+      "defense": 30,
+      "speed": 95,
+      "elements": {
+        "Fire": 40,
+        "Water": 40,
+        "Wind": 40,
+        "Earth": 40
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 38,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 40
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "IronBar",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 23
+    },
+    {
+      "name": "Microbots",
+      "description": "Thousands of tiny robots working together to form a humanoid figure. They are very hard to kill.",
+      "hp": 950,
+      "attack": 85,
+      "defense": 95,
+      "speed": 55,
+      "elements": {
+        "Fire": 40,
+        "Water": 40,
+        "Wind": 40,
+        "Earth": 40
+      },
+      "attackElement": "Neutral",
+      "attackType": "TwoTargets",
+      "attack2": "Heal",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 39,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 40
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 24
+    },
+    {
+      "name": "BulwarkGolem",
+      "description": "They don't attack but have incredibly high defense and serve to protect the other robots.",
+      "hp": 1050,
+      "attack": 50,
+      "defense": 150,
+      "speed": 50,
+      "elements": {
+        "Fire": 40,
+        "Water": 40,
+        "Wind": 40,
+        "Earth": 40
+      },
+      "attackElement": "Neutral",
+      "attackType": "Defend",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 39,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 45
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 25
+    },
+    {
+      "name": "Displacer",
+      "description": "Uses gale force winds to clear away unneeded scrap and pets.",
+      "hp": 450,
+      "attack": 95,
+      "defense": 40,
+      "speed": 75,
+      "elements": {
+        "Fire": -40,
+        "Water": 15,
+        "Wind": 150,
+        "Earth": 15
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 36,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 45
+        },
+        {
+          "item": "Whetstone",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 26
+    },
+    {
+      "name": "SwordSoldier",
+      "description": "The primary warriors of the robot army. They carry very sharp swords and attack with precise and disciplined strikes.",
+      "hp": 650,
+      "attack": 110,
+      "defense": 65,
+      "speed": 70,
+      "elements": {
+        "Fire": 40,
+        "Water": 40,
+        "Wind": 40,
+        "Earth": 40
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 38,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 27
+    },
+    {
+      "name": "MURDER (Boss)",
+      "description": "Massive Unnatural Relentless Defending Entropic Robot. This enourmous creature oversees the robot army and brings absolute destruction to anyone who dares enter the lowest chamber of the Scrapyard.",
+      "hp": 24000,
+      "attack": 175,
+      "defense": 120,
+      "speed": 150,
+      "elements": {
+        "Fire": 60,
+        "Water": 60,
+        "Wind": 60,
+        "Earth": 60
+      },
+      "attackElement": "Neutral",
+      "attackType": "TwoTargets",
+      "attack2": "AttackBuff",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 558,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 200
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "MagicOre",
+          "chance": 25
+        },
+        {
+          "item": "Whetstone",
+          "chance": 150
+        },
+        {
+          "item": "SacredStone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": true,
+      "row": 29
+    },
+    {
+      "name": "Constructor",
+      "description": "These robots are tasked with the creation of new robots. They wield a huge hammer and can pound your pets to dust.",
+      "hp": 2700,
+      "attack": 295,
+      "defense": 265,
+      "speed": 180,
+      "elements": {
+        "Fire": 85,
+        "Water": 85,
+        "Wind": 85,
+        "Earth": 85
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 63,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 55
+        },
+        {
+          "item": "IronBar",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 31
+    },
+    {
+      "name": "Compactor",
+      "description": "It crushes normal scrap into super dense form to be used in the strongest machines of the Scrapyard. If your pets are caught they will be crushed as well.",
+      "hp": 2300,
+      "attack": 305,
+      "defense": 280,
+      "speed": 210,
+      "elements": {
+        "Fire": 86,
+        "Water": 86,
+        "Wind": 86,
+        "Earth": 86
+      },
+      "attackElement": "Neutral",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 64,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 60
+        },
+        {
+          "item": "IronBar",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 32
+    },
+    {
+      "name": "Replacer",
+      "description": "It is adept at replacing broken parts in other machines. While not dangerous by itself, it can rapidly fix other damaged robots and even make them more dangerous.",
+      "hp": 2900,
+      "attack": 325,
+      "defense": 290,
+      "speed": 195,
+      "elements": {
+        "Fire": 87,
+        "Water": 87,
+        "Wind": 87,
+        "Earth": 87
+      },
+      "attackElement": "Neutral",
+      "attackType": "Heal",
+      "attack2": "HealAll",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 65,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 65
+        },
+        {
+          "item": "IronBar",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 33
+    },
+    {
+      "name": "Slayer",
+      "description": "Puprosed with the sole task of destroying any intruder or pet that approaches the Wreckage, it attacks with a lethal spray of bullets.",
+      "hp": 2600,
+      "attack": 315,
+      "defense": 298,
+      "speed": 220,
+      "elements": {
+        "Fire": 88,
+        "Water": 88,
+        "Wind": 88,
+        "Earth": 88
+      },
+      "attackElement": "Neutral",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 66,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 70
+        },
+        {
+          "item": "IronBar",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 34
+    },
+    {
+      "name": "Arbiter",
+      "description": "Organizes the creatures of the lowest level into effective squadrons to combat your pets.",
+      "hp": 6000,
+      "attack": 335,
+      "defense": 500,
+      "speed": 125,
+      "elements": {
+        "Fire": 89,
+        "Water": 89,
+        "Wind": 89,
+        "Earth": 89
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 67,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 75
+        },
+        {
+          "item": "IronBar",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 35
+    },
+    {
+      "name": "Reclaimer",
+      "description": "Sometimes when scrap truly has no uses left a Reclaimer will pull it deep into the earth. It also thinks that would be a fitting place to bury your pets.",
+      "hp": 2700,
+      "attack": 300,
+      "defense": 270,
+      "speed": 225,
+      "elements": {
+        "Fire": 20,
+        "Water": 20,
+        "Wind": -30,
+        "Earth": 355
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 68,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 70
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 36
+    },
+    {
+      "name": "Repurposer",
+      "description": "Has a super hot flamethrower to melt down scrap from broken machines and robots. The heat can be even hotter than the Volcano",
+      "hp": 1900,
+      "attack": 400,
+      "defense": 270,
+      "speed": 260,
+      "elements": {
+        "Fire": 355,
+        "Water": -20,
+        "Wind": 20,
+        "Earth": 20
+      },
+      "attackElement": "Fire",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 69,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 70
+        },
+        {
+          "item": "FireStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 37
+    },
+    {
+      "name": "Sanitizer",
+      "description": "Sometimes you will see rust in other areas of the Scrapyard but never near the Wreckage. Sanitizers constantly search for dirt and rust and annihilate it with hyper pressurized streams of water",
+      "hp": 2800,
+      "attack": 360,
+      "defense": 290,
+      "speed": 200,
+      "elements": {
+        "Fire": 20,
+        "Water": 340,
+        "Wind": 20,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 70,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 70
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 38
+    },
+    {
+      "name": "AlienWreckage (Boss)",
+      "description": "Millions of years ago an alien ship crashed here making the crater that would become the scrapyard. It is the source of all the metal here and the AI that has developed and evolved. It is equipped with ancient and powerful weapon systems and the ability to summon limitless new robots from its depths.",
+      "hp": 35000,
+      "attack": 550,
+      "defense": 550,
+      "speed": 400,
+      "elements": {
+        "Fire": 150,
+        "Water": 150,
+        "Wind": 150,
+        "Earth": 150
+      },
+      "attackElement": "Neutral",
+      "attackType": "MultiTargetMagic",
+      "attack2": "Summon",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 2500,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 500
+        },
+        {
+          "item": "IronBar",
+          "chance": 200
+        },
+        {
+          "item": "MagicOre",
+          "chance": 30
+        },
+        {
+          "item": "Whetstone",
+          "chance": 200
+        },
+        {
+          "item": "SacredStone",
+          "chance": 100
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 40
+    },
+    {
+      "name": "MetalMind (Boss)",
+      "description": "The only living survivor of the great crash. He was once the pilot of the Wreckage. Eons of study in the scrapyard has given him total control over metal. He can fashion any weapon and control it with his will. Over the ages he has also infused his body with the strongest metals in the entire Scrapyard making him almost impervious to harm.",
+      "hp": 50000,
+      "attack": 420,
+      "defense": 900,
+      "speed": 150,
+      "elements": {
+        "Fire": 125,
+        "Water": 125,
+        "Wind": 125,
+        "Earth": 125
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": "Heal",
+      "statusAttack": null,
+      "experience": 3500,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 700
+        },
+        {
+          "item": "IronBar",
+          "chance": 200
+        },
+        {
+          "item": "MagicOre",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 250
+        },
+        {
+          "item": "SacredStone",
+          "chance": 150
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 41
+    },
+    {
+      "name": "Firefly",
+      "description": "A swarm of small bugs. They might look harmless, but their light can burn your pets!",
+      "hp": 55,
+      "attack": 5,
+      "defense": 5,
+      "speed": 25,
+      "elements": {
+        "Fire": 35,
+        "Water": -50,
+        "Wind": 5,
+        "Earth": 0
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "Heal",
+      "attack3": null,
+      "statusAttack": "Burn",
+      "experience": 14,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 10
+        },
+        {
+          "item": "Whetstone",
+          "chance": 2
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 44
+    },
+    {
+      "name": "Salamander",
+      "description": "A red lizard. Be careful: it's skin burns when you touch it.",
+      "hp": 95,
+      "attack": 12,
+      "defense": 8,
+      "speed": 15,
+      "elements": {
+        "Fire": 40,
+        "Water": -50,
+        "Wind": 0,
+        "Earth": 5
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Burn",
+      "experience": 15,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 3
+        },
+        {
+          "item": "PhoenixFeather",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 45
+    },
+    {
+      "name": "Imp",
+      "description": "The smallest and weakest of the fire demons. Likes to play tricks on your pets.",
+      "hp": 115,
+      "attack": 10,
+      "defense": 12,
+      "speed": 12,
+      "elements": {
+        "Fire": 40,
+        "Water": -50,
+        "Wind": 5,
+        "Earth": 0
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 18,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 3
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 46
+    },
+    {
+      "name": "FlameSprite",
+      "description": "It looks like a tiny candle. It is extremely hot but looks like anyone could blow it out!",
+      "hp": 100,
+      "attack": 30,
+      "defense": 5,
+      "speed": 5,
+      "elements": {
+        "Fire": 45,
+        "Water": -50,
+        "Wind": 10,
+        "Earth": 0
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 18,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 4
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 47
+    },
+    {
+      "name": "MagmaBeetle",
+      "description": "It's carapace is made entirely of hardened magma, making it very durable.",
+      "hp": 225,
+      "attack": 8,
+      "defense": 35,
+      "speed": 20,
+      "elements": {
+        "Fire": 50,
+        "Water": -50,
+        "Wind": 0,
+        "Earth": 10
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 20,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 4
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 48
+    },
+    {
+      "name": "CinderSpider",
+      "description": "They almost always come in swarms and the webs they spin are constantly burning.",
+      "hp": 120,
+      "attack": 18,
+      "defense": 20,
+      "speed": 21,
+      "elements": {
+        "Fire": 60,
+        "Water": -50,
+        "Wind": 0,
+        "Earth": 15
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "Summon",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 18,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 49
+    },
+    {
+      "name": "AcolyteOfFlames",
+      "description": "Used to be a regular human until they started worshipping the Volcano. Now they wield devestating fire magic",
+      "hp": 150,
+      "attack": 20,
+      "defense": 15,
+      "speed": 10,
+      "elements": {
+        "Fire": 65,
+        "Water": -50,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Fire",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 22,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 50
+    },
+    {
+      "name": "FireLord (Boss)",
+      "description": "The ruler of the upper level of the Volcano. He wears a burning crown and wields a giant flaming hammer. He constantly summons lesser monsters to assist him and can even resurrect his fiery allies.",
+      "hp": 666,
+      "attack": 35,
+      "defense": 25,
+      "speed": 30,
+      "elements": {
+        "Fire": 75,
+        "Water": -50,
+        "Wind": 15,
+        "Earth": 15
+      },
+      "attackElement": "Fire",
+      "attackType": "Summon",
+      "attack2": "TwoTargets",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 150,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 100
+        },
+        {
+          "item": "FireStone",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 50
+        },
+        {
+          "item": "PhoenixFeather",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": true,
+      "row": 52
+    },
+    {
+      "name": "Minotaur",
+      "description": "This minotaur has horns made out of fire! Don't mess with the bull!",
+      "hp": 1000,
+      "attack": 60,
+      "defense": 140,
+      "speed": 30,
+      "elements": {
+        "Fire": 125,
+        "Water": -40,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 35,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 35
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "FireStone",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 54
+    },
+    {
+      "name": "FlameScorpion",
+      "description": "Covered in molten armor. Be careful not to get stung, its venom burns. Literally.",
+      "hp": 350,
+      "attack": 85,
+      "defense": 50,
+      "speed": 40,
+      "elements": {
+        "Fire": 135,
+        "Water": -40,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Burn",
+      "experience": 36,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 35
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "FireStone",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 55
+    },
+    {
+      "name": "FireWalker",
+      "description": "Strides through lava and fire. One of the silent guardians of the Volcano, they are always alert for intruders...",
+      "hp": 450,
+      "attack": 80,
+      "defense": 35,
+      "speed": 65,
+      "elements": {
+        "Fire": 140,
+        "Water": -40,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 33,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 40
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "FireStone",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 56
+    },
+    {
+      "name": "Hellhound",
+      "description": "An extremely aggressive demon dog. They have a keen sense of smell and will chase your pets no matter how far they run",
+      "hp": 666,
+      "attack": 100,
+      "defense": 45,
+      "speed": 70,
+      "elements": {
+        "Fire": 148,
+        "Water": -40,
+        "Wind": 15,
+        "Earth": 15
+      },
+      "attackElement": "Fire",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 41,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 40
+        },
+        {
+          "item": "Whetstone",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 57
+    },
+    {
+      "name": "BurningElemental",
+      "description": "A being made out of pure fire. It is so hot it can even burn other creatures in the Volcano.",
+      "hp": 500,
+      "attack": 85,
+      "defense": 40,
+      "speed": 40,
+      "elements": {
+        "Fire": 150,
+        "Water": -40,
+        "Wind": 15,
+        "Earth": 15
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "AttackBuff",
+      "attack3": null,
+      "statusAttack": "Burn",
+      "experience": 36,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 40
+        },
+        {
+          "item": "Whetstone",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 58
+    },
+    {
+      "name": "FlameHawk",
+      "description": "Distant cousin to the Phoenix, these burning birds are extremely territorial and love to swoop down on your pets from above.",
+      "hp": 400,
+      "attack": 90,
+      "defense": 35,
+      "speed": 100,
+      "elements": {
+        "Fire": 155,
+        "Water": -40,
+        "Wind": 15,
+        "Earth": 15
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 38,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 50
+        },
+        {
+          "item": "PhoenixFeather",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 59
+    },
+    {
+      "name": "LavaWorm",
+      "description": "Hides in the ground below until a pet gets too close then erupts and breathes fire on everything around it.",
+      "hp": 600,
+      "attack": 65,
+      "defense": 75,
+      "speed": 45,
+      "elements": {
+        "Fire": 160,
+        "Water": -40,
+        "Wind": 15,
+        "Earth": 15
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": "Burn",
+      "experience": 36,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 60
+    },
+    {
+      "name": "CrazedSteamSpirit",
+      "description": "Once a wise and powerful water elemental, it has been trapped, boiling, on the lowest floor of the Volcano for millenia. This drove it crazy and it now seeks to destroy anything it sees.",
+      "hp": 750,
+      "attack": 60,
+      "defense": 50,
+      "speed": 45,
+      "elements": {
+        "Fire": 15,
+        "Water": 150,
+        "Wind": 15,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 40,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 61
+    },
+    {
+      "name": "Seraphim (Boss)",
+      "description": "A beautiful angel with flaming wings. She swings a massive flaming sword. Pets struck by it stay burning for a long time. She can also engulf your entire team with rings of fire by flapping her wings.",
+      "hp": 12500,
+      "attack": 150,
+      "defense": 140,
+      "speed": 120,
+      "elements": {
+        "Fire": 220,
+        "Water": -40,
+        "Wind": 20,
+        "Earth": 20
+      },
+      "attackElement": "Fire",
+      "attackType": "TwoTargets",
+      "attack2": "AttackBuff",
+      "attack3": "Summon",
+      "statusAttack": "Burn",
+      "experience": 600,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 200
+        },
+        {
+          "item": "FireStone",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 150
+        },
+        {
+          "item": "SacredStone",
+          "chance": 25
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": true,
+      "row": 63
+    },
+    {
+      "name": "Incinerator",
+      "description": "An ancient machine from the scrapyard. A fire elemental has made the inside its home and it has repurposed the original weapon systems to spew fire from long range.",
+      "hp": 2400,
+      "attack": 350,
+      "defense": 200,
+      "speed": 230,
+      "elements": {
+        "Fire": 340,
+        "Water": -30,
+        "Wind": 20,
+        "Earth": 20
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 53,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 55
+        },
+        {
+          "item": "FireStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 65
+    },
+    {
+      "name": "Ifrit",
+      "description": "A powerful spirit. It flies very fast and devestates the battlefield with ancient fire magic.",
+      "hp": 1900,
+      "attack": 350,
+      "defense": 230,
+      "speed": 265,
+      "elements": {
+        "Fire": 365,
+        "Water": -30,
+        "Wind": 20,
+        "Earth": 20
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 58,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 60
+        },
+        {
+          "item": "FireStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 66
+    },
+    {
+      "name": "BurningReaper",
+      "description": "Looks like the grim reaper but on fire. These mysterious creatures collect the souls of anyone that falls in the Volcano",
+      "hp": 2800,
+      "attack": 370,
+      "defense": 240,
+      "speed": 245,
+      "elements": {
+        "Fire": 350,
+        "Water": -30,
+        "Wind": 20,
+        "Earth": 20
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 57,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 65
+        },
+        {
+          "item": "FireStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 67
+    },
+    {
+      "name": "FlamingSwords",
+      "description": "Two animated swords. They are everburning and attack in quick powerful combos.",
+      "hp": 2100,
+      "attack": 360,
+      "defense": 225,
+      "speed": 280,
+      "elements": {
+        "Fire": 375,
+        "Water": -30,
+        "Wind": 20,
+        "Earth": 20
+      },
+      "attackElement": "Fire",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Burn",
+      "experience": 59,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 65
+        },
+        {
+          "item": "FireStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 68
+    },
+    {
+      "name": "FireDragon",
+      "description": "A red dragon. it has all the strengths of a regular dragon but its breath is much much more powerful. If you manage to wound it, its blood is hot enough to melt armor!",
+      "hp": 3000,
+      "attack": 380,
+      "defense": 260,
+      "speed": 290,
+      "elements": {
+        "Fire": 385,
+        "Water": -30,
+        "Wind": 20,
+        "Earth": 20
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": "Burn",
+      "experience": 61,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 70
+        },
+        {
+          "item": "FireStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 69
+    },
+    {
+      "name": "LavaGolem",
+      "description": "A giant creature made out of rock and earth. The burning blood of the Volcano courses through its veins. These are the most powerful enforcers of the lowest level of the Volcano",
+      "hp": 5000,
+      "attack": 300,
+      "defense": 450,
+      "speed": 120,
+      "elements": {
+        "Fire": 20,
+        "Water": 20,
+        "Wind": -30,
+        "Earth": 355
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 64,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 60
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 70
+    },
+    {
+      "name": "AshStorm",
+      "description": "A furious and unmerciful storm full of ash. It's heat burns your pets and its ash is so thick they can't breathe!",
+      "hp": 1900,
+      "attack": 400,
+      "defense": 220,
+      "speed": 300,
+      "elements": {
+        "Fire": -30,
+        "Water": 20,
+        "Wind": 355,
+        "Earth": 20
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Burn",
+      "experience": 66,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 60
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 35
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 71
+    },
+    {
+      "name": "SlagElemental",
+      "description": "A huge amalgamation of fused parts melted down from the scrapyard. It has a terrifying form. While it is not too hot anymore, it attacks with super-hardened fists.",
+      "hp": 2800,
+      "attack": 360,
+      "defense": 240,
+      "speed": 210,
+      "elements": {
+        "Fire": 90,
+        "Water": 90,
+        "Wind": 90,
+        "Earth": 90
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 58,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 55
+        },
+        {
+          "item": "IronBar",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 72
+    },
+    {
+      "name": "SunSpirit (Boss)",
+      "description": "The living soul of a star. His touch is hotter than anything else in the Volcano and can even burn other fire elementals to ash. While he lacks speed, his single target attacks burn with lethal fire.",
+      "hp": 65000,
+      "attack": 400,
+      "defense": 750,
+      "speed": 120,
+      "elements": {
+        "Fire": 400,
+        "Water": -25,
+        "Wind": 30,
+        "Earth": 30
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": "Heal",
+      "statusAttack": "Burn2",
+      "experience": 2500,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 550
+        },
+        {
+          "item": "FireStone",
+          "chance": 200
+        },
+        {
+          "item": "Whetstone",
+          "chance": 200
+        },
+        {
+          "item": "SacredStone",
+          "chance": 100
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 74
+    },
+    {
+      "name": "Balrog (Boss)",
+      "description": "The leader of the demonic creatures of the Volcano. His power is so high that even the non-demonic creatures bow down to him. While he is always surrounded by fiercely loyal guards, he has no need of them. Between his burning whip and his all-powerful shadowflame magic he will crush all pets who oppose him.",
+      "hp": 35000,
+      "attack": 750,
+      "defense": 400,
+      "speed": 400,
+      "elements": {
+        "Fire": 500,
+        "Water": -30,
+        "Wind": 30,
+        "Earth": 30
+      },
+      "attackElement": "Fire",
+      "attackType": "MultiTargetMagic",
+      "attack2": "TwoTargets",
+      "attack3": "Summon",
+      "statusAttack": null,
+      "experience": 3500,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 700
+        },
+        {
+          "item": "FireStone",
+          "chance": 300
+        },
+        {
+          "item": "Whetstone",
+          "chance": 250
+        },
+        {
+          "item": "SacredStone",
+          "chance": 150
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 50
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 75
+    },
+    {
+      "name": "SeaweedSprite",
+      "description": "A tiny sprite made entirely out of seaweed. It seems mostly harmless",
+      "hp": 50,
+      "attack": 8,
+      "defense": 8,
+      "speed": 8,
+      "elements": {
+        "Fire": 10,
+        "Water": 40,
+        "Wind": 10,
+        "Earth": -50
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 10,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 10
+        },
+        {
+          "item": "Herb",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 78
+    },
+    {
+      "name": "Piranha",
+      "description": "A small fish with razor sharp teeth. Very agressive and dangerous in swarms",
+      "hp": 85,
+      "attack": 22,
+      "defense": 8,
+      "speed": 20,
+      "elements": {
+        "Fire": 10,
+        "Water": 45,
+        "Wind": 10,
+        "Earth": -50
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 18,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 79
+    },
+    {
+      "name": "Mermaid",
+      "description": "Half woman half fish. These are not the friendly kind. They hate pets with a passion",
+      "hp": 115,
+      "attack": 15,
+      "defense": 18,
+      "speed": 17,
+      "elements": {
+        "Fire": 10,
+        "Water": 50,
+        "Wind": 10,
+        "Earth": -50
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 17,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 80
+    },
+    {
+      "name": "Makara",
+      "description": "Part fish, part elephant, part lion, part monkey, part pig, and part peacock! Looks very weird but don't be fooled - they are very dangerous",
+      "hp": 110,
+      "attack": 10,
+      "defense": 20,
+      "speed": 18,
+      "elements": {
+        "Fire": 10,
+        "Water": 50,
+        "Wind": 10,
+        "Earth": -50
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Poison",
+      "experience": 17,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 81
+    },
+    {
+      "name": "Nymph",
+      "description": "Curators of the water temple. They seek to keep order and keep your pets out.",
+      "hp": 120,
+      "attack": 20,
+      "defense": 15,
+      "speed": 10,
+      "elements": {
+        "Fire": 10,
+        "Water": 60,
+        "Wind": 10,
+        "Earth": -50
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": "Heal",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 20,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 82
+    },
+    {
+      "name": "Naiad",
+      "description": "Very territorial of their waterfalls. Be careful to get close to them!",
+      "hp": 250,
+      "attack": 15,
+      "defense": 25,
+      "speed": 5,
+      "elements": {
+        "Fire": 10,
+        "Water": 55,
+        "Wind": 10,
+        "Earth": -50
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 18,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 83
+    },
+    {
+      "name": "Vodyanoy",
+      "description": "Looks a little like a frog. He really wants to drown your pets!",
+      "hp": 150,
+      "attack": 20,
+      "defense": 15,
+      "speed": 10,
+      "elements": {
+        "Fire": 10,
+        "Water": 65,
+        "Wind": 10,
+        "Earth": -50
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 22,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 84
+    },
+    {
+      "name": "Godzilly (Boss)",
+      "description": "A tiny version of godzilla himself. Don't be fooled by his size - he leads the top floor of the water temple. He can leap at any pet and attack in a series of rapid and powerful bites.",
+      "hp": 650,
+      "attack": 40,
+      "defense": 30,
+      "speed": 20,
+      "elements": {
+        "Fire": 15,
+        "Water": 75,
+        "Wind": 15,
+        "Earth": -50
+      },
+      "attackElement": "Water",
+      "attackType": "TwoTargets",
+      "attack2": "AttackBuff",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 150,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 100
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 200
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        },
+        {
+          "item": "MagicHerb",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": true,
+      "row": 86
+    },
+    {
+      "name": "Kappa",
+      "description": "Green water demon with a hard shell protecting them. They are expert wrestlers.",
+      "hp": 800,
+      "attack": 60,
+      "defense": 120,
+      "speed": 45,
+      "elements": {
+        "Fire": 15,
+        "Water": 140,
+        "Wind": 10,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 37,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 35
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 88
+    },
+    {
+      "name": "Jellyfish",
+      "description": "Has an extremely dangerous paralytic venom. Don't let your pets get stung!",
+      "hp": 350,
+      "attack": 99,
+      "defense": 50,
+      "speed": 77,
+      "elements": {
+        "Fire": 15,
+        "Water": 135,
+        "Wind": 10,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Poison",
+      "experience": 30,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 35
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 89
+    },
+    {
+      "name": "SeaSpirit",
+      "description": "Guardian of the ocean. Many of these have gathered to stop you from exploring the Water Temple.",
+      "hp": 500,
+      "attack": 75,
+      "defense": 60,
+      "speed": 60,
+      "elements": {
+        "Fire": 15,
+        "Water": 140,
+        "Wind": 10,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": "Summon",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 36,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 90
+    },
+    {
+      "name": "WaterElemental",
+      "description": "A large humanoid made entirely out of water. It can freeze with a touch.",
+      "hp": 520,
+      "attack": 85,
+      "defense": 45,
+      "speed": 70,
+      "elements": {
+        "Fire": 15,
+        "Water": 148,
+        "Wind": 15,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Freeze",
+      "experience": 37,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 91
+    },
+    {
+      "name": "FireCoralReef",
+      "description": "A coral reef that is entirely on fire. Pets wandering nearby can get pulled into its depths and be burned AND drowned at the same time.",
+      "hp": 450,
+      "attack": 92,
+      "defense": 40,
+      "speed": 80,
+      "elements": {
+        "Fire": 150,
+        "Water": -40,
+        "Wind": 15,
+        "Earth": 15
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Burn",
+      "experience": 38,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 40
+        },
+        {
+          "item": "Whetstone",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 92
+    },
+    {
+      "name": "WaterGoblin",
+      "description": "Though small, they are extremely fast and vicious. They wield spears made out of super sharpened coral.",
+      "hp": 450,
+      "attack": 78,
+      "defense": 35,
+      "speed": 75,
+      "elements": {
+        "Fire": 15,
+        "Water": 155,
+        "Wind": 15,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 36,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 50
+        },
+        {
+          "item": "Herb",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 93
+    },
+    {
+      "name": "Hippocamp",
+      "description": "The standard mount used by the denizens of the Water Temple. Not dangerous on their own, but can greatly enhance the damage of other monsters if they choose to ride one.",
+      "hp": 1200,
+      "attack": 50,
+      "defense": 160,
+      "speed": 45,
+      "elements": {
+        "Fire": 15,
+        "Water": 160,
+        "Wind": 15,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "Defend",
+      "attack2": "AttackBuff",
+      "attack3": "Heal",
+      "statusAttack": null,
+      "experience": 37,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 50
+        },
+        {
+          "item": "Herb",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 94
+    },
+    {
+      "name": "Sharktopus",
+      "description": "A shark AND an octopus. It will grab multiple pets with its clinging tentacles and bring them in to bite with the sharpened teeth.",
+      "hp": 750,
+      "attack": 99,
+      "defense": 45,
+      "speed": 70,
+      "elements": {
+        "Fire": 15,
+        "Water": 150,
+        "Wind": 15,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 40,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 50
+        },
+        {
+          "item": "Herb",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 95
+    },
+    {
+      "name": "Kraken (Boss)",
+      "description": "A giant octopus known to eat whole ships (and pets) whole. Many sea creatures follow it either out of fear or respect to be ready for a massive battle.",
+      "hp": 19999,
+      "attack": 150,
+      "defense": 140,
+      "speed": 120,
+      "elements": {
+        "Fire": 20,
+        "Water": 220,
+        "Wind": 20,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": "AttackBuff",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 630,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 200
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 50
+        },
+        {
+          "item": "Herb",
+          "chance": 300
+        },
+        {
+          "item": "SacredStone",
+          "chance": 25
+        },
+        {
+          "item": "MagicIce",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": true,
+      "row": 97
+    },
+    {
+      "name": "Hydra",
+      "description": "A member of your Hydra's family except evil. It is jealous of your pets and really wants them to fail.",
+      "hp": 2950,
+      "attack": 295,
+      "defense": 265,
+      "speed": 180,
+      "elements": {
+        "Fire": 20,
+        "Water": 310,
+        "Wind": 20,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 63,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 55
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 99
+    },
+    {
+      "name": "Shen",
+      "description": "A huge water dragon. They are fairly slow but have devestating water magic and breath attacks.",
+      "hp": 2100,
+      "attack": 380,
+      "defense": 235,
+      "speed": 150,
+      "elements": {
+        "Fire": 20,
+        "Water": 320,
+        "Wind": 20,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 64,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 60
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 100
+    },
+    {
+      "name": "LivingWhirlpool",
+      "description": "Constantly swirling, this whirlpool is sentient and wants nothing more than to devour your whole team of pets.",
+      "hp": 2750,
+      "attack": 335,
+      "defense": 225,
+      "speed": 225,
+      "elements": {
+        "Fire": 20,
+        "Water": 330,
+        "Wind": 20,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 65,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 65
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 101
+    },
+    {
+      "name": "Zaratan",
+      "description": "Only found on the lowest floor of the Water Temple. These giant sea turtles are almost impossible to damage.",
+      "hp": 6500,
+      "attack": 335,
+      "defense": 444,
+      "speed": 120,
+      "elements": {
+        "Fire": 20,
+        "Water": 340,
+        "Wind": 20,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "Defend",
+      "attack2": "Heal",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 66,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 65
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 102
+    },
+    {
+      "name": "CursedPirate",
+      "description": "Just a skeleton now, but driven by an unholy rage. It is deceptively fast and deals massive damage with its cutlass",
+      "hp": 2850,
+      "attack": 425,
+      "defense": 300,
+      "speed": 240,
+      "elements": {
+        "Fire": 90,
+        "Water": 90,
+        "Wind": 90,
+        "Earth": 90
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 67,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 70
+        },
+        {
+          "item": "IronBar",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 103
+    },
+    {
+      "name": "Siren",
+      "description": "They sing the most beautiful songs. If your pets listen for too long they might turn against your team!",
+      "hp": 2500,
+      "attack": 200,
+      "defense": 300,
+      "speed": 225,
+      "elements": {
+        "Fire": 20,
+        "Water": 350,
+        "Wind": 20,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": "HealAll",
+      "attack3": null,
+      "statusAttack": "Confuse",
+      "experience": 68,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 60
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 104
+    },
+    {
+      "name": "DrownedPriest",
+      "description": "He believes in bringing back the old ones and follows the Behemoth with fanatical loyalty. Traps pets in bubbles of air and then shrinks the bubbles until the pets are crushed and suffocated.",
+      "hp": 2200,
+      "attack": 345,
+      "defense": 280,
+      "speed": 355,
+      "elements": {
+        "Fire": -40,
+        "Water": 20,
+        "Wind": 350,
+        "Earth": 20
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": "Heal",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 69,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 60
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 35
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 105
+    },
+    {
+      "name": "SeafloorRaiser",
+      "description": "A small humanoid made from the sea floor. These creatures mold and shape the entire lower ocean. If threatened they won't hesitate to use their powers to crush your pets.",
+      "hp": 2700,
+      "attack": 410,
+      "defense": 270,
+      "speed": 185,
+      "elements": {
+        "Fire": 20,
+        "Water": 20,
+        "Wind": -20,
+        "Earth": 350
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 70,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 55
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 106
+    },
+    {
+      "name": "Leviathan (Boss)",
+      "description": "An enourmous flying whale dragon. It's not clear how it got into the water temple - maybe the entire temple was built around it. While it can attack with powerful breath and bites, it prefers to summon hoards of minions and stay safe behind its near inpenetrable hide.",
+      "hp": 50000,
+      "attack": 480,
+      "defense": 480,
+      "speed": 380,
+      "elements": {
+        "Fire": 40,
+        "Water": 450,
+        "Wind": 50,
+        "Earth": -30
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 2800,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 550
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 200
+        },
+        {
+          "item": "Whetstone",
+          "chance": 200
+        },
+        {
+          "item": "SacredStone",
+          "chance": 100
+        },
+        {
+          "item": "MagicIce",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 108
+    },
+    {
+      "name": "Behemoth (Boss)",
+      "description": "This massive and tentacled monster serves the old ones and has corrupted of the entire Water Temple to summon and power his dark masters. Every turn it brings the temple closer to the beyond and draws more power. If you don't defeat it quickly you will never defeat it at all.",
+      "hp": 35000,
+      "attack": 400,
+      "defense": 400,
+      "speed": 150,
+      "elements": {
+        "Fire": 40,
+        "Water": 450,
+        "Wind": 50,
+        "Earth": -30
+      },
+      "attackElement": "Water",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "PowerUp",
+      "experience": 3200,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 700
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 300
+        },
+        {
+          "item": "Whetstone",
+          "chance": 250
+        },
+        {
+          "item": "SacredStone",
+          "chance": 150
+        },
+        {
+          "item": "MagicIce",
+          "chance": 50
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 109
+    },
+    {
+      "name": "Wolf",
+      "description": "Shadow clones might not be healthy for them to eat, but pets certainly are!",
+      "hp": 80,
+      "attack": 10,
+      "defense": 12,
+      "speed": 15,
+      "elements": {
+        "Fire": 5,
+        "Water": 5,
+        "Wind": -50,
+        "Earth": 35
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 15,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 10
+        },
+        {
+          "item": "Herb",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 112
+    },
+    {
+      "name": "Goblin",
+      "description": "They might be able to damage your pets more if they used better clubs, but luckily these clubs are made out of dirt.",
+      "hp": 95,
+      "attack": 12,
+      "defense": 13,
+      "speed": 5,
+      "elements": {
+        "Fire": 5,
+        "Water": 5,
+        "Wind": -50,
+        "Earth": 40
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 16,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 113
+    },
+    {
+      "name": "CreepingVine",
+      "description": "An extremely slow vine. Your pets would almost never get caught by it, but if they ever did...",
+      "hp": 100,
+      "attack": 35,
+      "defense": 10,
+      "speed": 1,
+      "elements": {
+        "Fire": 5,
+        "Water": 5,
+        "Wind": -50,
+        "Earth": 40
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 17,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 114
+    },
+    {
+      "name": "PoisonFrog",
+      "description": "The weakest creatures in the Forest. Their spit is poisonous though so be careful.",
+      "hp": 100,
+      "attack": 5,
+      "defense": 10,
+      "speed": 5,
+      "elements": {
+        "Fire": 0,
+        "Water": 0,
+        "Wind": -50,
+        "Earth": 45
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Poison",
+      "experience": 16,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 115
+    },
+    {
+      "name": "SleepyFlowers",
+      "description": "A field of sweet smelling flowers. They might seem harmless... Your pets will just stop here and rest for just a minute...",
+      "hp": 150,
+      "attack": 20,
+      "defense": 20,
+      "speed": 5,
+      "elements": {
+        "Fire": 5,
+        "Water": 5,
+        "Wind": -50,
+        "Earth": 50
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Sleep",
+      "experience": 20,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 116
+    },
+    {
+      "name": "Troll",
+      "description": "Bigger and stronger than goblins but they are also very lazy.",
+      "hp": 250,
+      "attack": 25,
+      "defense": 35,
+      "speed": 8,
+      "elements": {
+        "Fire": 5,
+        "Water": 5,
+        "Wind": -50,
+        "Earth": 60
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 23,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 117
+    },
+    {
+      "name": "DruidApprentice",
+      "description": "Only wants to protect the animals of the forest from anyone who would do them harm.",
+      "hp": 150,
+      "attack": 20,
+      "defense": 15,
+      "speed": 10,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": -50,
+        "Earth": 65
+      },
+      "attackElement": "Earth",
+      "attackType": "Heal",
+      "attack2": "HealAll",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 22,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 118
+    },
+    {
+      "name": "GroveWarden (Boss)",
+      "description": "Half elf and half stag, this ancient protector guards the inner groves of the Forest. He calls the earth to hold your pets in place and the wild animals of to tear them to shreds.",
+      "hp": 800,
+      "attack": 30,
+      "defense": 35,
+      "speed": 15,
+      "elements": {
+        "Fire": 15,
+        "Water": 15,
+        "Wind": -50,
+        "Earth": 75
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": "TwoTargets",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 150,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 100
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 200
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        },
+        {
+          "item": "MagicHerb",
+          "chance": 20
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": true,
+      "row": 120
+    },
+    {
+      "name": "Treant",
+      "description": "A sentient tree that is furious at your incursion into his grove.",
+      "hp": 750,
+      "attack": 65,
+      "defense": 85,
+      "speed": 50,
+      "elements": {
+        "Fire": 15,
+        "Water": 15,
+        "Wind": -40,
+        "Earth": 150
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 37,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 122
+    },
+    {
+      "name": "Unicorn",
+      "description": "Denizens of the inner grove, they move very fast and impale your pets on their horns.",
+      "hp": 600,
+      "attack": 85,
+      "defense": 50,
+      "speed": 75,
+      "elements": {
+        "Fire": 15,
+        "Water": 15,
+        "Wind": -40,
+        "Earth": 150
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": "Heal",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 39,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 123
+    },
+    {
+      "name": "Ogre",
+      "description": "They tower over your pets and attack with powerful blows and and noxious breath.",
+      "hp": 750,
+      "attack": 80,
+      "defense": 85,
+      "speed": 40,
+      "elements": {
+        "Fire": 15,
+        "Water": 15,
+        "Wind": -40,
+        "Earth": 150
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 36,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 124
+    },
+    {
+      "name": "Giant",
+      "description": "Even larger than golems. They are the slowest creatures in this part of the Forest, but they carry entire trees that they smash your pets with.",
+      "hp": 1100,
+      "attack": 95,
+      "defense": 145,
+      "speed": 10,
+      "elements": {
+        "Fire": 15,
+        "Water": 15,
+        "Wind": -40,
+        "Earth": 150
+      },
+      "attackElement": "Earth",
+      "attackType": "TwoTargets",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 40,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 125
+    },
+    {
+      "name": "Gargoyle",
+      "description": "These stone sentinels live on large trees and are very territorial. If you get too close they will swarm down and tear apart intruders with their sharp claws.",
+      "hp": 680,
+      "attack": 65,
+      "defense": 85,
+      "speed": 50,
+      "elements": {
+        "Fire": 15,
+        "Water": 15,
+        "Wind": -40,
+        "Earth": 150
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 38,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 126
+    },
+    {
+      "name": "StoneGolem",
+      "description": "A large lumbering construct made of stone. When it is not bashing your pets it likes to break apart the soil so more things can grow",
+      "hp": 850,
+      "attack": 75,
+      "defense": 85,
+      "speed": 35,
+      "elements": {
+        "Fire": 15,
+        "Water": 15,
+        "Wind": -40,
+        "Earth": 150
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 37,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 127
+    },
+    {
+      "name": "SwampyAncient",
+      "description": "In this ancient, the rot took root and turned the inside of its body into a swamp. Now toxic water sloshes around inside it and splashes against its enemies with lethal effect.",
+      "hp": 590,
+      "attack": 65,
+      "defense": 85,
+      "speed": 50,
+      "elements": {
+        "Fire": 15,
+        "Water": 150,
+        "Wind": 15,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Poison",
+      "experience": 36,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 128
+    },
+    {
+      "name": "ShroomWizard",
+      "description": "Small and shaped like a mushroom, it infects your pets with powerful fungal magic!",
+      "hp": 640,
+      "attack": 85,
+      "defense": 85,
+      "speed": 50,
+      "elements": {
+        "Fire": 15,
+        "Water": 15,
+        "Wind": -40,
+        "Earth": 150
+      },
+      "attackElement": "Earth",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 39,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 40
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 129
+    },
+    {
+      "name": "MossyShambler (Boss)",
+      "description": "A humanoid shambler made entirely of moss. Most attacks bounce off his spongy body. The creatures of the Forest answer his call and he devestates your pets with earthen magic.",
+      "hp": 15000,
+      "attack": 125,
+      "defense": 100,
+      "speed": 100,
+      "elements": {
+        "Fire": 20,
+        "Water": 20,
+        "Wind": -40,
+        "Earth": 180
+      },
+      "attackElement": "Earth",
+      "attackType": "MultiTargetMagic",
+      "attack2": "Summon",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 585,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 200
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 150
+        },
+        {
+          "item": "SacredStone",
+          "chance": 25
+        },
+        {
+          "item": "MagicWood",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": true,
+      "row": 131
+    },
+    {
+      "name": "CrazedArchDruid",
+      "description": "Once a great protector of the inner grove, he tended the giant trees here for millenia. Now driven insane by the Forest Soul, he spreads the forests corruption as far as he can.",
+      "hp": 2950,
+      "attack": 295,
+      "defense": 265,
+      "speed": 180,
+      "elements": {
+        "Fire": 20,
+        "Water": 20,
+        "Wind": -30,
+        "Earth": 310
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 63,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 55
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 133
+    },
+    {
+      "name": "DarkenedAncient",
+      "description": "This giant tree is covered in shadows making it unnaturally fast and very hard to hit.",
+      "hp": 1850,
+      "attack": 365,
+      "defense": 180,
+      "speed": 420,
+      "elements": {
+        "Fire": 20,
+        "Water": 20,
+        "Wind": -30,
+        "Earth": 320
+      },
+      "attackElement": "Earth",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 64,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 60
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 134
+    },
+    {
+      "name": "StalwartAncient",
+      "description": "Even though the Forest is falling to corruption, these ancients still remember the old ways. They seek to protect the other trees here despite their growing rot.",
+      "hp": 4800,
+      "attack": 335,
+      "defense": 480,
+      "speed": 125,
+      "elements": {
+        "Fire": 20,
+        "Water": 20,
+        "Wind": -30,
+        "Earth": 330
+      },
+      "attackElement": "Earth",
+      "attackType": "HealAll",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 65,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 65
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 135
+    },
+    {
+      "name": "NightmareAncient",
+      "description": "In order to escape the rot of the forest, this ancient slipped into an eternal sleep. Unfortunately he found only nightmares there and now destroys anything it finds in its feverish sleepwalking. Its presence can also cause your pets to fall to the same nightmare, making them much weaker.",
+      "hp": 2850,
+      "attack": 315,
+      "defense": 298,
+      "speed": 220,
+      "elements": {
+        "Fire": 20,
+        "Water": 20,
+        "Wind": -30,
+        "Earth": 340
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Sleep",
+      "experience": 66,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 65
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 136
+    },
+    {
+      "name": "LumberingAncient",
+      "description": "The largest of all the ancient trees. Their fists are so huge they can smash your whole party at once with their giant fists.",
+      "hp": 3000,
+      "attack": 335,
+      "defense": 300,
+      "speed": 240,
+      "elements": {
+        "Fire": 20,
+        "Water": 20,
+        "Wind": -30,
+        "Earth": 350
+      },
+      "attackElement": "Earth",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 67,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 70
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 137
+    },
+    {
+      "name": "PetrifiedAncient",
+      "description": "The oldest of all trees in the Grove. They have turned to stone. While this provides them some measures of protection against the rot, it also makes their attacks devestatingly powerful.",
+      "hp": 2850,
+      "attack": 300,
+      "defense": 300,
+      "speed": 225,
+      "elements": {
+        "Fire": 89,
+        "Water": 89,
+        "Wind": 89,
+        "Earth": 89
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 68,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 60
+        },
+        {
+          "item": "IronBar",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 138
+    },
+    {
+      "name": "HowlingAncient",
+      "description": "In constant pain, these ancients scream their torments at your pets with enough force to render them unconscious.",
+      "hp": 2200,
+      "attack": 345,
+      "defense": 280,
+      "speed": 275,
+      "elements": {
+        "Fire": -40,
+        "Water": 20,
+        "Wind": 350,
+        "Earth": 20
+      },
+      "attackElement": "Wind",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Sleep",
+      "experience": 69,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 60
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 15
+        },
+        {
+          "item": "Herb",
+          "chance": 35
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 139
+    },
+    {
+      "name": "BlazingAncient",
+      "description": "In an attempt to destroy the rot in their bodies, these trees immolated themselves. Unfortunately this did not work and now the rot sustains their blackened forms.",
+      "hp": 1900,
+      "attack": 410,
+      "defense": 270,
+      "speed": 260,
+      "elements": {
+        "Fire": 355,
+        "Water": -20,
+        "Wind": 20,
+        "Earth": 20
+      },
+      "attackElement": "Fire",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 70,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 55
+        },
+        {
+          "item": "FireStone",
+          "chance": 20
+        },
+        {
+          "item": "Herb",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 140
+    },
+    {
+      "name": "AgonizedForestSoul (Boss)",
+      "description": "The source of the corruption and rot in the Inner Grove. It was once the greatest champion of the forest but over time it fell to the darkness. Instead of sustaining the ancients here, its torment spreads to the nearby ancients warping their form and driving them crazy. He forces the ancients to protect him even in their tortured state.",
+      "hp": 40000,
+      "attack": 480,
+      "defense": 480,
+      "speed": 380,
+      "elements": {
+        "Fire": 30,
+        "Water": 30,
+        "Wind": -40,
+        "Earth": 440
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 2800,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 550
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 200
+        },
+        {
+          "item": "Whetstone",
+          "chance": 200
+        },
+        {
+          "item": "SacredStone",
+          "chance": 100
+        },
+        {
+          "item": "MagicWood",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 142
+    },
+    {
+      "name": "RottingWorldTree (Boss)",
+      "description": "The ancient king of the forest. This enormous tree was the first tree ever planted and served to bring balance to nature. It was also one of the last trees to fall to the Forest Souls corruption, but when it did it became a horrifying mass of rot, barely resembling its once majestic form. While it won't attack you directly, the rot spreads to your pets and grows more powerful every turn. The only way to save the Forest is to destroy it before it's rot overwhelms you and allow new growth to flourish here again.",
+      "hp": 52000,
+      "attack": 420,
+      "defense": 850,
+      "speed": 150,
+      "elements": {
+        "Fire": 30,
+        "Water": 30,
+        "Wind": -40,
+        "Earth": 480
+      },
+      "attackElement": "Earth",
+      "attackType": "Summon",
+      "attack2": "Defend",
+      "attack3": "HealAll",
+      "statusAttack": null,
+      "experience": 3200,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 700
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 300
+        },
+        {
+          "item": "Whetstone",
+          "chance": 250
+        },
+        {
+          "item": "SacredStone",
+          "chance": 150
+        },
+        {
+          "item": "MagicWood",
+          "chance": 50
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 143
+    },
+    {
+      "name": "Crow",
+      "description": "Just a normal bird. Very weak but can quickly peck out your eyes!",
+      "hp": 80,
+      "attack": 10,
+      "defense": 12,
+      "speed": 15,
+      "elements": {
+        "Fire": -50,
+        "Water": 5,
+        "Wind": 35,
+        "Earth": 5
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 14,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 10
+        },
+        {
+          "item": "Whetstone",
+          "chance": 2
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 146
+    },
+    {
+      "name": "Cockatrice",
+      "description": "It tastes just like chicken.",
+      "hp": 95,
+      "attack": 12,
+      "defense": 13,
+      "speed": 15,
+      "elements": {
+        "Fire": -50,
+        "Water": 5,
+        "Wind": 40,
+        "Earth": 5
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 15,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 3
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 147
+    },
+    {
+      "name": "Wyvern",
+      "description": "A very small dragon-like creature. Though they are physically fragile, they are also unusually agressive.",
+      "hp": 190,
+      "attack": 15,
+      "defense": 32,
+      "speed": 19,
+      "elements": {
+        "Fire": -50,
+        "Water": 5,
+        "Wind": 40,
+        "Earth": 5
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 18,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 3
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 148
+    },
+    {
+      "name": "Thunderhawk",
+      "description": "You can see an ominous blue electric glow surrounding it.",
+      "hp": 100,
+      "attack": 18,
+      "defense": 10,
+      "speed": 18,
+      "elements": {
+        "Fire": -50,
+        "Water": 5,
+        "Wind": 45,
+        "Earth": 5
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 16,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 4
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 149
+    },
+    {
+      "name": "Whelpling",
+      "description": "A baby dragon. Don't underestimate it though, it has all the powers of a fully grown dragon, just at a fraction of their magnitude.",
+      "hp": 160,
+      "attack": 20,
+      "defense": 15,
+      "speed": 35,
+      "elements": {
+        "Fire": -50,
+        "Water": 5,
+        "Wind": 50,
+        "Earth": 5
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 20,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 4
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 150
+    },
+    {
+      "name": "Harpy",
+      "description": "Part woman part hawk. They attack with screeching voices and sharpened claws.",
+      "hp": 120,
+      "attack": 25,
+      "defense": 25,
+      "speed": 25,
+      "elements": {
+        "Fire": -50,
+        "Water": 5,
+        "Wind": 60,
+        "Earth": 5
+      },
+      "attackElement": "Wind",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 18,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 5
+        },
+        {
+          "item": "PhoenixFeather",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 151
+    },
+    {
+      "name": "TricksterSprite",
+      "description": "A lesser air elemental that wants to play tricks on your pets. It will leave them feeling dizzy and confused.",
+      "hp": 170,
+      "attack": 20,
+      "defense": 15,
+      "speed": 32,
+      "elements": {
+        "Fire": -50,
+        "Water": 5,
+        "Wind": 65,
+        "Earth": 5
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Confuse",
+      "experience": 22,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 152
+    },
+    {
+      "name": "ScreechingGralk (Boss)",
+      "description": "The leader of the wildlife on the lower part of the Mountain. It's voice brings other birds to its aid as well as damaging your pets.",
+      "hp": 550,
+      "attack": 30,
+      "defense": 25,
+      "speed": 40,
+      "elements": {
+        "Fire": -50,
+        "Water": 15,
+        "Wind": 75,
+        "Earth": 15
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": "Summon",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 150,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 100
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 200
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": true,
+      "row": 154
+    },
+    {
+      "name": "SkyBlade",
+      "description": "The most agressive soldiers of the Bird Clan. They dive very fast and deliver deadly blade combos.",
+      "hp": 500,
+      "attack": 75,
+      "defense": 75,
+      "speed": 75,
+      "elements": {
+        "Fire": -40,
+        "Water": 15,
+        "Wind": 135,
+        "Earth": 10
+      },
+      "attackElement": "Wind",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 39,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 35
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 156
+    },
+    {
+      "name": "SkyPriest",
+      "description": "Sky Priests are spiritual leaders of the Bird Clan. They heal and inspire their fellow avians.",
+      "hp": 700,
+      "attack": 70,
+      "defense": 85,
+      "speed": 80,
+      "elements": {
+        "Fire": -40,
+        "Water": 15,
+        "Wind": 130,
+        "Earth": 10
+      },
+      "attackElement": "Wind",
+      "attackType": "Heal",
+      "attack2": "AttackBuff",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 34,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 35
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 157
+    },
+    {
+      "name": "StormCaller",
+      "description": "Storm Callers are fierce mages. They use their air magic to create dangerous storms that damage your pets with deadly lightning",
+      "hp": 450,
+      "attack": 80,
+      "defense": 35,
+      "speed": 75,
+      "elements": {
+        "Fire": -40,
+        "Water": 15,
+        "Wind": 140,
+        "Earth": 10
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 36,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 40
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 5
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 158
+    },
+    {
+      "name": "RainSpeaker",
+      "description": "Similiar to Storm Callers, Rain Speakers also create immense storms. These storms are less damaging but leave your pets slow and sodden.",
+      "hp": 550,
+      "attack": 100,
+      "defense": 45,
+      "speed": 85,
+      "elements": {
+        "Fire": -40,
+        "Water": 15,
+        "Wind": 148,
+        "Earth": 15
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Slow",
+      "experience": 40,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 40
+        },
+        {
+          "item": "Whetstone",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 159
+    },
+    {
+      "name": "Vampire",
+      "description": "These undead outcasts of the Bird Clan drink your pets blood to heal themselves.",
+      "hp": 400,
+      "attack": 85,
+      "defense": 40,
+      "speed": 80,
+      "elements": {
+        "Fire": -40,
+        "Water": 15,
+        "Wind": 150,
+        "Earth": 15
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Drain",
+      "experience": 39,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 40
+        },
+        {
+          "item": "Whetstone",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 160
+    },
+    {
+      "name": "Manticore",
+      "description": "This winged lion is incredibly fast and its tail and jaws are infused with deadly venom.",
+      "hp": 650,
+      "attack": 80,
+      "defense": 50,
+      "speed": 90,
+      "elements": {
+        "Fire": 10,
+        "Water": -40,
+        "Wind": 155,
+        "Earth": 155
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Poison",
+      "experience": 37,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 161
+    },
+    {
+      "name": "CloudShaper",
+      "description": "Cloud Shapers draw the clouds around the mountain to themselves creating almost inpenetrable armor. They are extremely durable and seek to protect other avians from your attacks.",
+      "hp": 950,
+      "attack": 75,
+      "defense": 135,
+      "speed": 75,
+      "elements": {
+        "Fire": -40,
+        "Water": 15,
+        "Wind": 160,
+        "Earth": 15
+      },
+      "attackElement": "Wind",
+      "attackType": "Defend",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 35,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 15
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 162
+    },
+    {
+      "name": "WindLord",
+      "description": "The winds answer these strange casters. They try to blow your pets off of the Mountain.",
+      "hp": 450,
+      "attack": 95,
+      "defense": 35,
+      "speed": 77,
+      "elements": {
+        "Fire": -40,
+        "Water": 15,
+        "Wind": 150,
+        "Earth": 15
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 39,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 20
+        },
+        {
+          "item": "PhoenixFeather",
+          "chance": 10
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": false,
+      "row": 163
+    },
+    {
+      "name": "SoaringPrelate (Boss)",
+      "description": "This is the undisputed king of the Bird Clan. He has all the skills of all the members of his clan. While he is too proud to accept aid from his clan during this fight, his superior speed more than makes up for this. Your pets cannot even track his rapid movements.",
+      "hp": 25000,
+      "attack": 175,
+      "defense": 120,
+      "speed": 200,
+      "elements": {
+        "Fire": -40,
+        "Water": 20,
+        "Wind": 250,
+        "Earth": 20
+      },
+      "attackElement": "Wind",
+      "attackType": "TwoTargets",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 615,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 200
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 50
+        },
+        {
+          "item": "Whetstone",
+          "chance": 150
+        },
+        {
+          "item": "SacredStone",
+          "chance": 25
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.3,
+      "attackScaling": 0.4,
+      "boss": true,
+      "row": 165
+    },
+    {
+      "name": "Ziz",
+      "description": "The largest birds on the entire Mountain. Their wingspan blocks out the sun.",
+      "hp": 2400,
+      "attack": 295,
+      "defense": 200,
+      "speed": 350,
+      "elements": {
+        "Fire": -40,
+        "Water": 20,
+        "Wind": 340,
+        "Earth": 20
+      },
+      "attackElement": "Wind",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 63,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 55
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 167
+    },
+    {
+      "name": "SkyDragon",
+      "description": "A white dragon that attacks with a devestating lightning breath. His scales also make him nearly impervious to harm.",
+      "hp": 4800,
+      "attack": 310,
+      "defense": 420,
+      "speed": 370,
+      "elements": {
+        "Fire": -40,
+        "Water": 20,
+        "Wind": 345,
+        "Earth": 20
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 64,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 60
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 168
+    },
+    {
+      "name": "Chimera",
+      "description": "A giant two-headed lion that breathes fire and swipes your pets with his massive claws.",
+      "hp": 2800,
+      "attack": 325,
+      "defense": 240,
+      "speed": 280,
+      "elements": {
+        "Fire": 350,
+        "Water": -30,
+        "Wind": 20,
+        "Earth": 20
+      },
+      "attackElement": "Fire",
+      "attackType": "TwoTargets",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 65,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 55
+        },
+        {
+          "item": "FireStone",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 169
+    },
+    {
+      "name": "Roc",
+      "description": "Almost as big as the Ziz, this enormous bird eats entire elephants whole. It will have no trouble devouring your pets.",
+      "hp": 2100,
+      "attack": 320,
+      "defense": 225,
+      "speed": 320,
+      "elements": {
+        "Fire": -40,
+        "Water": 20,
+        "Wind": 350,
+        "Earth": 20
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 66,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 65
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 170
+    },
+    {
+      "name": "Hippogriff",
+      "description": "Hippogriffs are majestic and powerful creatures. While they have powerful claws, their true danger is their ability to support other creatures, giving them speed and strength.",
+      "hp": 2250,
+      "attack": 380,
+      "defense": 210,
+      "speed": 250,
+      "elements": {
+        "Fire": 90,
+        "Water": 90,
+        "Wind": 90,
+        "Earth": 90
+      },
+      "attackElement": "Neutral",
+      "attackType": "Heal",
+      "attack2": "AttackBuff",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 67,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 70
+        },
+        {
+          "item": "IronBar",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 171
+    },
+    {
+      "name": "Gryphon",
+      "description": "The rulers of the sky, these majestic winged lions can conjure thunderbolts from their air.",
+      "hp": 2700,
+      "attack": 310,
+      "defense": 250,
+      "speed": 395,
+      "elements": {
+        "Fire": -40,
+        "Water": 20,
+        "Wind": 365,
+        "Earth": 20
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 68,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 60
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 172
+    },
+    {
+      "name": "Djinn",
+      "description": "Djinns possess the most powerful magic of any creatures on the Mountain. They have both powerful healing abilities and incredible area of effect spells.",
+      "hp": 1750,
+      "attack": 450,
+      "defense": 180,
+      "speed": 400,
+      "elements": {
+        "Fire": -40,
+        "Water": 20,
+        "Wind": 355,
+        "Earth": 20
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic",
+      "attack2": "HealAll",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 69,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 60
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 15
+        },
+        {
+          "item": "Whetstone",
+          "chance": 35
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 173
+    },
+    {
+      "name": "LivingGlacier",
+      "description": "At the very peak of the mountain lies ice that has never melted. It has gained sentience over time and wishes to destroy all intruders. Even the heartiest pets will be frozen by its eternal ice.",
+      "hp": 2800,
+      "attack": 295,
+      "defense": 240,
+      "speed": 210,
+      "elements": {
+        "Fire": 20,
+        "Water": 350,
+        "Wind": 20,
+        "Earth": -40
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Freeze",
+      "experience": 70,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 55
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 20
+        },
+        {
+          "item": "Whetstone",
+          "chance": 25
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": false,
+      "row": 174
+    },
+    {
+      "name": "LightningRevenant (Boss)",
+      "description": "The soul of lightning. It appears as a worn out robe over a body made entirely of lightning. It is armed with a lightning whip that shocks and disables anything it strikes. It also creates expanding rings of lightning that tear your entire pet team apart.",
+      "hp": 45000,
+      "attack": 400,
+      "defense": 300,
+      "speed": 750,
+      "elements": {
+        "Fire": -25,
+        "Water": 50,
+        "Wind": 444,
+        "Earth": 50
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Sleep",
+      "experience": 3000,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 550
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 200
+        },
+        {
+          "item": "Whetstone",
+          "chance": 200
+        },
+        {
+          "item": "SacredStone",
+          "chance": 100
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 30
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 176
+    },
+    {
+      "name": "UnboundHurricane (Boss)",
+      "description": "A living hurricane and the bringer of all the storms on the mountain. It's body rests at the center of the hurricane and takes the form of a swirling tornado armed with a crackling sword. In order to destroy it, your pets must aproach this terrifying form and brave its direct attacks. The constant winds and storms surrounding him will slow and damage your pets every turn.",
+      "hp": 45000,
+      "attack": 400,
+      "defense": 300,
+      "speed": 750,
+      "elements": {
+        "Fire": -25,
+        "Water": 50,
+        "Wind": 444,
+        "Earth": 50
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Slow",
+      "experience": 3000,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 700
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 300
+        },
+        {
+          "item": "Whetstone",
+          "chance": 250
+        },
+        {
+          "item": "SacredStone",
+          "chance": 150
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 50
+        }
+      ],
+      "scaling": 0.1,
+      "attackScaling": 0.15,
+      "boss": true,
+      "row": 177
+    },
+    {
+      "name": "Mimic",
+      "description": null,
+      "hp": 25000,
+      "attack": 2999,
+      "defense": 999,
+      "speed": 999,
+      "elements": {
+        "Fire": 250,
+        "Water": 250,
+        "Wind": 250,
+        "Earth": 250
+      },
+      "attackElement": "Neutral",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0.15,
+      "attackScaling": 0.2,
+      "boss": false,
+      "row": 179
+    },
+    {
+      "name": "EvolvedBalrog",
+      "description": null,
+      "hp": 200000,
+      "attack": 5000,
+      "defense": 5000,
+      "speed": 3000,
+      "elements": {
+        "Fire": 5000,
+        "Water": 1000,
+        "Wind": 400,
+        "Earth": 1000
+      },
+      "attackElement": "Fire",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 180
+    },
+    {
+      "name": "EvolvedBalrog-No catalyst",
+      "description": null,
+      "hp": 200000,
+      "attack": 10250,
+      "defense": 10250,
+      "speed": 6149.999999999999,
+      "elements": {
+        "Fire": 10250,
+        "Water": 2050,
+        "Wind": 819.9999999999999,
+        "Earth": 2050
+      },
+      "attackElement": "Fire",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 181
+    },
+    {
+      "name": "EvolvedBalrog-One catalyst",
+      "description": null,
+      "hp": 200000,
+      "attack": 7175,
+      "defense": 7175,
+      "speed": 4305,
+      "elements": {
+        "Fire": 7175,
+        "Water": 1435,
+        "Wind": 574,
+        "Earth": 1435
+      },
+      "attackElement": "Fire",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 182
+    },
+    {
+      "name": "Nothing",
+      "description": null,
+      "hp": 25000,
+      "attack": 1500,
+      "defense": 500,
+      "speed": 500,
+      "elements": {
+        "Fire": 200,
+        "Water": 200,
+        "Wind": 200,
+        "Earth": 200
+      },
+      "attackElement": "Neutral",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 183
+    },
+    {
+      "name": "SuperRogueShadowClone",
+      "description": null,
+      "hp": 50000,
+      "attack": 350,
+      "defense": 350,
+      "speed": 300,
+      "elements": {
+        "Fire": 200,
+        "Water": 200,
+        "Wind": 200,
+        "Earth": 200
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 184
+    },
+    {
+      "name": "Chameleon-SY",
+      "description": null,
+      "hp": 25000,
+      "attack": 150,
+      "defense": 150,
+      "speed": 150,
+      "elements": {
+        "Fire": 120,
+        "Water": 120,
+        "Wind": 120,
+        "Earth": 120
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 185
+    },
+    {
+      "name": "Chameleon-WT",
+      "description": null,
+      "hp": 25000,
+      "attack": 150,
+      "defense": 150,
+      "speed": 150,
+      "elements": {
+        "Fire": 50,
+        "Water": 250,
+        "Wind": 50,
+        "Earth": 50
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 186
+    },
+    {
+      "name": "Chameleon-V",
+      "description": null,
+      "hp": 25000,
+      "attack": 150,
+      "defense": 150,
+      "speed": 150,
+      "elements": {
+        "Fire": 250,
+        "Water": 50,
+        "Wind": 50,
+        "Earth": 50
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 187
+    },
+    {
+      "name": "Chameleon-M",
+      "description": null,
+      "hp": 25000,
+      "attack": 150,
+      "defense": 150,
+      "speed": 150,
+      "elements": {
+        "Fire": 50,
+        "Water": 50,
+        "Wind": 250,
+        "Earth": 50
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 188
+    },
+    {
+      "name": "Chameleon-F",
+      "description": null,
+      "hp": 25000,
+      "attack": 150,
+      "defense": 150,
+      "speed": 150,
+      "elements": {
+        "Fire": 50,
+        "Water": 50,
+        "Wind": 50,
+        "Earth": 250
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 189
+    },
+    {
+      "name": "LoofSlirpa",
+      "description": null,
+      "hp": 5000,
+      "attack": 35,
+      "defense": 35,
+      "speed": 30,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 190
+    },
+    {
+      "name": "WolfOfNobina",
+      "description": null,
+      "hp": 1000000,
+      "attack": 4000,
+      "defense": 5000,
+      "speed": 5000,
+      "elements": {
+        "Fire": 2000,
+        "Water": 2000,
+        "Wind": 4000,
+        "Earth": 500
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 191
+    },
+    {
+      "name": "MirrorOfRuin",
+      "description": null,
+      "hp": 3333,
+      "attack": 150,
+      "defense": 0,
+      "speed": 100,
+      "elements": {
+        "Fire": 30,
+        "Water": 30,
+        "Wind": 30,
+        "Earth": 30
+      },
+      "attackElement": "Neutral",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 193
+    },
+    {
+      "name": "IceQueen",
+      "description": null,
+      "hp": 1600,
+      "attack": 100,
+      "defense": 100,
+      "speed": 100,
+      "elements": {
+        "Fire": 0,
+        "Water": 100,
+        "Wind": 0,
+        "Earth": -20
+      },
+      "attackElement": "Water",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 194
+    },
+    {
+      "name": "FlareLord",
+      "description": null,
+      "hp": 666,
+      "attack": 200,
+      "defense": 50,
+      "speed": 150,
+      "elements": {
+        "Fire": 120,
+        "Water": -20,
+        "Wind": 0,
+        "Earth": 0
+      },
+      "attackElement": "Fire",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 195
+    },
+    {
+      "name": "SkyKing",
+      "description": null,
+      "hp": 1800,
+      "attack": 80,
+      "defense": 80,
+      "speed": 500,
+      "elements": {
+        "Fire": -20,
+        "Water": 0,
+        "Wind": 100,
+        "Earth": 0
+      },
+      "attackElement": "Wind",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 196
+    },
+    {
+      "name": "UnbreakableArmor",
+      "description": null,
+      "hp": 1300,
+      "attack": 80,
+      "defense": 5000,
+      "speed": 20,
+      "elements": {
+        "Fire": 0,
+        "Water": 0,
+        "Wind": -20,
+        "Earth": 100
+      },
+      "attackElement": "Earth",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0.4,
+      "attackScaling": 0.5,
+      "boss": false,
+      "row": 197
+    },
+    {
+      "name": "Wisp",
+      "description": null,
+      "hp": 1000000000000,
+      "attack": 8000,
+      "defense": 9999999,
+      "speed": 5000,
+      "elements": {
+        "Fire": 2000,
+        "Water": 2000,
+        "Wind": 2000,
+        "Earth": 2000
+      },
+      "attackElement": "Neutral",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 198
+    },
+    {
+      "name": "DeliriousEssenceOfTheForgotten",
+      "description": null,
+      "hp": 1250,
+      "attack": 48,
+      "defense": 60,
+      "speed": 25,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 199
+    },
+    {
+      "name": "Aprils Fool",
+      "description": null,
+      "hp": 25000,
+      "attack": 10,
+      "defense": 20,
+      "speed": 15,
+      "elements": {
+        "Fire": 10,
+        "Water": 10,
+        "Wind": 10,
+        "Earth": 10
+      },
+      "attackElement": "Neutral",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 200
+    },
+    {
+      "name": "ZombieGeneral",
+      "description": null,
+      "hp": 4000000,
+      "attack": 2500,
+      "defense": 50000,
+      "speed": 5000,
+      "elements": {
+        "Fire": 2500,
+        "Water": 2500,
+        "Wind": 2500,
+        "Earth": 2500
+      },
+      "attackElement": "Wind",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 201
+    },
+    {
+      "name": "LerneanHydra",
+      "description": null,
+      "hp": 1500000,
+      "attack": 5000,
+      "defense": 50000,
+      "speed": 5000,
+      "elements": {
+        "Fire": 5000,
+        "Water": 5000,
+        "Wind": 1000,
+        "Earth": 1000
+      },
+      "attackElement": "Water",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 202
+    },
+    {
+      "name": "HydraHead",
+      "description": null,
+      "hp": 40000,
+      "attack": 2000,
+      "defense": 500,
+      "speed": 1000,
+      "elements": {
+        "Fire": 2000,
+        "Water": 2000,
+        "Wind": 1000,
+        "Earth": 1000
+      },
+      "attackElement": "Water",
+      "attackType": null,
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": null,
+      "drops": [],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 203
+    },
+    {
+      "name": "Nanobots",
+      "description": "Millions of replicating robots that devour everything they can and create more nanobots.",
+      "hp": 8888,
+      "attack": 8888,
+      "defense": 999,
+      "speed": 1500,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Duplicate",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 222,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "MagicOre",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 205
+    },
+    {
+      "name": "AlienDrone",
+      "description": "A drone that has appaered to find the Alien Wreckage. While not as strong as the ship that crashed, it is still very lethal.",
+      "hp": 18000,
+      "attack": 1600,
+      "defense": 500,
+      "speed": 1500,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "TwoTargets",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 185,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "MagicOre",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 206
+    },
+    {
+      "name": "RestorationBot",
+      "description": "An advance robot that can restore any destroyed or damaged object or entity. Borrows the processing power of the RoboOverlord to function at an advanced level.",
+      "hp": 19500,
+      "attack": 2000,
+      "defense": 999,
+      "speed": 2000,
+      "elements": {
+        "Fire": 400,
+        "Water": 800,
+        "Wind": 400,
+        "Earth": 200
+      },
+      "attackElement": "Water",
+      "attackType": "Heal",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 200,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 100
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 207
+    },
+    {
+      "name": "CyberBears",
+      "description": "Bears mixed with advanced technology. Armed with heat beams, they are strong enough to take out armies by themselves.",
+      "hp": 17500,
+      "attack": 9999,
+      "defense": 900,
+      "speed": 1500,
+      "elements": {
+        "Fire": 800,
+        "Water": 200,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "MultiTargetMagic",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 201,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "MagicOre",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 208
+    },
+    {
+      "name": "Terraformer",
+      "description": "An advance robot that terraforms the planet, it seeks to transform it from a livable place for life to a place only robots may survive.",
+      "hp": 35000,
+      "attack": 0,
+      "defense": 1100,
+      "speed": 1000,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 200,
+        "Earth": 800
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": "AttackBuff",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 193,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 100
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 209
+    },
+    {
+      "name": "ShieldGenerator",
+      "description": "A robot with the sole purpose of creating a shield to protect all other robots. The shield is capable of stopping the strongest of weapons.",
+      "hp": 29999,
+      "attack": 0,
+      "defense": 1400,
+      "speed": 1200,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "Defend",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 213,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "MagicOre",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 210
+    },
+    {
+      "name": "LandBattleship",
+      "description": "A land battleship controlled by artificial intelligence that functions on land. It's firepower is unmatch by even the strongest land creature.",
+      "hp": 17500,
+      "attack": 7500,
+      "defense": 900,
+      "speed": 3500,
+      "elements": {
+        "Fire": 200,
+        "Water": 800,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": "TwoTargets",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 195,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 100
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 211
+    },
+    {
+      "name": "Oblitorator",
+      "description": "Armed with a massive laser cannon this robot's sole purpose is to destroy everything in one swoop.",
+      "hp": 6666,
+      "attack": 13500,
+      "defense": 0,
+      "speed": 9999,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 211,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "MagicOre",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 212
+    },
+    {
+      "name": "YogSothoth",
+      "description": "A legendary horror that is said to know it all, it is said it is capable of destroy all. Controlling all the elements, it seeks to destroy you for standing against it. Defeat it if you can.",
+      "hp": 300000,
+      "attack": 12000,
+      "defense": 6500,
+      "speed": 5000,
+      "elements": {
+        "Fire": 1100,
+        "Water": 1100,
+        "Wind": 1100,
+        "Earth": 1100
+      },
+      "attackElement": "Neutral",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 6000,
+      "drops": [
+        {
+          "item": "IronBar",
+          "chance": 500
+        },
+        {
+          "item": "MagicOre",
+          "chance": 200
+        },
+        {
+          "item": "TitaniumBar",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 250
+        },
+        {
+          "item": "MagicHerb",
+          "chance": 100
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 214
+    },
+    {
+      "name": "RoboOverlord",
+      "description": "The overlord of all robots, it can command a legion that constantly grows and seeks destruction. If is not defeated now, the whole Scrapyard will soon be converted into a robot army.",
+      "hp": 800000,
+      "attack": 10000,
+      "defense": 15000,
+      "speed": 3500,
+      "elements": {
+        "Fire": 2000,
+        "Water": 2000,
+        "Wind": 2000,
+        "Earth": 2000
+      },
+      "attackElement": "Neutral",
+      "attackType": "Summon",
+      "attack2": "OneTarget",
+      "attack3": "Heal",
+      "statusAttack": null,
+      "experience": 10000,
+      "drops": [
+        {
+          "item": "IronBar",
+          "chance": 700
+        },
+        {
+          "item": "MagicOre",
+          "chance": 250
+        },
+        {
+          "item": "Mythril",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 300
+        },
+        {
+          "item": "GoldenKey",
+          "chance": 20
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 215
+    },
+    {
+      "name": "SolarWolf",
+      "description": "A wolf that eminates solar rays, it blinds all who see it for an easy prey.",
+      "hp": 7500,
+      "attack": 5500,
+      "defense": 1500,
+      "speed": 8000,
+      "elements": {
+        "Fire": 800,
+        "Water": 200,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Fire",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Blind",
+      "experience": 185,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 100
+        },
+        {
+          "item": "FireStone",
+          "chance": 50
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 217
+    },
+    {
+      "name": "MagmaDemon",
+      "description": "A demon capable of using vast amounts of magma against all enemies.",
+      "hp": 9000,
+      "attack": 11000,
+      "defense": 1200,
+      "speed": 5700,
+      "elements": {
+        "Fire": 800,
+        "Water": 200,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Fire",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 200,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 100
+        },
+        {
+          "item": "FireStone",
+          "chance": 50
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 218
+    },
+    {
+      "name": "HellRabbit",
+      "description": "A creature that thrives in the depths, it is the most numerous creature and often swarms its prey due to its numbers.",
+      "hp": 6666,
+      "attack": 6666,
+      "defense": 900,
+      "speed": 6666,
+      "elements": {
+        "Fire": 800,
+        "Water": 200,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "Duplicate",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 215,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 100
+        },
+        {
+          "item": "FireStone",
+          "chance": 50
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 219
+    },
+    {
+      "name": "AncientLavamancer",
+      "description": "Studying the volcano for his whole life, the heat has driven him insane and now he burns everyone he sees.",
+      "hp": 12500,
+      "attack": 7500,
+      "defense": 950,
+      "speed": 4500,
+      "elements": {
+        "Fire": 800,
+        "Water": 200,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "Slash",
+      "attack3": null,
+      "statusAttack": "Burn2",
+      "experience": 183,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 100
+        },
+        {
+          "item": "FireStone",
+          "chance": 50
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 220
+    },
+    {
+      "name": "LivingCore",
+      "description": "One of the pieces of the planet's core that gained sentience. Its density makes it extremely solid and hard to destroy.",
+      "hp": 40000,
+      "attack": 1000,
+      "defense": 3500,
+      "speed": 1000,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 188,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 221
+    },
+    {
+      "name": "SteamSwarm",
+      "description": "Steam that has condensed enough to survive the depths of the volcano, one touch can put on the most intense flames.",
+      "hp": 15000,
+      "attack": 5500,
+      "defense": 1800,
+      "speed": 6500,
+      "elements": {
+        "Fire": 400,
+        "Water": 800,
+        "Wind": 400,
+        "Earth": 200
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": "Pierce",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 195,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 100
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 222
+    },
+    {
+      "name": "ObsidianGiant",
+      "description": "A giant made of obsidian, it gathers the obsidian near it to constantly regenerate. It must be destroyed with overwelming firepower.",
+      "hp": 15000,
+      "attack": 6500,
+      "defense": 1000,
+      "speed": 2000,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Regenerate",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 201,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 223
+    },
+    {
+      "name": "InfernalSalamander",
+      "description": "A salamander found in the deepest part of the volcano, capable of healing all of the volcano inhabitats with its fire aura.",
+      "hp": 18000,
+      "attack": 8888,
+      "defense": 2200,
+      "speed": 6900,
+      "elements": {
+        "Fire": 800,
+        "Water": 200,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Fire",
+      "attackType": "OneTarget",
+      "attack2": "HealingAura",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 222,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 100
+        },
+        {
+          "item": "FireStone",
+          "chance": 50
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 224
+    },
+    {
+      "name": "Cthugha",
+      "description": "A legendary horror of fire and tentacles, it is said to exist in deepest depth. Extremely destructive and chaotic, it must be destroyed before it can overwhelm the field with fire and tentacles.",
+      "hp": 750000,
+      "attack": 30000,
+      "defense": 2000,
+      "speed": 6666,
+      "elements": {
+        "Fire": 2000,
+        "Water": 500,
+        "Wind": 1000,
+        "Earth": 1000
+      },
+      "attackElement": "Fire",
+      "attackType": "MultiTargetMagic",
+      "attack2": "SummonTentacle",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 5500,
+      "drops": [
+        {
+          "item": "FireStone",
+          "chance": 500
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 200
+        },
+        {
+          "item": "InfernoBar",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 250
+        },
+        {
+          "item": "PhoenixFeather",
+          "chance": 50
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 226
+    },
+    {
+      "name": "HellKing",
+      "description": "The king of hell, he summons swarms of hellish creatures to decimate his enemies. If need be, he can rain down an inferno onto his enemies should he feel threatened. Quickly defeat him before everything burns.",
+      "hp": 900000,
+      "attack": 28000,
+      "defense": 2500,
+      "speed": 6666,
+      "elements": {
+        "Fire": 3000,
+        "Water": 500,
+        "Wind": 1000,
+        "Earth": 1000
+      },
+      "attackElement": "Fire",
+      "attackType": "MultiTargetMagic",
+      "attack2": "Summon",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 10500,
+      "drops": [
+        {
+          "item": "FireStone",
+          "chance": 700
+        },
+        {
+          "item": "MagicFireStone",
+          "chance": 250
+        },
+        {
+          "item": "SunStone",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 300
+        },
+        {
+          "item": "MagmaKey",
+          "chance": 20
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 227
+    },
+    {
+      "name": "Megalodon",
+      "description": "A shark considered one of the greatest sea predators, it's sheer strength, speed and size make it a formidable foe against all weaker creatures.",
+      "hp": 25000,
+      "attack": 6800,
+      "defense": 2200,
+      "speed": 3500,
+      "elements": {
+        "Fire": 400,
+        "Water": 800,
+        "Wind": 400,
+        "Earth": 200
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 222,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 100
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 50
+        },
+        {
+          "item": "MagicIce",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 229
+    },
+    {
+      "name": "Mosasaurs",
+      "description": "One of the oldest sea lizards, they are unrivalled in terms of physical power and protect their fellow deep sea dwellers from harm.",
+      "hp": 39500,
+      "attack": 1800,
+      "defense": 3000,
+      "speed": 1500,
+      "elements": {
+        "Fire": 400,
+        "Water": 800,
+        "Wind": 400,
+        "Earth": 200
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 178,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 100
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 50
+        },
+        {
+          "item": "MagicIce",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 230
+    },
+    {
+      "name": "SeaVoid",
+      "description": "A void that sucks in everything within it's reach. Its crystal core must be destroyed before the void crushes your pets.",
+      "hp": 12000,
+      "attack": 6500,
+      "defense": 1200,
+      "speed": 4500,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "Slash",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 200,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 231
+    },
+    {
+      "name": "Lobstromous",
+      "description": "A massive lobster capable of firing off streams of water that can cut through the strongest metals. Combined with it's powerful claws and hard shell, it is a force to be reckoned with.",
+      "hp": 12500,
+      "attack": 7500,
+      "defense": 950,
+      "speed": 4500,
+      "elements": {
+        "Fire": 400,
+        "Water": 800,
+        "Wind": 400,
+        "Earth": 200
+      },
+      "attackElement": "Water",
+      "attackType": "Pierce",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 199,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 100
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 50
+        },
+        {
+          "item": "MagicIce",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 232
+    },
+    {
+      "name": "Dragonfish",
+      "description": "Found in the darkest shadows of the Water Temple, these fish will ambush anything within their range and kill it with a swift blow, leaving no time to react.",
+      "hp": 9800,
+      "attack": 15000,
+      "defense": 900,
+      "speed": 8500,
+      "elements": {
+        "Fire": 400,
+        "Water": 800,
+        "Wind": 400,
+        "Earth": 200
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 188,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 100
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 50
+        },
+        {
+          "item": "MagicIce",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 233
+    },
+    {
+      "name": "SniperEel",
+      "description": "As it's name suggest, the sniper eel is capable of targeting its enemies far beyond their detection range with pearl-shape projectiles. Coupled with it's speed and eletrical defense, it can easily take out the unsuspecting.",
+      "hp": 8000,
+      "attack": 5000,
+      "defense": 888,
+      "speed": 8800,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 200,
+        "Earth": 800
+      },
+      "attackElement": "Earth",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 205,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 100
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 234
+    },
+    {
+      "name": "VampireSquid",
+      "description": "A squid that will suck the life out of it's victims, it often only appear in the dark where its prey has little chance to defend against it.",
+      "hp": 15000,
+      "attack": 6666,
+      "defense": 1000,
+      "speed": 3800,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Drain",
+      "experience": 206,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 235
+    },
+    {
+      "name": "DeepSeaUndine",
+      "description": "An undine found at the deepest depths of the Water Temple, it is capable of creating an area that will constantly damage its foes so long as they remain in it. It must be destroyed immediately.",
+      "hp": 18000,
+      "attack": 2500,
+      "defense": 2200,
+      "speed": 8888,
+      "elements": {
+        "Fire": 400,
+        "Water": 800,
+        "Wind": 400,
+        "Earth": 200
+      },
+      "attackElement": "Water",
+      "attackType": "Heal",
+      "attack2": "FrozenAura",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 211,
+      "drops": [
+        {
+          "item": "IceBlock",
+          "chance": 100
+        },
+        {
+          "item": "NevermeltingIce",
+          "chance": 50
+        },
+        {
+          "item": "MagicIce",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 236
+    },
+    {
+      "name": "Cthulu",
+      "description": "One of the horrors of legend. A creature that exist deep below the temple itself. Able to summon forth thousands of tentacles and other horrors, it must be killed immediately before it destroys your whole party.",
+      "hp": 550000,
+      "attack": 15000,
+      "defense": 1900,
+      "speed": 5000,
+      "elements": {
+        "Fire": 1000,
+        "Water": 2000,
+        "Wind": 1000,
+        "Earth": 500
+      },
+      "attackElement": "Water",
+      "attackType": "MultiTargetMagic",
+      "attack2": "SummonTentacle",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 6666,
+      "drops": [
+        {
+          "item": "NevermeltingIce",
+          "chance": 500
+        },
+        {
+          "item": "MagicIce",
+          "chance": 200
+        },
+        {
+          "item": "TsunamiBar",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 250
+        },
+        {
+          "item": "MagicHerb",
+          "chance": 100
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 238
+    },
+    {
+      "name": "CursedPirateKing",
+      "description": "Leader of the cursed pirates, he can command the seas with a wave of his hand. Sailing a massive pirate ship, he seeks to steal all the treasures of the temple. He must be destroyed before he loots the whole temple.",
+      "hp": 990000,
+      "attack": 25000,
+      "defense": 2500,
+      "speed": 7777,
+      "elements": {
+        "Fire": 1000,
+        "Water": 3000,
+        "Wind": 1000,
+        "Earth": 500
+      },
+      "attackElement": "Water",
+      "attackType": "OneTarget",
+      "attack2": "Raid",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 9333,
+      "drops": [
+        {
+          "item": "NevermeltingIce",
+          "chance": 700
+        },
+        {
+          "item": "MagicIce",
+          "chance": 250
+        },
+        {
+          "item": "OceanStone",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 300
+        },
+        {
+          "item": "FrostKey",
+          "chance": 20
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 239
+    },
+    {
+      "name": "AncientCosmicDruid",
+      "description": "An ancient druid infested with cosmic energy, it seeks to protect its dark master from all threats using its newfound cosmic magic.",
+      "hp": 35000,
+      "attack": 1700,
+      "defense": 2800,
+      "speed": 950,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 188,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 241
+    },
+    {
+      "name": "Arachne",
+      "description": "A woman turned spider, she seeks to destroy all who stand in her way using her near-invincible webs.",
+      "hp": 14500,
+      "attack": 2600,
+      "defense": 500,
+      "speed": 2700,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 200,
+        "Earth": 800
+      },
+      "attackElement": "Earth",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Poison",
+      "experience": 194,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 100
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 50
+        },
+        {
+          "item": "MagicWood",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 242
+    },
+    {
+      "name": "VoidBears",
+      "description": "Bears that appear from void portals, these creatures display a ferocity unmatch by any bear seen yet.",
+      "hp": 15000,
+      "attack": 3500,
+      "defense": 1999,
+      "speed": 3100,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "TwoTargets",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 200,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 243
+    },
+    {
+      "name": "ColossusBeetle",
+      "description": "A beetle that is comparable to a whale in size. It's massive pincers, extremely durable shell, and sheer size make it extremely difficult to fight.",
+      "hp": 19500,
+      "attack": 6800,
+      "defense": 2000,
+      "speed": 3400,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 200,
+        "Earth": 800
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 191,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 100
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 50
+        },
+        {
+          "item": "MagicWood",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 244
+    },
+    {
+      "name": "VineSwarm",
+      "description": "A swarm of vines that appeared without warning. They can drown any foe within seconds with vines if not defeated immediately.",
+      "hp": 7500,
+      "attack": 12000,
+      "defense": 1500,
+      "speed": 1000,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 200,
+        "Earth": 800
+      },
+      "attackElement": "Earth",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Poison",
+      "experience": 188,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 100
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 50
+        },
+        {
+          "item": "MagicWood",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 245
+    },
+    {
+      "name": "DeathLily",
+      "description": "Known as the follower of death, the mere sight or smell of the flower can kill all that see or snif it. Not only that, but it's extremely tough for a flower. It is likely magic protecting it.",
+      "hp": 30000,
+      "attack": 30000,
+      "defense": 1800,
+      "speed": 1500,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 200,
+        "Earth": 800
+      },
+      "attackElement": "Earth",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 185,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 100
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 50
+        },
+        {
+          "item": "MagicWood",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 246
+    },
+    {
+      "name": "Ulama",
+      "description": "A forest bird that is said to represent death, it screams will cause terror to all who hear it, especially this deep into the forest.",
+      "hp": 15000,
+      "attack": 8800,
+      "defense": 1200,
+      "speed": 3500,
+      "elements": {
+        "Fire": 200,
+        "Water": 400,
+        "Wind": 800,
+        "Earth": 400
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": "Confuse",
+      "experience": 205,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 100
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 247
+    },
+    {
+      "name": "CosmicGnome",
+      "description": "A gnome that can protect all forest creatures it encounters with cosmic energy, it is one of the most durable entities you will find in the forest.",
+      "hp": 200,
+      "attack": 1200,
+      "defense": 99999,
+      "speed": 800,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 200,
+        "Earth": 800
+      },
+      "attackElement": "Earth",
+      "attackType": "Defend",
+      "attack2": "DefBreakSpeedImmune",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 230,
+      "drops": [
+        {
+          "item": "Wood",
+          "chance": 100
+        },
+        {
+          "item": "SpecialWood",
+          "chance": 50
+        },
+        {
+          "item": "MagicWood",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 248
+    },
+    {
+      "name": "ShubNiggurath",
+      "description": "Know as the true ruler of the forest, this legendary horror is said to have thousands of children that can easily overwhelmn anything they encounters. Known as the mother of all, it seeks to destroy you for invading the deepest depths of the forest.",
+      "hp": 580000,
+      "attack": 22222,
+      "defense": 6500,
+      "speed": 3333,
+      "elements": {
+        "Fire": 1100,
+        "Water": 1100,
+        "Wind": 1100,
+        "Earth": 1100
+      },
+      "attackElement": "Neutral",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 5000,
+      "drops": [
+        {
+          "item": "SpecialWood",
+          "chance": 500
+        },
+        {
+          "item": "MagicWood",
+          "chance": 200
+        },
+        {
+          "item": "ForestBar",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 250
+        },
+        {
+          "item": "MagicHerb",
+          "chance": 100
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 250
+    },
+    {
+      "name": "CorruptFairyQueen",
+      "description": "Infested by every manner of dark energy of the forest, the fairy queen spreads a toxic mist that forces all its enemies to sleep while poisoning them. Until she is defeated, there is no hope to escape the forest alive.",
+      "hp": 1300000,
+      "attack": 7500,
+      "defense": 3800,
+      "speed": 7500,
+      "elements": {
+        "Fire": 1000,
+        "Water": 1000,
+        "Wind": 500,
+        "Earth": 3000
+      },
+      "attackElement": "Earth",
+      "attackType": "MultiTargetMagic",
+      "attack2": "HealAll",
+      "attack3": null,
+      "statusAttack": "Sleep",
+      "experience": 11000,
+      "drops": [
+        {
+          "item": "SpecialWood",
+          "chance": 700
+        },
+        {
+          "item": "MagicWood",
+          "chance": 250
+        },
+        {
+          "item": "JungleStone",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 300
+        },
+        {
+          "item": "MysticKey",
+          "chance": 20
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 251
+    },
+    {
+      "name": "ExoDragon",
+      "description": "A dragon that flies in the upper layers of the planet, its breath is said to contain the essence of the sky itself.",
+      "hp": 15000,
+      "attack": 3200,
+      "defense": 999,
+      "speed": 6700,
+      "elements": {
+        "Fire": 200,
+        "Water": 400,
+        "Wind": 800,
+        "Earth": 400
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 188,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 100
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 50
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 253
+    },
+    {
+      "name": "ArchStormWizard",
+      "description": "Someone who has studied the skys all his life, he can call upon storms to destroy all his enemies.",
+      "hp": 6666,
+      "attack": 999,
+      "defense": 500,
+      "speed": 8500,
+      "elements": {
+        "Fire": 200,
+        "Water": 400,
+        "Wind": 800,
+        "Earth": 400
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 200,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 100
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 50
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 254
+    },
+    {
+      "name": "VacuumSpirit",
+      "description": "A spirit able to suffucate all its enemies, it is difficult to destroy due to it being pure spirit energy.",
+      "hp": 9000,
+      "attack": 3600,
+      "defense": 1700,
+      "speed": 3200,
+      "elements": {
+        "Fire": 200,
+        "Water": 800,
+        "Wind": 800,
+        "Earth": 200
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 215,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 100
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 50
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 255
+    },
+    {
+      "name": "SpaceDrones",
+      "description": "Drones that came from space, they target the closest living being they can find and fire power lasers at them.",
+      "hp": 8000,
+      "attack": 8200,
+      "defense": 1500,
+      "speed": 2500,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 204,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 256
+    },
+    {
+      "name": "SolarHawk",
+      "description": "A hawk that absorbs energy from the sun, it fires intense sunbeams to decimate its enemies.",
+      "hp": 9500,
+      "attack": 6500,
+      "defense": 800,
+      "speed": 3000,
+      "elements": {
+        "Fire": 800,
+        "Water": 200,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Fire",
+      "attackType": "Pierce",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 195,
+      "drops": [
+        {
+          "item": "HotStone",
+          "chance": 100
+        },
+        {
+          "item": "FireStone",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 257
+    },
+    {
+      "name": "ElderCyclopes",
+      "description": "Cyclopes that were given lightning bolts to use on mortals, they defend the mountains with their lives.",
+      "hp": 18000,
+      "attack": 7000,
+      "defense": 2000,
+      "speed": 650,
+      "elements": {
+        "Fire": 200,
+        "Water": 400,
+        "Wind": 800,
+        "Earth": 400
+      },
+      "attackElement": "Wind",
+      "attackType": "OneTarget",
+      "attack2": "Defend",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 187,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 100
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 50
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 258
+    },
+    {
+      "name": "Caladrius",
+      "description": "The bird of a legendary king that has flown to the highest mountain. It is capable of healing any injuries and often heals the residences of the mountain.",
+      "hp": 10000,
+      "attack": 3500,
+      "defense": 1200,
+      "speed": 4000,
+      "elements": {
+        "Fire": 400,
+        "Water": 400,
+        "Wind": 400,
+        "Earth": 400
+      },
+      "attackElement": "Neutral",
+      "attackType": "OneTarget",
+      "attack2": "Heal",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 213,
+      "drops": [
+        {
+          "item": "IronOre",
+          "chance": 100
+        },
+        {
+          "item": "IronBar",
+          "chance": 50
+        },
+        {
+          "item": "SacredStone",
+          "chance": 10
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 259
+    },
+    {
+      "name": "HurricaneSylph",
+      "description": "A sylph formed by a powerful hurricane, it can overwhelm all its enemies with a vast amount of attacks.",
+      "hp": 3333,
+      "attack": 2222,
+      "defense": 0,
+      "speed": 9999,
+      "elements": {
+        "Fire": 200,
+        "Water": 400,
+        "Wind": 800,
+        "Earth": 400
+      },
+      "attackElement": "Wind",
+      "attackType": "MultiTargetMagic2",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 202,
+      "drops": [
+        {
+          "item": "Feather",
+          "chance": 100
+        },
+        {
+          "item": "BoundFeathers",
+          "chance": 50
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 3
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": false,
+      "row": 260
+    },
+    {
+      "name": "Nyarlathotep",
+      "description": "One of the legendary horrors of the stars. Residing at the top of the Mountain, he rains down stars and asteroids upon you. Defeat him before he destroys the mountain itself.",
+      "hp": 350000,
+      "attack": 7500,
+      "defense": 3500,
+      "speed": 15000,
+      "elements": {
+        "Fire": 1100,
+        "Water": 1100,
+        "Wind": 1100,
+        "Earth": 1100
+      },
+      "attackElement": "Neutral",
+      "attackType": "MultiTargetMagic",
+      "attack2": null,
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 6000,
+      "drops": [
+        {
+          "item": "BoundFeathers",
+          "chance": 500
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 200
+        },
+        {
+          "item": "HurricaneBar",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 250
+        },
+        {
+          "item": "MagicHerb",
+          "chance": 100
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 262
+    },
+    {
+      "name": "MountainKing",
+      "description": "The ruler of the mountain. Known only as the mountain king, he can control mountain itself and summon all creatures that inhabit them. Given enough time, he will surely ensure destruction to all who oppose him.",
+      "hp": 350000,
+      "attack": 15000,
+      "defense": 7500,
+      "speed": 12000,
+      "elements": {
+        "Fire": 500,
+        "Water": 1000,
+        "Wind": 3000,
+        "Earth": 1000
+      },
+      "attackElement": "Wind",
+      "attackType": "Slash",
+      "attack2": "Summon",
+      "attack3": null,
+      "statusAttack": null,
+      "experience": 10000,
+      "drops": [
+        {
+          "item": "BoundFeathers",
+          "chance": 700
+        },
+        {
+          "item": "MagicFeather",
+          "chance": 250
+        },
+        {
+          "item": "SkyStone",
+          "chance": 30
+        },
+        {
+          "item": "SacredStone",
+          "chance": 300
+        },
+        {
+          "item": "RainbowKey",
+          "chance": 20
+        }
+      ],
+      "scaling": 0,
+      "attackScaling": 0,
+      "boss": true,
+      "row": 263
+    }
+  ]
+}

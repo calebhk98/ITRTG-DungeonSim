@@ -1,42 +1,46 @@
 /**
  * End-to-end integration tests for the run executor (WP-H) against REAL
- * Scrapyard content (content/index.ts → getDungeon('Scrapyard')).
+ * dungeon content (content/index.ts → getDungeon(...)).
  *
  * These tests verify the full pipeline:
  *   real Dungeon content → simulateRun → RunResult
  *
- * They specifically prove:
+ * They prove:
  *   1. Archetype resolution works: enemies actually fight (dealt > 0, xpGained > 0).
  *   2. Per-difficulty scaling is end-to-end: difficulty 10 yields strictly more
  *      total damage taken by the party than difficulty 0.
  *   3. Boss room at room 6 (depth 1) is encountered: the boss is spawned and fought,
- *      evidenced by the team taking MORE damage in the 6-room run than the 5-room run.
+ *      evidenced by the 6-room run gaining substantially more XP than the 5-room run
+ *      (the OozingInventor (Boss) grants 150 XP per kill, far above regular slimies at 15–22).
  *
- * ## Stat-balance notes
+ * ## Dungeon choice for difficulty-scaling test
  *
- * ### Archetype resolution test (DL-50 pets, Diff 0)
- * DL-50 Adventurer: ATK≈121, DEF≈121, SPD≈121, HP≈1210 (no growth for simplicity).
- * Metal Slimy ATK=40 vs pet DEF=121: baseDmg = 40 − 60.5 = −20.5 → 0. Slimies deal 0
- * base damage and also 0 speed damage (slimy SPD=30×1.2=36 < pet SPD=121). So the pet
- * takes 0 damage from slimies but deals plenty to them (baseDmg = 121−15 = 106).
- * This gives dealt>0 and xpGained>0 while confirming archetype resolution worked.
+ * The real Scrapyard D1 enemies (AngelSlimy, MetalSlimy, etc.) have:
+ *   - base atk: 0–20 (GhostSlimy atk=0, UnstableSlimy atk=999 but that's Explode type)
+ *   - Typical: AngelSlimy atk=15, scaling=0.4/0.5 so perDiff.atk=8
  *
- * ### Difficulty scaling test (DL-30 pets, Diff 0 vs Diff 10)
- * DL-30 Adventurer: ATK≈DEF≈73, no growth.
- * Metal Slimy ATK base=40, perDiff.atk=4.
- *   Diff 0: baseDmg = 40 − 36.5 = 3.5  → clamps to ≥1 → small but positive damage/hit.
- *   Diff 10: baseDmg = 80 − 36.5 = 43.5 → ~12× more base damage per hit.
- * Total party damage taken is substantially higher at Difficulty 10, proving per-difficulty
- * scaling flows through the full integrated path.
+ * For baseDmg > 0 at Diff 0, we need pet DEF < 2 × enemy_atk, i.e. DEF < 30 for AngelSlimy.
+ * Pet DEF formula: (1 + 2.4 × DL) × 1.0 (Adventurer class, no gear, no growth).
+ *   DL=5: DEF = 1 + 12 = 13. AngelSlimy atk=15 vs DEF=13: baseDmg = 15 − 6.5 = 8.5 → positive.
+ *   DL=5, Diff 10: AngelSlimy atk=15+8×10=95 vs DEF=13: baseDmg = 95 − 6.5 = 88.5 → ~10× more.
  *
- * ### Boss room test (DL-50 pets)
- * The Chameleon D1 boss uses bossMult base=2 with petStatsReference (mean of living allies).
- * For DL-50 Adventurers: boss stats = petRef × 2 → boss ATK = 242, pet DEF = 121.
- * Boss baseDmg = 242 − 60.5 = 181.5, boss speedDmg > 0 (boss SPD = 242 > pet SPD = 121).
- * Meanwhile pet baseDmg = 121 − 121 = 0 and pet speedDmg = 0 (boss is faster).
- * So DL-50 pets take real damage from the boss but deal none — they will die to the boss.
- * Since they take ZERO damage from slimies (rooms 1–5), the 6-room run accrues more
- * damage_taken than the 5-room run, proving the boss archetype was resolved and spawned.
+ * We use DL-5 pets (not DL-30 as in the old placeholder-stat test) because the real
+ * D1 enemies are the starter-dungeon entries from the original spreadsheet with
+ * genuinely low attack values.  The DL-5 pet is just strong enough to kill them but
+ * weak enough to take real damage at Diff 0 — and significantly more at Diff 10.
+ *
+ * ## Boss room test
+ *
+ * The real D1 boss is OozingInventor (Boss): hp=1000, atk=1, def=40, spd=30.
+ * Its attack type is "Summon" (it summons slimies), so its base atk=1 means it
+ * deals effectively 0 damage in the combat sim.  The test therefore cannot rely
+ * on damage-taken to prove the boss was encountered.
+ *
+ * Instead we verify XP: OozingInventor grants 150 XP on kill (vs 15–22 for regular slimies).
+ * A DL-5 pet can kill both the slimies and the OozingInventor (hp=1000, def=40 — killable).
+ * A 6-room run (5 regular + 1 boss room) should gain MORE XP than a 5-room run because
+ * the boss kill grants a large XP bonus.  This confirms the boss archetype was resolved
+ * and fought — if archetype resolution failed and the room was empty, XP would not increase.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -56,7 +60,6 @@ const scrapyardOrUndef = getDungeon('Scrapyard');
 if (scrapyardOrUndef === undefined) {
   throw new Error('Scrapyard dungeon not found in registry — check content/index.ts');
 }
-/** Non-nullable reference — the throw above ensures this is always defined. */
 const scrapyard = scrapyardOrUndef;
 
 // ── Pet factory ───────────────────────────────────────────────────────────────
@@ -100,21 +103,21 @@ function sumXp(result: ReturnType<typeof simulateRun>): number {
 
 // ── 1. Archetype resolution: real combat ─────────────────────────────────────
 //
-// DL-50 pets (ATK≈DEF≈SPD≈121, HP≈1210, no growth) vs D1 Slimies (ATK=40, HP=600):
-//   Pet baseDmg vs slimy = 121 − 15 = 106 → positive, so pets deal real damage.
-//   Slimy baseDmg vs pet = 40 − 60.5 = −20.5 → zero; slimy speedDmg = 0 (pet faster).
-//   Result: pets kill slimies, gain XP, take 0 damage. dealt > 0 and xpGained > 0.
+// DL-30 pets (ATK≈DEF≈SPD≈73, HP≈730, no growth) vs D1 slimies (base atk 0–20):
+//   At Diff 0, slimy ATK (15) vs pet DEF (73): baseDmg = 15 − 36.5 = −21.5 → 0.
+//   Pets deal positive damage to slimies (pet ATK 73 >> slimy DEF 8–200).
+//   Archetype resolution works if dealt>0 and xpGained>0.
 
 describe('E2E: Scrapyard D1 — real archetype resolution', () => {
   const PET_STRONG = asPetId('e2e-strong');
   const rosterStrong: ReadonlyMap<PetId, Pet> = new Map([
-    [PET_STRONG, makePet(PET_STRONG, 50, 0)],
+    [PET_STRONG, makePet(PET_STRONG, 30, 0)],
   ]);
   const teamStrong: Team = {
     slots: [{ petId: PET_STRONG, row: 'front', assignedClass: 'Adventurer' }],
   };
 
-  it('DL-50 pet kills real D1 Slimies: dealt > 0, xpGained > 0', () => {
+  it('DL-30 pet kills real D1 slimies: dealt > 0, xpGained > 0', () => {
     const config: RunConfig = {
       team: teamStrong,
       dungeonId: 'Scrapyard',
@@ -127,18 +130,14 @@ describe('E2E: Scrapyard D1 — real archetype resolution', () => {
 
     const result = simulateRun(config, makeDeps(rosterStrong));
 
-    // Should clear all 3 rooms (DL-50 vs D1 Slimies is easy).
     expect(result.roomsCleared).toBe(3);
     expect(result.cleared).toBe(true);
     expect(result.petDeaths).toHaveLength(0);
 
-    // Real combat: archetype resolution worked, enemies fought and were killed.
     const dealt = sumDealt(result);
     const xpGained = sumXp(result);
     expect(dealt).toBeGreaterThan(0);
     expect(xpGained).toBeGreaterThan(0);
-
-    // xpTotal must equal sum of per-pet xp.
     expect(result.rewards.xpTotal).toBe(sumXp(result));
   });
 
@@ -154,7 +153,6 @@ describe('E2E: Scrapyard D1 — real archetype resolution', () => {
     };
 
     const result = simulateRun(config, makeDeps(rosterStrong));
-
     const neutralMats = result.rewards.materials['Neutral'];
     expect(neutralMats).toBeDefined();
     expect(neutralMats![1]).toBeGreaterThan(0);
@@ -163,25 +161,30 @@ describe('E2E: Scrapyard D1 — real archetype resolution', () => {
 
 // ── 2. Per-difficulty scaling end-to-end ─────────────────────────────────────
 //
-// DL-30 pets (ATK≈DEF≈73, no growth, HP≈730) vs D1 Slimies:
-//   Diff 0: Slimy ATK=40, pet DEF=73 → baseDmg = 40 − 36.5 = 3.5 → small positive hit.
-//   Diff 10: Slimy ATK=80, pet DEF=73 → baseDmg = 80 − 36.5 = 43.5 → 12× more per hit.
-// Total party damage taken is substantially higher at Difficulty 10.
+// Scrapyard D1 with DL-5 pets:
+//   Pet DEF = (1 + 2.4×5) × 1.0 = 13 (Adventurer, no gear, no growth).
+//   AngelSlimy (the first non-boss D1 enemy, scaling 0.4/0.5):
+//     Diff 0: atk=15; baseDmg = 15 − 6.5 = 8.5   → real positive damage.
+//     Diff 10: atk=15+8×10=95; baseDmg = 95 − 6.5 = 88.5 → ~10× more per hit.
+//
+// We use DL-5 (not DL-30 as the old placeholder-stat test did) because the real
+// enemy spreadsheet values are the true starter-dungeon stats from the original
+// game data.  The intent (higher difficulty → more damage taken) is preserved.
 
-describe('E2E: Per-difficulty scaling — difficulty 0 vs difficulty 10', () => {
-  const PET_MEDIUM = asPetId('e2e-medium');
+describe('E2E: Per-difficulty scaling — Scrapyard D1, DL-5 pets, difficulty 0 vs difficulty 10', () => {
+  const PET_SMALL = asPetId('e2e-small');
 
-  // DL-30, zero growth: DEF ≈ (1+2.4×30)×1.0 = 73.
-  const rosterMedium: ReadonlyMap<PetId, Pet> = new Map([
-    [PET_MEDIUM, makePet(PET_MEDIUM, 30, 0)],
+  // DL-5, zero growth: DEF = (1 + 2.4×5) × 1.0 = 13.
+  const rosterSmall: ReadonlyMap<PetId, Pet> = new Map([
+    [PET_SMALL, makePet(PET_SMALL, 5, 0)],
   ]);
-  const teamMedium: Team = {
-    slots: [{ petId: PET_MEDIUM, row: 'front', assignedClass: 'Adventurer' }],
+  const teamSmall: Team = {
+    slots: [{ petId: PET_SMALL, row: 'front', assignedClass: 'Adventurer' }],
   };
 
   it('expected-mode: difficulty 10 deals strictly more damage to the party than difficulty 0', () => {
     const baseConfig = {
-      team: teamMedium,
+      team: teamSmall,
       dungeonId: 'Scrapyard' as const,
       depth: 1 as const,
       rooms: 3,
@@ -189,21 +192,21 @@ describe('E2E: Per-difficulty scaling — difficulty 0 vs difficulty 10', () => 
       evaluationMode: 'expected' as const,
     };
 
-    const resultD0  = simulateRun({ ...baseConfig, difficulty: 0  }, makeDeps(rosterMedium));
-    const resultD10 = simulateRun({ ...baseConfig, difficulty: 10 }, makeDeps(rosterMedium));
+    const resultD0  = simulateRun({ ...baseConfig, difficulty: 0  }, makeDeps(rosterSmall));
+    const resultD10 = simulateRun({ ...baseConfig, difficulty: 10 }, makeDeps(rosterSmall));
 
     const takenD0  = sumTaken(resultD0);
     const takenD10 = sumTaken(resultD10);
 
-    // D0 slimies barely scratch the pet (baseDmg ~3.5/hit); still some positive damage.
+    // Diff 0: AngelSlimy atk=15 vs pet DEF=13 → baseDmg=8.5 → positive.
     expect(takenD0).toBeGreaterThan(0);
-    // D10 slimies deal ~12× more per hit → significantly higher total taken.
+    // Diff 10: AngelSlimy atk=95 vs pet DEF=13 → baseDmg=88.5 → ~10× more per hit.
     expect(takenD10).toBeGreaterThan(takenD0);
   });
 
   it('MC-mode: difficulty 10 yields more damage taken than difficulty 0 (same seed)', () => {
     const baseConfig = {
-      team: teamMedium,
+      team: teamSmall,
       dungeonId: 'Scrapyard' as const,
       depth: 1 as const,
       rooms: 3,
@@ -213,8 +216,8 @@ describe('E2E: Per-difficulty scaling — difficulty 0 vs difficulty 10', () => 
       monteCarloTrials: 30,
     };
 
-    const resultD0  = simulateRun({ ...baseConfig, difficulty: 0  }, makeDeps(rosterMedium));
-    const resultD10 = simulateRun({ ...baseConfig, difficulty: 10 }, makeDeps(rosterMedium));
+    const resultD0  = simulateRun({ ...baseConfig, difficulty: 0  }, makeDeps(rosterSmall));
+    const resultD10 = simulateRun({ ...baseConfig, difficulty: 10 }, makeDeps(rosterSmall));
 
     const takenD0  = sumTaken(resultD0);
     const takenD10 = sumTaken(resultD10);
@@ -225,52 +228,35 @@ describe('E2E: Per-difficulty scaling — difficulty 0 vs difficulty 10', () => 
 
 // ── 3. Boss room at room 6 ────────────────────────────────────────────────────
 //
-// DL-50 pets vs Chameleon D1 (bossMult base=2, petStatsRef = pet stats):
-//   Boss ATK = 121×2 = 242, boss DEF = 242, boss HP = 1210×2 = 2420, boss SPD = 121×2 = 242.
-//   Pet baseDmg vs boss = 121 − 121 = 0; pet speedDmg = 0 (boss faster). Pet deals 0 dmg.
-//   Boss baseDmg vs pet = 242 − 60.5 = 181.5; boss speedDmg = (290.4−121)/2 = 84.7.
-//   So pets take significant damage from the boss each round.
+// The real D1 boss is OozingInventor (Boss):
+//   hp=1000, atk=1, def=40, spd=30, xpValue=150, scaling=0.4/0.5
+//   perDiff.atk = round(1 × 0.5) = 1, so even Diff 10: atk=11 → baseDmg ≈ 0.
+//   (The OozingInventor uses "Summon" attack type; its direct atk stat is vestigial.)
 //
-// Key insight: DL-50 pets take ZERO damage from D1 Slimies (rooms 1–5) but real
-// damage from the boss (room 6). Therefore:
-//   5-room run: totalTaken = 0 (no slimies can hurt the pet)
-//   6-room run: totalTaken > 0 (boss fight produces real damage before pet dies)
-// This proves the boss archetype was resolved via dungeon.archetypes and spawned.
+// A DL-30 pet (ATK≈73) can kill it (hp=1000, def=40 → not immune), gaining 150 XP.
+// Regular D1 slimies grant 15–22 XP each.
+//
+// Strategy: 5-room run vs 6-room run (adding boss room 6).
+//   The OozingInventor kill grants +150 XP ON TOP of regular slimy XP.
+//   5-room XP: kills from 5 slimy rooms (~5 × 1 slimy × ~15–22 XP = ~75–110 XP).
+//   6-room XP: same + OozingInventor kill (+150 XP) → substantially higher.
+// This proves the boss archetype ("OozingInventor (Boss)") was resolved and fought.
 
-describe('E2E: Scrapyard D1 boss room at room 6 (chameleon-d1)', () => {
+describe('E2E: Scrapyard D1 boss room at room 6 (OozingInventor (Boss))', () => {
   const PET_BOSS_TEST = asPetId('e2e-boss-test');
 
-  // DL-50, zero growth: immune to D1 slimies; takes real damage from boss.
+  // DL-30 pet: strong enough to kill the OozingInventor (hp=1000, def=40).
+  // Pet ATK = (1 + 2.4×30) × 1.0 = 73. Boss DEF=40; baseDmg = 73 − 20 = 53 per hit.
+  // With ~3 hits to kill boss (hp=1000, need ~19 hits at 53/hit). Pet will survive
+  // since boss atk=1 (at Diff 0) does effectively 0 damage.
   const rosterBoss: ReadonlyMap<PetId, Pet> = new Map([
-    [PET_BOSS_TEST, makePet(PET_BOSS_TEST, 50, 0)],
+    [PET_BOSS_TEST, makePet(PET_BOSS_TEST, 30, 0)],
   ]);
   const teamBoss: Team = {
     slots: [{ petId: PET_BOSS_TEST, row: 'front', assignedClass: 'Adventurer' }],
   };
 
-  it('5-room run: DL-50 pet takes 0 damage from D1 slimies (baseline)', () => {
-    const config: RunConfig = {
-      team: teamBoss,
-      dungeonId: 'Scrapyard',
-      depth: 1,
-      difficulty: 0,
-      rooms: 5,
-      nrdcCompletions: 0,
-      evaluationMode: 'expected',
-    };
-
-    const result = simulateRun(config, makeDeps(rosterBoss));
-
-    expect(result.cleared).toBe(true);
-    expect(result.roomsCleared).toBe(5);
-    // DL-50 pet is immune to D1 slimies (baseDmg ≤ 0, speedDmg = 0).
-    expect(sumTaken(result)).toBe(0);
-    // Pet still dealt damage and gained XP (archetype resolution works).
-    expect(sumDealt(result)).toBeGreaterThan(0);
-    expect(sumXp(result)).toBeGreaterThan(0);
-  });
-
-  it('6-room run: boss fight in room 6 causes damage (proves boss archetype was resolved)', () => {
+  it('6-room run clears all 6 rooms (DL-30 pet kills slimies AND the OozingInventor)', () => {
     const config: RunConfig = {
       team: teamBoss,
       dungeonId: 'Scrapyard',
@@ -283,30 +269,19 @@ describe('E2E: Scrapyard D1 boss room at room 6 (chameleon-d1)', () => {
 
     const result = simulateRun(config, makeDeps(rosterBoss));
 
-    // Boss archetype resolved: the boss was spawned in room 6 and fought.
-    // The pet deals 0 damage to the boss (bossMult makes pet ATK = boss DEF/2),
-    // so the pet eventually dies to the boss. rooms_cleared = 5 (wipe in room 6).
-    expect(result.roomsCleared).toBe(5);
-    expect(result.cleared).toBe(false);
-    expect(result.petDeaths).toContain(PET_BOSS_TEST);
-
-    // The pet took real damage in room 6 (from the boss). This is strictly positive,
-    // unlike the 5-room run where 0 damage was taken from slimies.
-    const takenIn6RoomRun = sumTaken(result);
-    expect(takenIn6RoomRun).toBeGreaterThan(0);
+    // OozingInventor atk=1, def=40. Pet ATK=73 → can kill boss.
+    // Boss does ~0 damage to the pet (atk=1, pet def=73 → baseDmg = 1 − 36.5 = negative → 0).
+    expect(result.cleared).toBe(true);
+    expect(result.roomsCleared).toBe(6);
+    expect(result.petDeaths).toHaveLength(0);
+    // XP must be positive (enemies killed).
+    expect(sumXp(result)).toBeGreaterThan(0);
   });
 
-  it('6-room run accrues more XP than 5-room run for pet that clears slimy rooms', () => {
-    // Both runs use a DL-50 pet. In 5 rooms, 5 slimy rooms are cleared.
-    // In 6 rooms, 5 slimy rooms are cleared + the pet enters the boss room (but dies).
-    // If the boss was NOT spawned (archetype lookup failed → empty room), the 6-room
-    // result would have rooms_cleared=6 and the pet would survive. Instead rooms_cleared=5,
-    // confirming the boss was spawned and the fight happened.
-    //
-    // For XP: the pet doesn't kill the boss, so boss XP = 0. But 5 regular rooms = 5 XP sets.
-    // Both the 5-room and 6-room runs should have the SAME per-room XP from slimy kills
-    // (the boss room contributes 0 XP if the pet dies before the boss).
-    // This is confirmed indirectly by the rooms_cleared=5 assertion above.
+  it('6-room run earns MORE xp than 5-room run (boss kill grants 150 XP vs ~15–22 per slimy)', () => {
+    // This is the key test: the large XP jump proves the boss archetype was resolved
+    // and the boss was killed.  If archetype lookup failed (empty room), rooms_cleared
+    // would still be 6 but XP would not jump — making this assertion fail.
     const config5: RunConfig = {
       team: teamBoss,
       dungeonId: 'Scrapyard',
@@ -321,9 +296,15 @@ describe('E2E: Scrapyard D1 boss room at room 6 (chameleon-d1)', () => {
     const result5 = simulateRun(config5, makeDeps(rosterBoss));
     const result6 = simulateRun(config6, makeDeps(rosterBoss));
 
-    // Both clear the same 5 slimy rooms → same XP from slimies.
-    expect(sumXp(result5)).toBe(sumXp(result6));
-    // The 6-room run wiped in room 6 (boss room) → took damage there.
-    expect(sumTaken(result6)).toBeGreaterThan(sumTaken(result5));
+    // 6-room run adds the boss room; the OozingInventor has xpValue=150.
+    // Regular slimies grant 15–22 each, so boss kill should produce a significant XP boost.
+    const xp5 = sumXp(result5);
+    const xp6 = sumXp(result6);
+    expect(xp6).toBeGreaterThan(xp5);
+
+    // The jump must be at least the boss XP (150) minus one typical slimy room's XP (~22 max).
+    // In expected mode, 1 enemy per room → boss room XP ≥ 150, slimy room ≤ 22.
+    // Net delta ≥ 150 − 22 = 128 for any reasonable scenario.
+    expect(xp6 - xp5).toBeGreaterThanOrEqual(100);
   });
 });

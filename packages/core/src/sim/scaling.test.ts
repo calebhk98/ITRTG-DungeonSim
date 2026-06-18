@@ -473,4 +473,56 @@ describe('scaleEnemyToContext', () => {
     // HP at diff 5 = 5000 × 1.4^5 ≈ 5000 × 5.378 ≈ 26895
     expect(ctx.stats.hp).toBeCloseTo(5000 * Math.pow(1.4, 5), 0);
   });
+
+  /**
+   * When `archetype.elementLevels` is set, `scaleEnemyToContext` must use those
+   * literal values directly, ignoring `effectiveLevel` for element computation.
+   *
+   * This branch is exercised by the data-driven enemies (AngelSlimy, etc.) that
+   * carry their real element levels from the spreadsheet.
+   */
+  it('uses archetype.elementLevels directly when present, ignoring effectiveLevel', () => {
+    const enemyWithRealLevels = makeArchetype({
+      id: 'angel-slimy-test',
+      element: 'Neutral',
+      baseStats: { hp: 120, atk: 15, def: 8, spd: 14 },
+      scaling: { kind: 'linear', perDiff: {} },
+      elementLevels: { Fire: 10, Water: 10, Wind: 10, Earth: 10 },
+    });
+
+    // Pass effectiveLevel=1000 — if elementLevels is honoured, the formula result
+    // (0.75 × 1000 = 750) must NOT appear; we must see the literal 10 instead.
+    const ctx = scaleEnemyToContext(
+      enemyWithRealLevels,
+      { difficulty: 0, effectiveLevel: 1000 },
+      DEFAULT_CONSTANTS,
+    );
+
+    expect(ctx.elementLevels.Fire).toBe(10);
+    expect(ctx.elementLevels.Water).toBe(10);
+    expect(ctx.elementLevels.Wind).toBe(10);
+    expect(ctx.elementLevels.Earth).toBe(10);
+  });
+
+  it('falls back to formula when archetype.elementLevels is absent', () => {
+    const enemyNoLevels = makeArchetype({
+      id: 'no-levels',
+      element: 'Neutral',
+      baseStats: { hp: 100, atk: 10, def: 5, spd: 5 },
+      scaling: { kind: 'linear', perDiff: {} },
+      // no elementLevels field
+    });
+
+    const ctx = scaleEnemyToContext(
+      enemyNoLevels,
+      { difficulty: 0, effectiveLevel: 20 },
+      DEFAULT_CONSTANTS,
+    );
+
+    // Formula: Neutral → 0.75 × 20 = 15 for each element.
+    expect(ctx.elementLevels.Fire).toBeCloseTo(15, 6);
+    expect(ctx.elementLevels.Water).toBeCloseTo(15, 6);
+    expect(ctx.elementLevels.Wind).toBeCloseTo(15, 6);
+    expect(ctx.elementLevels.Earth).toBeCloseTo(15, 6);
+  });
 });
