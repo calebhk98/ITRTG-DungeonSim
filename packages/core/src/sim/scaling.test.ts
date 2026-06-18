@@ -21,7 +21,6 @@
 
 import { describe, it, expect } from 'vitest';
 import { scaleEnemyStats, scaleEnemyToContext } from './scaling.js';
-import type { ScaleEnemyOpts } from './scaling.js';
 import type { EnemyArchetype } from '../domain/enemy.js';
 import type { CombatStats } from '../domain/combat.js';
 import { DEFAULT_CONSTANTS } from '../constants/gameConstants.js';
