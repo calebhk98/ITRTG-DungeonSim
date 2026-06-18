@@ -351,6 +351,10 @@ program
     '--dungeons <ids>',
     'multiteam: comma-separated dungeon ids teams may pick from (default: --dungeon)',
   )
+  .option(
+    '--max-unlocked-depth <n>',
+    'multiteam: highest depth the account has unlocked, 1–4 (default: 3; 4 needs all NRDCs)',
+  )
   .option('--seed <n>', 'RNG seed for greedy/beam restarts')
   .option('--max-iterations <n>', 'max optimizer iterations (default: 1000)', '1000')
   .action(
@@ -365,6 +369,7 @@ program
       rooms: string;
       teams: string;
       dungeons?: string;
+      maxUnlockedDepth?: string;
       seed?: string;
       maxIterations: string;
     }) => {
@@ -509,12 +514,17 @@ program
           });
         }
 
+        const maxUnlockedDepth =
+          options.maxUnlockedDepth !== undefined
+            ? parseDepth(options.maxUnlockedDepth)
+            : undefined;
         const mtInputs = {
           roster,
           dungeons,
           objective,
           constants: DEFAULT_CONSTANTS,
           teamCount,
+          ...(maxUnlockedDepth !== undefined ? { maxUnlockedDepth } : {}),
         };
         const mtProblem = makeMultiTeamProblem(mtInputs);
         const mtResult = new GreedyOptimizer(rng).run(mtProblem, {

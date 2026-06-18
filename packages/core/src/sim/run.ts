@@ -385,7 +385,11 @@ function runSingleTrial(
   const minutesPerRoom = resolve(constants.timing.minutesPerRoom);
   const nrdcReduction = resolve(constants.timing.nrdcReductionPerCompletion);
   const timePerRoom = minutesPerRoom * (1 - nrdcReduction * config.nrdcCompletions);
-  const elapsedMinutes = roomsCleared * timePerRoom;
+  // A failed run (wipe / 50-turn auto-loss) costs the rooms attempted PLUS a
+  // rest penalty before the team can restart (research §11.2).
+  const cleared = roomsCleared === config.rooms;
+  const wipeRest = cleared ? 0 : resolve(constants.timing.wipeRestMinutes);
+  const elapsedMinutes = roomsCleared * timePerRoom + wipeRest;
 
   // ── Step 5: Assemble rewards ──────────────────────────────────────────────
   // Accrued materials: sparse record for the dungeon element at the depth tier.
@@ -421,8 +425,6 @@ function runSingleTrial(
       xpGained: accum.xpGained,
     });
   }
-
-  const cleared = roomsCleared === config.rooms;
 
   return {
     cleared,

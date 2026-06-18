@@ -133,6 +133,12 @@ export interface MultiTeamInputs {
   readonly maxTeamSize?: number | undefined;
   /** Candidate depths a team may target. Default: [1,2,3,4]. */
   readonly depthChoices?: readonly Depth[] | undefined;
+  /**
+   * Highest depth the account has unlocked (research §11.1). Teams cannot target
+   * a deeper depth. Default: 4 if all NRDCs are done (nrdcCompletions ≥ 20), else
+   * 3 — encoding the confirmed "Depth 4 requires all NRDCs" gate.
+   */
+  readonly maxUnlockedDepth?: Depth | undefined;
   /** Candidate difficulties a team may target. Default: [0..10]. */
   readonly difficultyChoices?: readonly Difficulty[] | undefined;
   /** Candidate room counts a team may target. Default: [16]. */
@@ -182,6 +188,16 @@ export function makeMultiTeamProblem(
   const dungeonMap = new Map<DungeonId, Dungeon>(candidateDungeons.map(d => [d.id, d]));
   const dungeonIds: readonly DungeonId[] = candidateDungeons.map(d => d.id);
 
+  // One team per dungeon (research §11): you cannot run two teams in the same
+  // dungeon, so the number of simultaneous teams is bounded by both the team
+  // slots you own and the number of candidate dungeons.
+  const numTeams = Math.min(teamCount, candidateDungeons.length);
+
+  // Depth-unlock cap. Explicit maxUnlockedDepth is authoritative; otherwise it
+  // defaults to the confirmed gate — Depth 4 requires all NRDCs (research §11.1),
+  // so without them the account caps at D3.
+  const maxDepth: Depth = inputs.maxUnlockedDepth ?? (nrdcCompletions >= 20 ? 4 : 3);
+
   /** Depths actually present in a dungeon (has a normal table or a boss). */
   function availableDepths(d: Dungeon): Depth[] {
     const present = new Set<Depth>();
@@ -190,11 +206,11 @@ export function makeMultiTeamProblem(
     return ([1, 2, 3, 4] as Depth[]).filter(dp => present.has(dp));
   }
 
-  /** depthChoices intersected with what a given dungeon actually offers. */
+  /** depthChoices ∩ dungeon's depths ∩ unlocked depths (≤ maxDepth). */
   function validDepthsFor(dungeonId: DungeonId): Depth[] {
     const d = dungeonMap.get(dungeonId);
     if (d === undefined) return [];
-    const avail = availableDepths(d);
+    const avail = availableDepths(d).filter(dp => dp <= maxDepth);
     const inter = depthChoices.filter(dp => avail.includes(dp));
     return inter.length > 0 ? inter : avail;
   }
@@ -259,16 +275,23 @@ export function makeMultiTeamProblem(
     return true;
   }
 
-  /** Validate the whole plan, including global pet disjointness. */
+  /** Validate the whole plan: disjoint pets, one team per dungeon, unlocked depth. */
   function validatePlan(plan: MultiTeamPlan): boolean {
     if (plan.teams.length > teamCount) return false;
     const globalSeen = new Set<PetId>();
+    const usedDungeons = new Set<DungeonId>();
     for (const tp of plan.teams) {
       if (tp.rooms < 1) return false;
       const dungeon = dungeonMap.get(tp.dungeonId);
       if (dungeon === undefined) return false; // unknown dungeon
+      if (tp.depth > maxDepth) return false; // depth not unlocked (e.g. D4 w/o NRDCs)
       if (!availableDepths(dungeon).includes(tp.depth)) return false; // depth absent here
       if (!validateTeam(tp.team)) return false;
+      // One team per dungeon: only non-empty teams "occupy" a dungeon.
+      if (tp.team.slots.length > 0) {
+        if (usedDungeons.has(tp.dungeonId)) return false; // two teams in one dungeon
+        usedDungeons.add(tp.dungeonId);
+      }
       for (const slot of tp.team.slots) {
         if (globalSeen.has(slot.petId)) return false; // pet on two teams
         globalSeen.add(slot.petId);
@@ -328,15 +351,15 @@ export function makeMultiTeamProblem(
   // ── initial(): round-robin fill across teamCount teams ──────────────────────
 
   function initial(): MultiTeamPlan {
-    const slotLists: TeamSlot[][] = Array.from({ length: teamCount }, () => []);
-    const rowCounts = Array.from({ length: teamCount }, () => ({ front: 0, back: 0 }));
+    const slotLists: TeamSlot[][] = Array.from({ length: numTeams }, () => []);
+    const rowCounts = Array.from({ length: numTeams }, () => ({ front: 0, back: 0 }));
 
     let teamIdx = 0;
     for (const pet of rosterPets) {
       // Find the next team (round-robin) that still has room.
       let placed = false;
-      for (let attempt = 0; attempt < teamCount; attempt++) {
-        const idx = (teamIdx + attempt) % teamCount;
+      for (let attempt = 0; attempt < numTeams; attempt++) {
+        const idx = (teamIdx + attempt) % numTeams;
         const list = slotLists[idx]!;
         const counts = rowCounts[idx]!;
         if (list.length >= maxTeamSize) continue;
@@ -350,15 +373,16 @@ export function makeMultiTeamProblem(
         }
         if (row === undefined) continue;
         list.push({ petId: pet.id, row, assignedClass: pickDefaultClass(pet) });
-        teamIdx = (idx + 1) % teamCount;
+        teamIdx = (idx + 1) % numTeams;
         placed = true;
         break;
       }
       if (!placed) break; // all teams full
     }
 
+    // Each team gets a DISTINCT dungeon (one team per dungeon).
     const teams: TeamPlan[] = slotLists.map((slots, i) => {
-      const dungeonId = dungeonIds[i % dungeonIds.length]!;
+      const dungeonId = dungeonIds[i]!;
       const t = defaultTarget(dungeonId);
       return { team: { slots }, dungeonId, depth: t.depth, difficulty: t.difficulty, rooms: t.rooms };
     });
@@ -368,8 +392,18 @@ export function makeMultiTeamProblem(
   // ── randomCandidate(): random valid partition ───────────────────────────────
 
   function randomCandidate(rng: Rng): MultiTeamPlan {
-    const slotLists: TeamSlot[][] = Array.from({ length: teamCount }, () => []);
-    const rowCounts = Array.from({ length: teamCount }, () => ({ front: 0, back: 0 }));
+    const slotLists: TeamSlot[][] = Array.from({ length: numTeams }, () => []);
+    const rowCounts = Array.from({ length: numTeams }, () => ({ front: 0, back: 0 }));
+
+    // Distinct dungeon per team: shuffle candidates, take the first numTeams.
+    const dShuffle = dungeonIds.slice();
+    for (let i = dShuffle.length - 1; i > 0; i--) {
+      const j = rng.int(i + 1);
+      const a = dShuffle[i]!;
+      dShuffle[i] = dShuffle[j]!;
+      dShuffle[j] = a;
+    }
+    const teamDungeons = dShuffle.slice(0, numTeams);
 
     // Shuffle pet order.
     const idxs = Array.from({ length: rosterPets.length }, (_, i) => i);
@@ -385,9 +419,9 @@ export function makeMultiTeamProblem(
       if (pet === undefined) continue;
       // ~25% chance to bench a pet, else assign to a random team with room.
       if (rng.int(4) === 0) continue;
-      const start = rng.int(teamCount);
-      for (let attempt = 0; attempt < teamCount; attempt++) {
-        const ti = (start + attempt) % teamCount;
+      const start = rng.int(numTeams);
+      for (let attempt = 0; attempt < numTeams; attempt++) {
+        const ti = (start + attempt) % numTeams;
         const list = slotLists[ti]!;
         const counts = rowCounts[ti]!;
         if (list.length >= maxTeamSize) continue;
@@ -407,8 +441,8 @@ export function makeMultiTeamProblem(
       }
     }
 
-    const teams: TeamPlan[] = slotLists.map(slots => {
-      const dungeonId = dungeonIds[rng.int(dungeonIds.length)]!;
+    const teams: TeamPlan[] = slotLists.map((slots, i) => {
+      const dungeonId = teamDungeons[i]!;
       const validDepths = validDepthsFor(dungeonId);
       const depth = validDepths[rng.int(validDepths.length)] ?? validDepths[0] ?? 1;
       const difficulty =
@@ -468,6 +502,15 @@ export function makeMultiTeamProblem(
 
       for (let i = 0; i < slots.length; i++) {
         const slot = slots[i]!;
+
+        // ── SWAP_PET (replace this slot's pet with a benched pet) ─────────────
+        // Crucial for full teams: lets a strong benched pet displace a weak
+        // slotted pet in ONE improving move (no need for two non-improving steps).
+        for (const pet of benched) {
+          const ns = slots.slice();
+          ns[i] = { petId: pet.id, row: slot.row, assignedClass: pickDefaultClass(pet) };
+          yield withTeam(plan, ti, { slots: ns });
+        }
 
         // ── REMOVE_PET (bench it) ────────────────────────────────────────────
         yield withTeam(plan, ti, { slots: slots.filter((_, j) => j !== i) });
@@ -532,9 +575,16 @@ export function makeMultiTeamProblem(
         if (r !== tp.rooms) yield withTarget(plan, ti, { rooms: r });
       }
 
-      // ── CHANGE_DUNGEON (switch this team to each other candidate dungeon) ───
+      // ── CHANGE_DUNGEON (to a dungeon no other non-empty team occupies) ──────
+      const occupied = new Set<DungeonId>();
+      for (let tj = 0; tj < plan.teams.length; tj++) {
+        if (tj === ti) continue;
+        const other = plan.teams[tj]!;
+        if (other.team.slots.length > 0) occupied.add(other.dungeonId);
+      }
       for (const did of dungeonIds) {
         if (did === tp.dungeonId) continue;
+        if (occupied.has(did)) continue; // one team per dungeon
         const teams = plan.teams.slice();
         teams[ti] = { ...tp, dungeonId: did, depth: clampDepth(did, tp.depth) };
         yield { teams };

@@ -76,6 +76,7 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
   const [rooms, setRooms] = useState(16);
   const [teamCount, setTeamCount] = useState(6);
   const [acrossAllDungeons, setAcrossAllDungeons] = useState(false);
+  const [maxUnlockedDepth, setMaxUnlockedDepth] = useState<Depth>(3);
   const [result, setResult] = useState<OptResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
@@ -172,6 +173,7 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
           objective,
           constants: DEFAULT_CONSTANTS,
           teamCount,
+          maxUnlockedDepth,
         };
         const problem = makeMultiTeamProblem(mtInputs);
         const res = new GreedyOptimizer(rng).run(problem, { maxIterations: 400 });
@@ -254,6 +256,12 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
               <div className="field">
                 <label>Across all dungeons</label>
                 <input type="checkbox" checked={acrossAllDungeons} onChange={e => setAcrossAllDungeons(e.target.checked)} />
+              </div>
+              <div className="field">
+                <label>Max unlocked depth</label>
+                <select value={maxUnlockedDepth} onChange={e => setMaxUnlockedDepth(Number(e.target.value) as Depth)}>
+                  {([1, 2, 3, 4] as Depth[]).map(d => <option key={d} value={d}>{d}{d === 4 ? ' (all NRDCs)' : ''}</option>)}
+                </select>
               </div>
             </>
           )}

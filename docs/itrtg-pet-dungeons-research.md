@@ -499,6 +499,144 @@ Things a faithful sim needs to model:
 
 ---
 
+## 11. Depth unlocks, wipe penalty, and run consumables
+
+### 11.1 Depth unlocks — room thresholds
+
+**How depths become available:** Rather than an explicit unlock event, players access
+higher depths by **reaching specific room milestones** in their runs. Depth gates are
+soft — a player can always attempt a run at any depth (the game doesn't lock D2/D3/D4),
+but narrative progression and tutorial guidance suggest depths in order.
+
+**Room thresholds per depth:**
+
+| Depth | Boss room | Time (no NRDC) | Time (20 NRDCs) | Requirement to unlock next |
+|---|---|---|---|---|
+| **D1** | Room 6 (90 min) | 90 min | ~72 min | None; available from start |
+| **D2** | Room 16 (4 h) | 240 min | ~192 min | Informally "~15 rooms" to D2; access via running 6+ rooms at D1 |
+| **D3** | Room 30 (7.5 h) | 450 min | ~360 min | Informally "~30 rooms" to D3; access via running 16+ rooms at D2 |
+| **D4** | Room 60 (12 h) | 900 min | ~720 min | **All 20 NRDCs completed** (research §2, §3) |
+
+**Interpretation (community-reported):** The player's report of "15 rooms to D2, 30 rooms
+to D3" appears to describe *recommended progression* (rough totals) rather than a hard
+gate. In practice, depths 1–3 are **accessible immediately** once a player owns 6 pets
+(research §2). **Depth 4 is strictly locked until all 20 NRDCs are cleared** — the only
+hard constraint documented.
+
+**Wiki-confirmed** (Dungeons, Introduction to Dungeons): "Depth 4 requires clearing all
+No Rebirth Dungeon Challenges." Depths 1–3 have no explicit unlock gate beyond the
+initial 6-pet requirement.
+
+**Confidence:** high for D4 gate (all NRDCs required); medium for D1–D3 (no hard gate
+found, only recommendation).
+
+### 11.2 Team-wipe rest penalty
+
+**Full-team defeat mechanic:** When all 6 pets in a dungeon team are defeated during
+a run (team wipe / total party kill), the run ends and the team becomes unavailable
+for a period.
+
+**Reported cooldown:** Player-reported as "about an hour rest, then you restart" (i.e.,
+the team cannot be sent on a new run for ~60 minutes following a wipe).
+
+**Restart behavior:** Once the cooldown expires, the next run **restarts from room 1**
+(no mid-run resume or checkpointing).
+
+**Status:** This mechanic is **player-reported but not wiki-confirmed** on accessible
+pages. No exact duration found in documentation. The in-game info tab (research §8.3)
+may display the exact cooldown on a defeated team.
+
+**Confidence:** low. The rule seems plausible (time penalties for failure are common in
+idle games) but the exact duration (60 minutes vs. other values) is unverified.
+
+**Simulator implications:** Wipe penalties do not affect combat resolution or per-room
+mechanics, so they are out of scope for the current simulator (which models single runs).
+A scheduler/planning tool might incorporate this as a team-availability constraint.
+
+### 11.3 Consumables — potions, bombs, traps, and events
+
+Consumable items are single-use or limited-use resources carried into a dungeon run.
+The following are confirmed or partially documented:
+
+#### Phoenix Feathers (fully researched in §6.6.4)
+
+Already covered: **Revive mechanic**, **20% HP restore**, **12 hr crafting cost**.
+
+#### Healing Potions
+
+**Confirmed to exist** but **exact mechanic not fully documented.**
+
+- **Effect (inferred):** likely restore a fixed or percentage-based amount of HP to one
+  pet or the whole team.
+- **Usage (unclear):** auto-triggered when HP drops below a threshold, or manually
+  activated by the player (ITRTG is fully autonomous, so likely automatic).
+- **Inventory limit:** unknown whether capped or stackable.
+- **Source:** crafted or earned as run rewards.
+
+**Confidence:** low. Neither the amount restored nor the usage rule is confirmed on
+fetched wiki pages.
+
+#### Freezing Bombs
+
+**Confirmed name and general effect**, but **exact mechanics unresolved.**
+
+- **Effect (inferred):** reduce enemy Speed by 50% for some duration.
+- **Scope (unclear):** single enemy vs. all enemies in the room.
+- **Duration (unclear):** one turn, entire room, or permanent.
+- **Per-use limit:** "once per enemy/turn" is unclear — does each bomb affect one enemy,
+  or multiple?
+- **Source:** likely crafted or looted.
+
+**Wiki reference:** mentioned in Depth 4 guide as a trap-mitigation tool.
+
+**Confidence:** low. The precise scope and duration are not documented.
+
+#### Nanotraps (for Scrapyard Nanobots)
+
+**Special mechanics for Scrapyard Depth 4 Nanobot enemies** (which have a replication
+hazard — uncontrolled spawning if not handled).
+
+- **Effect:** prevent or disable Nanobot replication.
+- **Interaction (unspecified):** exact interaction with Nanobot damage or spawning
+  rules unknown.
+- **Usage:** likely one-time use per room or per Nanobot encounter.
+
+**Source:** crafted or looted; required for high-difficulty Scrapyard D4 runs with
+Nanobots.
+
+**Confidence:** very low. Nanobot mechanics themselves are only partially documented
+(replication hazard noted; formula not found).
+
+#### Event-triggered consumables
+
+Some dungeon events require specific items to *unlock a bonus outcome*:
+
+- **Nothing (Other)** + **Hot Stone** at Scrapyard D2 (room 16 area) enables a
+  special event reward. See research §8.3 (event examples); consult in-game event
+  info tab for exact item requirements per dungeon/event.
+
+**Confidence:** medium. The Nothing + Hot Stone combo is documented in community guides
+and the data file; other event prerequisites may exist.
+
+#### Summary table
+
+| Item | Confirms usage | Effect | Duration | Per-room? | Source |
+|---|---|---|---|---|---|
+| **Phoenix Feather** | Yes | Revive + 20% HP | 1 pet, 1 use | Consumed per use | Crafted (12 h) |
+| **Healing Potion** | Partial | Restore HP (amt unknown) | Unknown | Unclear | Crafted / Looted |
+| **Freezing Bomb** | Partial | -50% enemy Speed | Unknown | Likely 1 per room | Crafted / Looted |
+| **Nanotraps** | Partial | Disable Nanobot replication | Unknown | Likely per room | Crafted / Looted |
+| **Nothing + Hot Stone** | Yes (event) | Unlock event bonus | Encounter | Event-specific | Looted / Crafted |
+
+**Simulator implications:** Phoenix Feathers are partially modeled (field in `RunConfig`,
+though revival logic is not yet implemented per §6.6.4, §10). Healing potions, freezing
+bombs, and Nanotraps are **not currently modeled** — they would require:
+1. Inventory/capacity tracking (items carried per run).
+2. Auto-trigger logic (when/how items are used during combat).
+3. Stat/damage adjustments mid-run (Speed debuffs, healing actions, etc.).
+
+---
+
 ## Open Questions / Uncertainty
 
 - Exact **DL XP-per-room** formula not located (referenced but not published on

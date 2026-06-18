@@ -234,6 +234,15 @@ export const DEFAULT_CONSTANTS: GameConstants = {
       confidence: 'community',
       note: 'With 20 NRDCs: 15 × (1 - 0.01×20) = 12 min/room.',
     },
+    wipeRestMinutes: {
+      value: 60,
+      source: 'research §11.2',
+      confidence: 'estimated',
+      note:
+        'Player-reported ~1 hour rest after a team wipe before the run restarts. ' +
+        'Not wiki-confirmed (web was unreachable during research); treat as tunable. ' +
+        'Applied as added elapsed time on a non-cleared run.',
+    },
   },
 
   // ── §6.4 XP curves ──────────────────────────────────────────────────────────

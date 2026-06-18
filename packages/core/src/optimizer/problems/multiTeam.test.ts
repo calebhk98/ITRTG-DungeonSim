@@ -77,9 +77,10 @@ const roster: ReadonlyMap<PetId, Pet> = new Map(
   Array.from({ length: 12 }, (_, i) => makePet(`pet-${i}`)).map(p => [p.id, p]),
 );
 
+// Two distinct dungeons so a teamCount of 2 can field 2 teams (one per dungeon).
 const baseInputs: MultiTeamInputs = {
   roster,
-  dungeon,
+  dungeons: [dungeon, forestDungeon],
   objective: xpPerHour,
   constants: DEFAULT_CONSTANTS,
   teamCount: 2,
@@ -112,15 +113,30 @@ describe('makeMultiTeamProblem — partitioning', () => {
     }
     // 2 teams × 6 = 12 pets — more than a single 6-pet team could ever use.
     expect(totalSlots).toBe(12);
+    // One team per dungeon: the two teams run different dungeons.
+    const dungeonsUsed = new Set(plan.teams.map(t => t.dungeonId));
+    expect(dungeonsUsed.size).toBe(plan.teams.length);
   });
 
   it('rejects a plan where a pet appears on two teams', () => {
     const problem = makeMultiTeamProblem(baseInputs);
     const dup = asPetId('pet-0');
+    // Different dungeons (so the rejection is specifically the duplicate pet).
     const bad: MultiTeamPlan = {
       teams: [
         { team: { slots: [{ petId: dup, row: 'front', assignedClass: 'Adventurer' }] }, dungeonId: 'Scrapyard', depth: 1, difficulty: 0, rooms: 3 },
-        { team: { slots: [{ petId: dup, row: 'front', assignedClass: 'Adventurer' }] }, dungeonId: 'Scrapyard', depth: 1, difficulty: 0, rooms: 3 },
+        { team: { slots: [{ petId: dup, row: 'front', assignedClass: 'Adventurer' }] }, dungeonId: 'Forest', depth: 1, difficulty: 0, rooms: 3 },
+      ],
+    };
+    expect(problem.evaluate(bad)).toBe(REJECTION_SCORE);
+  });
+
+  it('rejects two non-empty teams in the same dungeon (one team per dungeon)', () => {
+    const problem = makeMultiTeamProblem(baseInputs);
+    const bad: MultiTeamPlan = {
+      teams: [
+        { team: { slots: [{ petId: asPetId('pet-0'), row: 'front', assignedClass: 'Adventurer' }] }, dungeonId: 'Scrapyard', depth: 1, difficulty: 0, rooms: 3 },
+        { team: { slots: [{ petId: asPetId('pet-1'), row: 'front', assignedClass: 'Adventurer' }] }, dungeonId: 'Scrapyard', depth: 1, difficulty: 0, rooms: 3 },
       ],
     };
     expect(problem.evaluate(bad)).toBe(REJECTION_SCORE);
@@ -150,7 +166,7 @@ describe('makeMultiTeamProblem — aggregate scoring', () => {
           { petId: asPetId('pet-3'), row: 'front' as const, assignedClass: 'Adventurer' as const },
         ],
       },
-      dungeonId: 'Scrapyard' as const,
+      dungeonId: 'Forest' as const, // distinct dungeon (one team per dungeon)
       depth: 1 as const,
       difficulty: 0 as const,
       rooms: 3,

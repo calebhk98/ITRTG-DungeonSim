@@ -168,6 +168,12 @@ export interface TimingConstants {
    * `timePerRoom = 15 × (1 - 0.01 × nrdcCompletions)`.
    */
   nrdcReductionPerCompletion: Const<number>;
+  /**
+   * Wall-clock minutes lost when a team is WIPED / the run fails (research §11.2).
+   * Modelled as added elapsed time on a non-cleared run so per-hour objectives
+   * correctly penalise risky configs. Player-reported ~60 min; confidence low.
+   */
+  wipeRestMinutes: Const<number>;
 }
 
 /** Experience curve constants (research §6.4). */
