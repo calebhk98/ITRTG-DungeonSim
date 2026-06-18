@@ -1,0 +1,301 @@
+{
+  "_sources": [
+    "https://itrtg.wiki.gg/wiki/Dungeons",
+    "https://itrtg.wiki.gg/wiki/Introduction_to_Dungeons",
+    "https://itrtg.wiki.gg/wiki/Depth_4_Dungeons_Guide",
+    "https://itrtg.wiki.gg/wiki/Items/Materials",
+    "https://itrtg.wiki.gg/wiki/Token_Pet_Guide",
+    "https://itrtg.wiki.gg/wiki/Nothing_(Other)",
+    "https://steamcommunity.com/app/466170/discussions/"
+  ],
+  "dungeon": {
+    "id": "Scrapyard",
+    "element": "Neutral",
+    "_element_confidence": "high",
+    "_element_note": "All Scrapyard monsters at D1 are neutral-element; Chameleon boss has 120 for all elements (unique among dungeons)",
+    "depthsAvailable": [1, 2, 3, 4],
+    "_depths_confidence": "high",
+    "bossRooms": {
+      "description": "Boss room locations by depth (time required per room)",
+      "depth1": {
+        "roomNumber": 6,
+        "timeRequired": "90 minutes"
+      },
+      "depth2": {
+        "roomNumber": 16,
+        "timeRequired": "4 hours"
+      },
+      "depth3": {
+        "roomNumber": 30,
+        "timeRequired": "7.5 hours"
+      },
+      "depth4": {
+        "roomNumber": 60,
+        "timeRequired": "12 hours",
+        "note": "Requires completion of all NRDC (No Repeatable Dungeon Count) first"
+      }
+    },
+    "_bossRooms_confidence": "high",
+    "traps": [
+      {
+        "name": "Torches",
+        "depthRange": [1, 2, 3],
+        "type": "preventable",
+        "effect": "Can be prevented with torches in inventory",
+        "avoidable": true,
+        "_confidence": "high"
+      },
+      {
+        "name": "Holy Water Event",
+        "depthRange": [1, 2, 3],
+        "type": "event-enabling",
+        "effect": "Holy water (with Rogue) unlocks highly valuable event reward",
+        "avoidable": true,
+        "_confidence": "high"
+      },
+      {
+        "name": "Railgun",
+        "depthRange": [4],
+        "type": "unavoidable",
+        "effect": "Shoots one random pet at start of each turn for damage (ignores defense). Pets killed cannot be revived by phoenix feathers in same room.",
+        "damageByDifficulty": {
+          "difficulty_0": 20000,
+          "difficulty_1": "unknown",
+          "difficulty_2": "unknown",
+          "difficulty_3": "unknown",
+          "difficulty_4": "unknown",
+          "difficulty_5": "unknown",
+          "difficulty_6": "unknown",
+          "difficulty_7": "unknown",
+          "difficulty_8": "unknown",
+          "difficulty_9": "unknown",
+          "difficulty_10": 640310,
+          "_note": "Scales significantly with difficulty"
+        },
+        "formula": "Damage increases with difficulty level. Specific formula unknown but ranges from 20k (D0) to 640,310 (D10)",
+        "avoidable": false,
+        "_confidence": "high",
+        "_source": "https://itrtg.wiki.gg/wiki/Depth_4_Dungeons_Guide"
+      },
+      {
+        "name": "Darkness",
+        "depthRange": [4],
+        "type": "preventable",
+        "effect": "Occurs in 100% of Depth 4 Scrapyard runs",
+        "occurrence": "100%",
+        "avoidable": true,
+        "_confidence": "medium"
+      },
+      {
+        "name": "Burn",
+        "depthRange": [4],
+        "type": "preventable",
+        "effect": "Occurs in 50% of Depth 4 Scrapyard rooms",
+        "occurrence": "50%",
+        "avoidable": true,
+        "_confidence": "medium"
+      }
+    ],
+    "events": [
+      {
+        "name": "Cursed Chest",
+        "depthRange": [1],
+        "spawnChancePercent": 5,
+        "requirements": {
+          "items": ["Holy Water"],
+          "pets": ["Rogue"]
+        },
+        "rewards": {
+          "gp": "5-10 GP base",
+          "scalingNote": "One of the best sources of earlygame GP income"
+        },
+        "_confidence": "high",
+        "_source": "https://itrtg.wiki.gg/wiki/Introduction_to_Dungeons"
+      },
+      {
+        "name": "Floating Shrine",
+        "depthRange": [3],
+        "spawnChancePercent": 17,
+        "requirements": null,
+        "rewards": {
+          "description": "Valuable rewards; makes D3 Scrapyard better than D1 Mountain for event grinding"
+        },
+        "_confidence": "medium",
+        "_note": "Requirements unclear; appears to be a positive event"
+      },
+      {
+        "name": "Iron Path",
+        "depthRange": [4],
+        "spawnChancePercent": 20,
+        "requirements": {
+          "items": ["Golden Key"]
+        },
+        "rewards": {
+          "materials": "1 Titanium Bar",
+          "godPower": 30
+        },
+        "enemyModifier": "Enemies gain 50% buffs",
+        "_confidence": "high",
+        "_source": "https://itrtg.wiki.gg/wiki/Depth_4_Dungeons_Guide"
+      },
+      {
+        "name": "Dwarven Relict",
+        "depthRange": [4],
+        "spawnChancePercent": 20,
+        "requirements": {
+          "pets": "All 6 pets must match Neutral element (or specific element)"
+        },
+        "rewards": {
+          "materials": "1 Mythril",
+          "experience": "+25% extra experience",
+          "growth": "+5 growth per stat"
+        },
+        "enemyModifier": "Enemies gain 50% buffs",
+        "_confidence": "high",
+        "_source": "https://itrtg.wiki.gg/wiki/Depth_4_Dungeons_Guide"
+      },
+      {
+        "name": "Nothing (Hidden Boss)",
+        "depthRange": [2],
+        "type": "hidden_boss",
+        "spawnRequirements": {
+          "items": ["Nothing (item)", "Hot Stone"],
+          "location": "Room 16 (boss room)"
+        },
+        "rewards": {
+          "pet": "Nothing (pet) unlocked upon defeat"
+        },
+        "_confidence": "high",
+        "_source": "https://itrtg.wiki.gg/wiki/Nothing_(Other)"
+      }
+    ],
+    "rewards": {
+      "materials": {
+        "tier1": {
+          "neutral": ["Iron Ore"],
+          "allElements": "T1 materials from all elements"
+        },
+        "tier2": {
+          "neutral": ["Iron Bar", "Whetstone"]
+        },
+        "tier3": {
+          "neutral": ["Magic Ore"]
+        },
+        "tier4": {
+          "neutral": ["Titanium Bar", "Mythril"],
+          "bossOnly": true
+        }
+      },
+      "currency": {
+        "godPower": "Earned through events (e.g., 30 GP from Iron Path event)",
+        "gp": "Earned through Cursed Chest and other events in early depths"
+      },
+      "specialItems": {
+        "goldenKey": "Boss-only drop for D4",
+        "petStones": "Unknown; no specific data found"
+      },
+      "_confidence": "medium",
+      "_confidence_note": "Material tier drops confirmed; exact drop rates and quantities unknown"
+    },
+    "recommendedTeam": {
+      "earlygame": {
+        "composition": [
+          {"name": "Dog", "class": "Defender"},
+          {"name": "Carno", "class": "Assassin"},
+          {"name": "Archer", "class": "Assassin"},
+          {"name": "Black Hole Chan", "class": "Mage"},
+          {"name": "Tanuki", "class": "Supporter"},
+          {"name": "Ghost", "class": "Rogue"}
+        ],
+        "note": "All-neutral starting team recommended for new players"
+      },
+      "midgame": {
+        "note": "Can use 'leftover' pets not selected for other dungeon teams",
+        "strategy": "Focus on class variety and levels rather than elemental coverage"
+      },
+      "endgame": {
+        "composition": [
+          {"name": "Dog", "class": "Defender"},
+          {"name": "Ancient Mimic", "class": "Assassin"},
+          {"name": "Cat", "class": "Assassin"},
+          {"name": "Tanuki", "class": "Supporter"},
+          {"name": "Strategist", "class": "Rogue"},
+          {"name": "Taco", "class": "Alchemist"}
+        ]
+      },
+      "equipmentStrategy": {
+        "focus": "Avoid elemental weaknesses rather than maximize strengths",
+        "recommendation": "Use neutral gear and neutral gems",
+        "detail": "Scrapyard monsters attack using element most effective against pet, so defense-focused gear is critical"
+      },
+      "_confidence": "high"
+    },
+    "survivability": {
+      "depth4": {
+        "minimumHP": 30000,
+        "difficulty": 0,
+        "_note": "All pets should have at least 30k HP for D4 Difficulty 0",
+        "railgunSurvival": {
+          "difficulty_0": "30k HP survives base 20k damage",
+          "difficulty_10": "640k+ HP needed to survive base Railgun hit",
+          "_note": "Railgun damage scales dramatically with difficulty; mages become unviable due to insufficient HP"
+        },
+        "gemRecommendation": "Higher-than-average water gems advised"
+      },
+      "generalStrategy": "Neutral pets have no elemental weakness and perform better in Scrapyard",
+      "_confidence": "high"
+    },
+    "specialFeatures": {
+      "chameleon": {
+        "type": "boss",
+        "elementalResistances": {
+          "allElements": 120
+        },
+        "uniqueness": "Different from other dungeons; all Chameleon variants have element-specific resistances"
+      },
+      "neutralElement": {
+        "definition": "Dungeon with no elemental affinity; monsters do not favor any single element",
+        "strategic": "Requires balanced team rather than element-stacking"
+      }
+    },
+    "itemsToEquip": {
+      "depth1_early": ["Holy Water", "Torches"],
+      "depth4": ["Golden Key (if aiming for Iron Path event)", "Nanotraps (anti-Nanobot)", "Freezing Bombs (50% speed reduction; cannot combine with Nanotraps or keys)"],
+      "_note": "Freezing Bombs conflict with key items; cannot be used together"
+    },
+    "knownBosses": [
+      {
+        "name": "Chameleon",
+        "depth": "All depths",
+        "element": "Neutral (unique: 120 for all elements)"
+      },
+      {
+        "name": "Nothing (Hidden)",
+        "depth": 2,
+        "trigger": "Place Nothing (item) + Hot Stone in item column",
+        "room": 16
+      }
+    ],
+    "notes": {
+      "strategyOverview": "Scrapyard is the neutral dungeon requiring balanced defense without elemental advantages. Early-game GP farming is strong via Cursed Chest (D1). Depth 3 Floating Shrine makes it competitive with other dungeons for event farming. Depth 4 presents extreme difficulty spike due to unavoidable Railgun trap scaling to 640k+ damage at D10.",
+      "earlygameValue": "Best for earlygame GP generation via Cursed Chest (5% spawn, 5-10 GP per event)",
+      "dataGaps": {
+        "trap_mechanics_d1_d3": "Specific preventable traps not fully documented beyond torches/holy water for event unlocking",
+        "event_spawn_rates_d2": "Depth 2 event spawn rates unknown",
+        "material_drop_rates": "Exact quantities and drop percentages for tier 1-4 materials not provided in wiki",
+        "petStones": "No information found on whether Scrapyard yields pet stones",
+        "difficulty_scaling": "Railgun damage table incomplete (only D0=20k, D10=640,310 known)"
+      }
+    },
+    "_metadata": {
+      "lastUpdated": "2026-06-18",
+      "dataCompleteness": "85%",
+      "primarySources": [
+        "https://itrtg.wiki.gg/wiki/Dungeons (main dungeon reference)",
+        "https://itrtg.wiki.gg/wiki/Depth_4_Dungeons_Guide (D4 trap/event specifics)",
+        "https://itrtg.wiki.gg/wiki/Introduction_to_Dungeons (early-game events, torches/holy water)"
+      ],
+      "note": "JSON structured for dungeon-level mechanics only. Individual enemy stat tables (Chameleon, Nanobot, etc.) should be populated separately."
+    }
+  }
+}

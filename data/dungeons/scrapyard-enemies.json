@@ -1,0 +1,501 @@
+{
+  "_sources": [
+    "https://itrtg.wiki.gg/wiki/Dungeons",
+    "https://itrtg.wiki.gg/wiki/Depth_4_Dungeons_Guide",
+    "https://itrtg.wiki.gg/wiki/Nothing_(Other)",
+    "https://itrtg.wiki.gg/wiki/Introduction_to_Dungeons",
+    "https://steamcommunity.com/app/466170/discussions/0/5367692919522876122/"
+  ],
+  "enemies": [
+    {
+      "id": "metal-slimy",
+      "displayName": "Metal Slimy",
+      "element": "neutral",
+      "depth": 1,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "angel-slimy",
+      "displayName": "Angel Slimy",
+      "element": "neutral",
+      "depth": 1,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "ninja-slimy",
+      "displayName": "Ninja Slimy",
+      "element": "neutral",
+      "depth": 1,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "robo-slimy",
+      "displayName": "Robo Slimy",
+      "element": "neutral",
+      "depth": 1,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "cyborg-slimy",
+      "displayName": "Cyborg Slimy",
+      "element": "neutral",
+      "depth": 1,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "ghost-slimy",
+      "displayName": "Ghost Slimy",
+      "element": "neutral",
+      "depth": 1,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "unstable-slimy",
+      "displayName": "Unstable Slimy",
+      "element": "neutral",
+      "depth": 1,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "scrap-worm",
+      "displayName": "Scrap Worm",
+      "element": "neutral",
+      "depth": 2,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "sentry",
+      "displayName": "Sentry",
+      "element": "neutral",
+      "depth": 2,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "scavenger",
+      "displayName": "Scavenger",
+      "element": "neutral",
+      "depth": 2,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "robo-hound",
+      "displayName": "Robo Hound",
+      "element": "neutral",
+      "depth": 2,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "microbots",
+      "displayName": "Microbots",
+      "element": "neutral",
+      "depth": 2,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "bulwark-golem",
+      "displayName": "Bulwark Golem",
+      "element": "neutral",
+      "depth": 2,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "displacer",
+      "displayName": "Displacer",
+      "element": "wind",
+      "depth": 2,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "sword-soldier",
+      "displayName": "Sword Soldier",
+      "element": "neutral",
+      "depth": 2,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "constructor",
+      "displayName": "Constructor",
+      "element": "neutral",
+      "depth": 3,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "compactor",
+      "displayName": "Compactor",
+      "element": "neutral",
+      "depth": 3,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "replacer",
+      "displayName": "Replacer",
+      "element": "neutral",
+      "depth": 3,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "slayer",
+      "displayName": "Slayer",
+      "element": "neutral",
+      "depth": 3,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "arbiter",
+      "displayName": "Arbiter",
+      "element": "neutral",
+      "depth": 3,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "reclaimer",
+      "displayName": "Reclaimer",
+      "element": "earth",
+      "depth": 3,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "repurposer",
+      "displayName": "Repurposer",
+      "element": "fire",
+      "depth": 3,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "sanitizer",
+      "displayName": "Sanitizer",
+      "element": "water",
+      "depth": 3,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "nanobot",
+      "displayName": "Nanobot",
+      "element": "neutral",
+      "depth": 4,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [
+        {
+          "name": "Self-Replication",
+          "description": "Can replicate itself unless prevented by Nanotraps during combat",
+          "formula": "unknown"
+        }
+      ],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "medium"
+    },
+    {
+      "id": "alien-drone",
+      "displayName": "Alien Drone",
+      "element": "neutral",
+      "depth": 4,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "restoration-bot",
+      "displayName": "Restoration Bot",
+      "element": "water",
+      "depth": 4,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [
+        {
+          "name": "Healing",
+          "description": "Can heal itself or allies during combat",
+          "formula": "unknown"
+        }
+      ],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "medium"
+    },
+    {
+      "id": "cyber-bears",
+      "displayName": "Cyber Bears",
+      "element": "fire",
+      "depth": 4,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "terraformer",
+      "displayName": "Terraformer",
+      "element": "earth",
+      "depth": 4,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "shield-generator",
+      "displayName": "Shield Generator",
+      "element": "neutral",
+      "depth": 4,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "land-battleship",
+      "displayName": "Land Battleship",
+      "element": "wind",
+      "depth": 4,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "obliterator",
+      "displayName": "Obliterator",
+      "element": "neutral",
+      "depth": 4,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "unknown",
+      "specials": [],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_confidence": "low"
+    },
+    {
+      "id": "nothing",
+      "displayName": "Nothing",
+      "element": "neutral",
+      "depth": 2,
+      "isBoss": true,
+      "baseStats": {
+        "hp": 25000,
+        "atk": 1500,
+        "def": 500,
+        "spd": 500
+      },
+      "scaling": "unknown",
+      "specials": [
+        {
+          "name": "Confusion Attack",
+          "description": "Normal attacks can cause confusion effect",
+          "formula": "[((attacker elements/2) / defender elements)-0.3]×100%"
+        },
+        {
+          "name": "Self-Healing",
+          "description": "Uses recovery skills to heal itself",
+          "formula": "unknown"
+        }
+      ],
+      "xpValueNote": null,
+      "dropNote": "Unlocks Nothing pet when defeated. Required items: Nothing (item) and Hot Stone in team",
+      "_confidence": "high"
+    },
+    {
+      "id": "railgun-trap",
+      "displayName": "Railgun (Depth 4 Trap)",
+      "element": null,
+      "depth": 4,
+      "isBoss": false,
+      "baseStats": null,
+      "scaling": "expSqrtDiff",
+      "specials": [
+        {
+          "name": "Railgun",
+          "description": "Unpreventable single-target damage every turn, ignores defense, prevents phoenix feather revival",
+          "formula": "Base damage at Diff 0 is 20000; scales by ×√2 per difficulty level"
+        }
+      ],
+      "xpValueNote": null,
+      "dropNote": null,
+      "_scaling_table": {
+        "difficulty_0": 20000,
+        "difficulty_1": 28286,
+        "difficulty_2": 40004,
+        "difficulty_3": 56577,
+        "difficulty_4": 80016,
+        "difficulty_5": 113165,
+        "difficulty_6": 160047,
+        "difficulty_7": 226351,
+        "difficulty_8": 320124,
+        "difficulty_9": 452746,
+        "difficulty_10": 640310
+      },
+      "_confidence": "high"
+    }
+  ],
+  "_notes": {
+    "boss_multipliers_depth_0": "D1≈2x pet stats, D2≈12x pet stats, D3≈70x pet stats; +10% additive per difficulty level",
+    "scaling_mechanics": "Enemy stats scale with difficulty. Each difficulty level adds 10% to boss multipliers. Railgun explicitly uses ×√2 scaling per difficulty.",
+    "neutral_element_mechanic": "Neutral enemies attack using whichever element will hurt the player most. They have no elemental weakness exploitable by attacks.",
+    "gaps_in_data": [
+      "Individual base stats for regular enemies not documented in wiki",
+      "Boss names for Depths 1 and 3 not found in search results",
+      "Individual enemy stat scaling formulas unknown for non-boss, non-Railgun enemies",
+      "Drop materials for individual enemies not documented",
+      "XP value per kill not documented",
+      "Depth 4 boss (room 60) identity unknown; may be Ancient Mimic or other",
+      "Nanotraps mechanics beyond 'prevents replication' not detailed"
+    ]
+  }
+}

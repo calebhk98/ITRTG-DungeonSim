@@ -1,0 +1,161 @@
+{
+  "_sources": [
+    "https://itrtg.wiki.gg/wiki/Pets",
+    "https://itrtg.wiki.gg/wiki/Mouse",
+    "https://itrtg.wiki.gg/wiki/Frog",
+    "https://itrtg.wiki.gg/wiki/Bee",
+    "https://itrtg.wiki.gg/wiki/Egg/Chicken",
+    "https://itrtg.wiki.gg/wiki/Armadillo",
+    "https://itrtg.wiki.gg/wiki/Token_Pet_Guide",
+    "https://itrtg.wiki.gg/wiki/Pet_Training",
+    "https://itrtg.wiki.gg/wiki/Introduction_to_Dungeons",
+    "https://itrtg.wiki.gg/wiki/Fishing_Pond",
+    "https://itrtg.wiki.gg/wiki/Crafting",
+    "https://steamcommunity.com/app/466170/discussions/0/1652169858548416199/"
+  ],
+  "pets": [
+    {
+      "id": "mouse",
+      "displayName": "Mouse",
+      "primaryElement": null,
+      "howObtained": "Defeat Hyperion",
+      "availableClasses": [
+        "Wildcard - evolves to any class needed"
+      ],
+      "specialistClass": null,
+      "abilities": [
+        {
+          "name": "Campaign Penalty Base",
+          "effect": "Decreases the chance to find food and better quality food by 50% in food campaigns",
+          "formula": "-50% food campaign effectiveness",
+          "scalesWith": null
+        },
+        {
+          "name": "Food Campaign Bonus (on evolution)",
+          "effect": "Increases the bonus to food campaigns by 100%, converting the base -50% penalty into a +50% bonus",
+          "formula": "+100% evolution bonus to food campaigns",
+          "scalesWith": null
+        }
+      ],
+      "evolutionGrowthRequirement": 100,
+      "notes": "Evolution requires 5 Wood and 100 Puny Food in addition to 100 growth. Total growth capacity is 420. Mouse is considered an Evolution Wildcard because its bonuses are independent of which class it evolves into. It can be evolved to any class depending on player needs.",
+      "_confidence": "confirmed"
+    },
+    {
+      "id": "frog",
+      "displayName": "Frog",
+      "primaryElement": "Water",
+      "howObtained": "Defeat Suijin",
+      "availableClasses": [
+        "Supporter",
+        "Wildcard - can evolve to any class"
+      ],
+      "specialistClass": "Supporter",
+      "abilities": [
+        {
+          "name": "Healing Boost (Supporter specialization)",
+          "effect": "Increases the heal power and buff effect for dungeons by an extra amount based on class level",
+          "formula": "0.5 * class level",
+          "scalesWith": "CL"
+        },
+        {
+          "name": "Fishing Qualification",
+          "effect": "As a Water element pet, qualifies for the first slot of the Fishing Pond to enable auto-fishing",
+          "formula": "Auto-fish rate: (50 + Class Level / 2)%",
+          "scalesWith": "CL"
+        }
+      ],
+      "evolutionGrowthRequirement": 100,
+      "notes": "Evolution requires 5 Ice materials and 1 pet stone. Total growth capacity is 540. Frog has no campaign bonus. Frog is described as flexible - it can serve as either a Supporter or evolve as a Wildcard pet to fill other roles. It is particularly noted for its fishing utility due to water element.",
+      "_confidence": "confirmed"
+    },
+    {
+      "id": "bee",
+      "displayName": "Bee",
+      "primaryElement": "Wind",
+      "howObtained": "Defeat Diana",
+      "availableClasses": [
+        "Alchemist"
+      ],
+      "specialistClass": "Alchemist",
+      "abilities": [
+        {
+          "name": "Alchemist Crafting Speed Boost",
+          "effect": "Increases item creation speed for alchemists by an additional amount based on class level",
+          "formula": "0.5 * class level",
+          "scalesWith": "CL"
+        },
+        {
+          "name": "Honey Crafting (Token upgrade)",
+          "effect": "With Pet Token improvement, Bee gains the ability to craft Honey (neutral crafting material). Crafting speed is multiplied based on accumulated Honey",
+          "formula": "Crafting speed multiplier: 1 + (Honey^0.5)/100, capped at 4x (requires 90,000 Honey). Base crafting time: 15 hours",
+          "scalesWith": "growth"
+        }
+      ],
+      "evolutionGrowthRequirement": 150,
+      "notes": "Evolution requires 8 Feathers and 1 pet stone. Total growth capacity is 600. Special evolution requirement: player must have 10 Mystic Garden upgrades before evolving Bee. Bee has no campaign bonus. Bee is noted as typically being the first Alchemist a player will evolve. The Honey crafting mechanic makes Bee increasingly powerful over time as Honey accumulates.",
+      "_confidence": "confirmed"
+    },
+    {
+      "id": "egg",
+      "displayName": "Egg/Chicken",
+      "primaryElement": "Wind",
+      "howObtained": "Defeat Zeus",
+      "availableClasses": [
+        "Assassin",
+        "Can potentially evolve to other classes"
+      ],
+      "specialistClass": null,
+      "abilities": [
+        {
+          "name": "Campaign Bonus",
+          "effect": "Provides +10% effectiveness in item and growth campaigns",
+          "formula": "+10% item and growth campaign effectiveness",
+          "scalesWith": null
+        },
+        {
+          "name": "Single-Target Dungeon Damage Boost",
+          "effect": "Boosts single-target dungeon damage by an additional amount per assassin class level",
+          "formula": "0.5% per assassin class level",
+          "scalesWith": "CL"
+        }
+      ],
+      "evolutionGrowthRequirement": 300,
+      "notes": "Evolution requires 15 Feathers and 1 pet stone. Total growth capacity is 800. Special evolution requirement: player must have the title 'Chicken God/Goddess' (obtained by fleeing from an Ultimate Being V2 encounter). Egg/Chicken has no regular evolution bonus, making it flexible for various class assignments. The pet is recommended for dungeon front-row positioning alongside Cupid and Armadillo.",
+      "_confidence": "confirmed"
+    },
+    {
+      "id": "armadillo",
+      "displayName": "Armadillo",
+      "primaryElement": "Earth",
+      "howObtained": "Defeat Odin",
+      "availableClasses": [
+        "Defender"
+      ],
+      "specialistClass": "Defender",
+      "abilities": [
+        {
+          "name": "Damage Absorption",
+          "effect": "Increases the damage taken in dungeons instead of a party member by an extra amount per class level",
+          "formula": "0.5% per class level",
+          "scalesWith": "CL"
+        },
+        {
+          "name": "Defender Protection Boost",
+          "effect": "Increases the protect chance by 10% if your class is a defender",
+          "formula": "+10% protect chance for Defender class",
+          "scalesWith": null
+        },
+        {
+          "name": "Total Battle Specialty (TBS) Critical",
+          "effect": "Grants 100% critical chance on Total Battle Specialty",
+          "formula": "100% crit chance on TBS",
+          "scalesWith": null
+        }
+      ],
+      "evolutionGrowthRequirement": 400,
+      "notes": "Evolution requires 20 Wood and 1 pet stone. Total growth capacity is 840. Armadillo has no campaign bonus. As a Defender specialist, Armadillo's job is to get hit and survive, prioritizing defense and HP over speed. It is noted as one of the easiest defenders to evolve early in the game, making it accessible for new players building their dungeon teams. Recommended for front-row positioning.",
+      "_confidence": "confirmed"
+    }
+  ]
+}

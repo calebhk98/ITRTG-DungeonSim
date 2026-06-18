@@ -1,0 +1,173 @@
+{
+  "_sources": [
+    "https://itrtg.wiki.gg/wiki/Squirrel",
+    "https://itrtg.wiki.gg/wiki/Cupid",
+    "https://itrtg.wiki.gg/wiki/Clam",
+    "https://itrtg.wiki.gg/wiki/Pets",
+    "https://itrtg.wiki.gg/wiki/Ghost",
+    "https://itrtg.wiki.gg/wiki/Token_Pet_Guide",
+    "https://itrtg.wiki.gg/wiki/Pet_Campaigns",
+    "https://itrtg.wiki.gg/wiki/Pet_Training"
+  ],
+  "pets": [
+    {
+      "id": "squirrel",
+      "displayName": "Squirrel",
+      "primaryElement": "Fire",
+      "howObtained": "Defeat Tyrant Overlord Baal",
+      "availableClasses": [
+        "Rogue"
+      ],
+      "specialistClass": "Rogue",
+      "abilities": [
+        {
+          "name": "Campaign Bonus",
+          "effect": "Increases the chance to find food and better quality food by 75% in food campaigns",
+          "formula": null,
+          "scalesWith": null
+        },
+        {
+          "name": "Rogue Drop Rate Bonus",
+          "effect": "Increases the drop rate for items in dungeons by an extra 0.5% per class level when evolved as Rogue",
+          "formula": "0.5% * CL",
+          "scalesWith": "CL"
+        },
+        {
+          "name": "Acorn Collection (Token Upgrade)",
+          "effect": "Finds 1 acorn per dungeon room, granting a drop rate bonus based on acorns found",
+          "formula": "(acorns^0.4)/10 %",
+          "scalesWith": "growth"
+        }
+      ],
+      "evolutionGrowthRequirement": 500,
+      "notes": "Requires 25 Hot Stone and 100 God Power + 1 DRC completion to evolve. Total evolution growth: 900. Token upgrade added in version 4.45.1580 (August 7, 2025). Base total growth: 500.",
+      "_confidence": "confirmed"
+    },
+    {
+      "id": "cupid",
+      "displayName": "Cupid",
+      "primaryElement": "Wind",
+      "howObtained": "Defeat Eros",
+      "availableClasses": [
+        "Adventurer"
+      ],
+      "specialistClass": "Adventurer",
+      "abilities": [
+        {
+          "name": "Divinity Campaign Bonus",
+          "effect": "Provides 100% boost to divinity campaign gains",
+          "formula": null,
+          "scalesWith": null
+        },
+        {
+          "name": "Adventurer Campaign Bonus",
+          "effect": "Adventurer-class Cupid receives an extra campaign bonus per class level",
+          "formula": "0.5% * CL",
+          "scalesWith": "CL"
+        },
+        {
+          "name": "Couple Matching (Token Upgrade)",
+          "effect": "Can create romantic couples between two pets daily. Each couple grants 30% + 2% per couple to all campaign bonuses, plus an extra 50% to divinity campaigns. Couples have 1% daily breakup chance, but become permanent after 365 days (married)",
+          "formula": "(30% + 2% * numCouples) + 50% divinity bonus",
+          "scalesWith": "growth"
+        }
+      ],
+      "evolutionGrowthRequirement": 200,
+      "notes": "Requires 10 Feather and 100 Chocolate to evolve. Base total growth: 630. One of only 2 wind pets available until Fairy unlocks. Common choice as first Blacksmith token pet.",
+      "_confidence": "confirmed"
+    },
+    {
+      "id": "clam",
+      "displayName": "Clam",
+      "primaryElement": "Water",
+      "howObtained": "Use a Pet Token from Premium Shop",
+      "availableClasses": [
+        "Rogue"
+      ],
+      "specialistClass": "Rogue",
+      "abilities": [
+        {
+          "name": "God Power Doubling",
+          "effect": "Doubles all God Power earned from dungeon events (works when evolved or unevolved, in any class)",
+          "formula": "2x * GP_earned",
+          "scalesWith": "growth"
+        },
+        {
+          "name": "Event Campaign Bonus",
+          "effect": "Increases Event Campaign rewards by 50%",
+          "formula": "50%",
+          "scalesWith": null
+        },
+        {
+          "name": "Item Campaign Bonus",
+          "effect": "Increases Item Campaign rewards by 35%",
+          "formula": "35%",
+          "scalesWith": null
+        },
+        {
+          "name": "Rogue Drop Rate Bonus",
+          "effect": "Increases the drop rate for items in dungeons by an extra 0.6% per class level when Rogue",
+          "formula": "0.6% * CL",
+          "scalesWith": "CL"
+        }
+      ],
+      "evolutionGrowthRequirement": 10000,
+      "notes": "Requires 500 Nevermelting Ice and 200 God Power to evolve. Base total growth: 1900. One of the strongest early-game pets for God Power farming. Relatively easy to evolve but has low base growth. Undine is a stronger Water Rogue in later dungeons, but Clam's bonus works in any class.",
+      "_confidence": "confirmed"
+    },
+    {
+      "id": "dragon",
+      "displayName": "Dragon",
+      "primaryElement": "Fire",
+      "howObtained": "Defeat P.Baal 25",
+      "availableClasses": [
+        "Mage"
+      ],
+      "specialistClass": "Mage",
+      "abilities": [
+        {
+          "name": "Mage Class Bonus",
+          "effect": "When evolved as Mage, provides a campaign bonus",
+          "formula": "0.57% * CL",
+          "scalesWith": "CL"
+        }
+      ],
+      "evolutionGrowthRequirement": null,
+      "notes": "Evolution difficulty level 2(2) - requires less than 10,000 growth plus two additional evolution conditions. Mid-tier pet unlocked during Baal progression. No special dungeon or campaign abilities documented. Recommended for Mage specialization.",
+      "_confidence": "confirmed"
+    },
+    {
+      "id": "ghost",
+      "displayName": "Ghost",
+      "primaryElement": null,
+      "howObtained": "Use a Pet Token, then kill the Depth 2 boss of each dungeon (pet does not need to be in team)",
+      "availableClasses": [
+        "Rogue"
+      ],
+      "specialistClass": "Rogue",
+      "abilities": [
+        {
+          "name": "Scare",
+          "effect": "At the beginning of each round, attempts to reduce a random enemy's Attack and Defense by 50% (30% for bosses), increasing damage taken and targeting chance. Grants +9999 speed initiative to outspeed most enemies",
+          "formula": "Ghost_attack / enemy_def * 0.6",
+          "scalesWith": "CL"
+        },
+        {
+          "name": "Twin Scare (Class Level 20+)",
+          "effect": "At Class Level 20, allows two separate scare attempts per action instead of one",
+          "formula": null,
+          "scalesWith": "CL"
+        },
+        {
+          "name": "Rogue Drop Rate Bonus",
+          "effect": "Increases the drop rate for items in dungeons by an extra 0.65% per class level",
+          "formula": "0.65% * CL",
+          "scalesWith": "CL"
+        }
+      ],
+      "evolutionGrowthRequirement": 15000,
+      "notes": "Requires 750 iron bars to evolve. Base growth: 3750. Cannot attack or deal damage - only equip with Inferno or Ego Swords. Cannot use knives as equipment. Evolution requires clearing every D2 boss at least once (across all dungeons). Powerful early-game crowd control but scales poorly; ability becomes hindrance in late game compared to other Rogues like Undine.",
+      "_confidence": "confirmed"
+    }
+  ]
+}
