@@ -584,6 +584,134 @@ describe('simulateRun — perPet damage tracking', () => {
   });
 });
 
+// ── 50-turn auto-loss (research §6.6.2) ────────────────────────────────────────
+
+/**
+ * A "stalemate wall" enemy: gigantic HP so the strong pet cannot kill it within
+ * 50 turns, but atk=0 / spd=1 so it cannot hurt the pet either. The OLD 1000-round
+ * "safety cap" would have counted such a room as CLEARED (the pet survives). The
+ * new turn loop must declare an AUTOMATIC LOSS at the 50-turn cap.
+ */
+const stalemateEnemy: EnemyArchetype = {
+  id: 'stalemate-wall',
+  baseStats: { hp: 9_999_999, atk: 0, def: 0, spd: 1 },
+  element: 'Neutral',
+  scaling: { kind: 'linear', perDiff: {} },
+  isBoss: false,
+  xpValue: 0,
+};
+
+const stalemateDungeon: Dungeon = {
+  id: 'Scrapyard',
+  element: 'Neutral',
+  enemyTable: {
+    1: {
+      drawsPerRoom: 1,
+      entries: [{ enemyId: stalemateEnemy.id, weight: 1, minCount: 1, maxCount: 1 }],
+    },
+  },
+  bossArchetypeId: {},
+  archetypes: { [stalemateEnemy.id]: stalemateEnemy },
+};
+
+describe('simulateRun — 50-turn auto-loss (§6.6.2)', () => {
+  it('a fight that cannot be won within 50 turns is an automatic loss (not a clear)', () => {
+    const config: RunConfig = {
+      team: strongTeam,
+      dungeonId: 'Scrapyard',
+      depth: 1,
+      difficulty: 0,
+      rooms: 4,
+      nrdcCompletions: 0,
+      evaluationMode: 'expected',
+    };
+    const deps: SimulateRunDeps = {
+      dungeon: stalemateDungeon,
+      roster: strongRoster,
+      constants: DEFAULT_CONSTANTS,
+    };
+
+    const result = simulateRun(config, deps);
+
+    // The pet survives the whole time (enemy deals 0), yet the run does NOT clear:
+    // the 50-turn cap forces a loss in room 1.
+    expect(result.cleared).toBe(false);
+    expect(result.roomsCleared).toBe(0);
+    // Auto-loss is from the turn cap, not from a death.
+    expect(result.petDeaths).toHaveLength(0);
+  });
+});
+
+// ── Phoenix Feather revival (research §6.6.4) ──────────────────────────────────
+
+/**
+ * A glass-cannon enemy: 1 HP (dies to the pet's first hit) but lethal attack
+ * (one-shots the pet). In a turn both die simultaneously, so each room is
+ * "cleared" (enemies wiped) but costs the pet its life — unless a Phoenix Feather
+ * revives it for the next room.
+ */
+const glassCannonEnemy: EnemyArchetype = {
+  id: 'glass-cannon',
+  baseStats: { hp: 1, atk: 9_999_999, def: 0, spd: 100 },
+  element: 'Neutral',
+  scaling: { kind: 'linear', perDiff: {} },
+  isBoss: false,
+  xpValue: 1,
+};
+
+const glassCannonDungeon: Dungeon = {
+  id: 'Scrapyard',
+  element: 'Neutral',
+  enemyTable: {
+    1: {
+      drawsPerRoom: 1,
+      entries: [{ enemyId: glassCannonEnemy.id, weight: 1, minCount: 1, maxCount: 1 }],
+    },
+  },
+  bossArchetypeId: {},
+  archetypes: { [glassCannonEnemy.id]: glassCannonEnemy },
+};
+
+describe('simulateRun — Phoenix Feather revival (§6.6.4)', () => {
+  const deps: SimulateRunDeps = {
+    dungeon: glassCannonDungeon,
+    roster: strongRoster,
+    constants: DEFAULT_CONSTANTS,
+  };
+  const baseConfig = {
+    team: strongTeam,
+    dungeonId: 'Scrapyard' as const,
+    depth: 1 as const,
+    difficulty: 0 as const,
+    rooms: 4,
+    nrdcCompletions: 0,
+    evaluationMode: 'expected' as const,
+  };
+
+  it('with no feathers the pet dies in room 1 and the run stops', () => {
+    const result = simulateRun({ ...baseConfig, phoenixFeathers: 0 }, deps);
+    // Room 1 clears (enemy wiped) but the pet is dead afterwards → run ends.
+    expect(result.roomsCleared).toBe(1);
+    expect(result.cleared).toBe(false);
+    expect(result.petDeaths).toContain(STRONG_PET_ID);
+  });
+
+  it('feathers revive the pet each room, letting the run clear all rooms', () => {
+    const result = simulateRun({ ...baseConfig, phoenixFeathers: 3 }, deps);
+    // 3 feathers cover the deaths in rooms 1–3; room 4 clears before the pet
+    // would need a 4th revive → all 4 rooms cleared.
+    expect(result.roomsCleared).toBe(4);
+    expect(result.cleared).toBe(true);
+  });
+
+  it('the feather pool is shared across the run (more feathers ⇒ further progress)', () => {
+    const withOne = simulateRun({ ...baseConfig, phoenixFeathers: 1 }, deps);
+    const withTwo = simulateRun({ ...baseConfig, phoenixFeathers: 2 }, deps);
+    expect(withOne.roomsCleared).toBe(2);
+    expect(withTwo.roomsCleared).toBe(3);
+  });
+});
+
 describe('simulateRun — rewards', () => {
   it('materials are accrued for the dungeon element at the depth tier', () => {
     const config: RunConfig = {

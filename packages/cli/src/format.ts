@@ -10,6 +10,8 @@ import type { RunResult } from '@itrtg-sim/core';
 import type { PetId } from '@itrtg-sim/core';
 import type { FarmTargetCandidate } from '@itrtg-sim/core';
 import type { Team } from '@itrtg-sim/core';
+import type { MultiTeamInputs, MultiTeamPlan } from '@itrtg-sim/core';
+import { summarizeMultiTeamPlan } from '@itrtg-sim/core';
 
 // ── Column-table helper ───────────────────────────────────────────────────────
 
@@ -206,6 +208,47 @@ export function formatTeamOptimizeResult(
   }
 
   return lines.join('\n');
+}
+
+/**
+ * Format a multi-team roster partition: aggregate score plus a per-team
+ * breakdown (target, clear status, and roster) so the player can see how the
+ * roster was split across teams.
+ */
+export function formatMultiTeamResult(
+  plan: MultiTeamPlan,
+  score: number,
+  inputs: MultiTeamInputs,
+  roster: ReadonlyMap<PetId, { displayName: string }>,
+): string {
+  const summaries = summarizeMultiTeamPlan(plan, inputs);
+  const lines: string[] = [
+    'Optimize Result (multiteam):',
+    `  Aggregate score: ${score.toFixed(4)}`,
+    `  Teams used:      ${summaries.length}`,
+    '',
+  ];
+
+  if (summaries.length === 0) {
+    lines.push('  (no pets assigned to any team)');
+    return lines.join('\n');
+  }
+
+  summaries.forEach((s, i) => {
+    const tp = s.plan;
+    const status = s.result.cleared ? 'CLEARED' : `partial (${s.result.roomsCleared} rooms)`;
+    lines.push(
+      `  Team ${i + 1}: ${tp.dungeonId} D${tp.depth}-${tp.difficulty}, ${tp.rooms} rooms — ${status}` +
+        (s.feasible ? '' : ' [infeasible for objective]'),
+    );
+    for (const slot of tp.team.slots) {
+      const name = roster.get(slot.petId)?.displayName ?? slot.petId;
+      lines.push(`    [${slot.row.padEnd(5)}] ${name} (${slot.assignedClass ?? 'no class'})`);
+    }
+    lines.push('');
+  });
+
+  return lines.join('\n').trimEnd();
 }
 
 /**

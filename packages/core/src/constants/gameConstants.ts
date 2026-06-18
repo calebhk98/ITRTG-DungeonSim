@@ -99,6 +99,31 @@ export const DEFAULT_CONSTANTS: GameConstants = {
     },
   },
 
+  // ── §6.6 Combat resolution ──────────────────────────────────────────────────
+  combat: {
+    maxTurnsPerFight: {
+      value: 50,
+      source: 'research §6.6.2, itrtg.wiki.gg/wiki/Dungeons',
+      confidence: 'community',
+      note:
+        'Fights are hard-capped at 50 turns; if the team has not wiped the enemies ' +
+        'by then it loses automatically. Wiki-confirmed mechanic; exact tie-breaking ' +
+        'at turn 50 (does damage on turn 50 count?) is assumed inclusive of turn 50.',
+    },
+  },
+
+  // ── §6.6.4 Consumable items ──────────────────────────────────────────────────
+  items: {
+    phoenixFeatherHpRestore: {
+      value: 0.2,
+      source: 'research §6.6.4, itrtg.wiki.gg/wiki/Items/Materials',
+      confidence: 'community',
+      note:
+        'Wiki: "Revives one party member and heals 20% HP. Is used at the beginning ' +
+        'of a turn after a party member died."',
+    },
+  },
+
   // ── §5.5 Class modifiers ────────────────────────────────────────────────────
   classMods: {
     value: {
@@ -208,6 +233,15 @@ export const DEFAULT_CONSTANTS: GameConstants = {
       source: 'research §6.3a',
       confidence: 'community',
       note: 'With 20 NRDCs: 15 × (1 - 0.01×20) = 12 min/room.',
+    },
+    wipeRestMinutes: {
+      value: 60,
+      source: 'research §11.2',
+      confidence: 'estimated',
+      note:
+        'Player-reported ~1 hour rest after a team wipe before the run restarts. ' +
+        'Not wiki-confirmed (web was unreachable during research); treat as tunable. ' +
+        'Applied as added elapsed time on a non-cleared run.',
     },
   },
 

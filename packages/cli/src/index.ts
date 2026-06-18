@@ -14,6 +14,7 @@ import {
   DEFAULT_CONSTANTS,
   makeFarmTargetProblem,
   makeTeamCompositionProblem,
+  makeMultiTeamProblem,
   EnumerationOptimizer,
   GreedyOptimizer,
   BeamSearchOptimizer,
@@ -29,6 +30,7 @@ import type {
   PetId,
   Team,
   FarmTargetCandidate,
+  MultiTeamPlan,
 } from '@itrtg-sim/core';
 import { parseRosterFile, buildDefaultTeam, parseTeamSpec } from './roster.js';
 import {
@@ -36,6 +38,7 @@ import {
   formatRunResult,
   formatFarmOptimizeResult,
   formatTeamOptimizeResult,
+  formatMultiTeamResult,
   formatTrace,
 } from './format.js';
 
@@ -210,6 +213,11 @@ program
   .option('--seed <n>', 'RNG seed (for Monte Carlo)')
   .option('--trials <n>', 'Monte Carlo trial count (default: 100)', '100')
   .option(
+    '--phoenix-feathers <n>',
+    'Phoenix Feathers carried into the run (auto-revive at 20% HP, default: 0)',
+    '0',
+  )
+  .option(
     '--team <spec>',
     'comma-separated pet ids (default: first up-to-6 from roster)',
   )
@@ -223,6 +231,7 @@ program
       mode: string;
       seed?: string;
       trials: string;
+      phoenixFeathers: string;
       team?: string;
     }) => {
       // Parse roster.
@@ -262,6 +271,7 @@ program
       const seed =
         options.seed !== undefined ? parseNonNegInt(options.seed, '--seed') : undefined;
       const trials = parsePositiveInt(options.trials, '--trials');
+      const phoenixFeathers = parseNonNegInt(options.phoenixFeathers, '--phoenix-feathers');
 
       // Build team.
       let team: Team;
@@ -291,6 +301,7 @@ program
         rooms,
         nrdcCompletions: 0,
         evaluationMode,
+        ...(phoenixFeathers > 0 ? { phoenixFeathers } : {}),
         ...(seed !== undefined ? { rngSeed: seed } : {}),
         ...(evaluationMode === 'monteCarlo' ? { monteCarloTrials: trials } : {}),
       };
@@ -320,7 +331,7 @@ program
   .requiredOption('--roster <file>', 'normalized pets JSON or raw export file')
   .requiredOption(
     '--dimension <dim>',
-    'optimization dimension: farm | team | gear',
+    'optimization dimension: farm | team | multiteam | gear',
   )
   .requiredOption('--objective <id>', 'objective id (see objectiveRegistry)')
   .option('--dungeon <id>', 'dungeon id (default: Scrapyard)', 'Scrapyard')
@@ -331,6 +342,19 @@ program
   .option('--depth <n>', 'depth tier 1–4 (default: 1)', '1')
   .option('--difficulty <n>', 'difficulty 0–10 (default: 0)', '0')
   .option('--rooms <n>', 'number of rooms (default: 6)', '6')
+  .option(
+    '--teams <n>',
+    'team slots for multiteam dimension (default: 6)',
+    '6',
+  )
+  .option(
+    '--dungeons <ids>',
+    'multiteam: comma-separated dungeon ids teams may pick from (default: --dungeon)',
+  )
+  .option(
+    '--max-unlocked-depth <n>',
+    'multiteam: highest depth the account has unlocked, 1–4 (default: 3; 4 needs all NRDCs)',
+  )
   .option('--seed <n>', 'RNG seed for greedy/beam restarts')
   .option('--max-iterations <n>', 'max optimizer iterations (default: 1000)', '1000')
   .action(
@@ -343,6 +367,9 @@ program
       depth: string;
       difficulty: string;
       rooms: string;
+      teams: string;
+      dungeons?: string;
+      maxUnlockedDepth?: string;
       seed?: string;
       maxIterations: string;
     }) => {
@@ -350,14 +377,18 @@ program
       if (options.dimension === 'gear') {
         console.log(
           'Gear optimization is not yet wired in CLI. ' +
-            'Use --dimension farm or --dimension team.',
+            'Use --dimension farm, team, or multiteam.',
         );
         process.exit(0);
       }
 
-      if (options.dimension !== 'farm' && options.dimension !== 'team') {
+      if (
+        options.dimension !== 'farm' &&
+        options.dimension !== 'team' &&
+        options.dimension !== 'multiteam'
+      ) {
         console.error(
-          `Error: --dimension must be "farm", "team", or "gear" (got "${options.dimension}")`,
+          `Error: --dimension must be "farm", "team", "multiteam", or "gear" (got "${options.dimension}")`,
         );
         process.exit(1);
       }
@@ -461,6 +492,49 @@ program
         console.log(formatFarmOptimizeResult(best, score, trace.length));
         if (trace.length > 0) {
           console.log(formatTrace(trace));
+        }
+        return;
+      }
+
+      // ── Multi-team dimension ──────────────────────────────────────────────
+      if (options.dimension === 'multiteam') {
+        const teamCount = parsePositiveInt(options.teams, '--teams');
+
+        // Candidate dungeons: --dungeons list (each resolved) or the single --dungeon.
+        let dungeons = [dungeon];
+        if (options.dungeons !== undefined && options.dungeons.trim().length > 0) {
+          dungeons = options.dungeons.split(',').map(s => {
+            const id = parseDungeonId(s.trim());
+            const d = getDungeon(id);
+            if (d === undefined) {
+              console.error(`Error: dungeon "${id}" not found (in --dungeons).`);
+              process.exit(1);
+            }
+            return d;
+          });
+        }
+
+        const maxUnlockedDepth =
+          options.maxUnlockedDepth !== undefined
+            ? parseDepth(options.maxUnlockedDepth)
+            : undefined;
+        const mtInputs = {
+          roster,
+          dungeons,
+          objective,
+          constants: DEFAULT_CONSTANTS,
+          teamCount,
+          ...(maxUnlockedDepth !== undefined ? { maxUnlockedDepth } : {}),
+        };
+        const mtProblem = makeMultiTeamProblem(mtInputs);
+        const mtResult = new GreedyOptimizer(rng).run(mtProblem, {
+          maxIterations,
+          traceVerbosity: 'final',
+        });
+        const plan = mtResult.best as MultiTeamPlan;
+        console.log(formatMultiTeamResult(plan, mtResult.score, mtInputs, roster));
+        if (mtResult.trace.length > 0) {
+          console.log(formatTrace(mtResult.trace));
         }
         return;
       }

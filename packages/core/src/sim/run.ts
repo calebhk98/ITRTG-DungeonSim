@@ -9,9 +9,10 @@
  * ## Modeling choices (documented here and in JSDoc below)
  *
  * **HP persistence:** Pet HP carries over across rooms within a run. A pet that
- * is killed stays dead for the remainder of the run (no revives). This matches
- * ITRTG's autonomous-expedition model where there is no mid-run healing mechanic
- * documented in the research doc. TODO: model Supporter-heal or Succubus
+ * is killed is queued for Phoenix Feather revival (research §6.6.4): at the start
+ * of the next turn it is restored to 20% max HP, consuming one feather from the
+ * run-wide `RunConfig.phoenixFeathers` pool. With no feathers left, the death is
+ * permanent for the remainder of the run. TODO: model Supporter-heal or Succubus
  * cross-room regen if/when documented.
  *
  * **XP distribution:** When an enemy is killed, every LIVING ally receives
@@ -46,11 +47,13 @@
  * TODO: implement full event/drop reward modelling per research §8 once event
  * tables are available (requires ≥6-room runs, dungeon info-tab data).
  *
- * **Round safety cap:** Combat loops are capped at 1000 rounds per room to
- * guard against degenerate configurations where neither side can kill the other
- * (e.g. extremely high-defense enemies and low-attack pets).
+ * **50-turn auto-loss:** Each room's fight runs as a turn loop capped at
+ * `constants.combat.maxTurnsPerFight` (50, research §6.6.2). If the team has not
+ * wiped the enemies by then, the fight is an automatic LOSS and the run ends —
+ * this is the game's stalemate-breaker (e.g. high-defense enemies vs low attack),
+ * and replaces the old 1000-round "safety cap".
  *
- * Research §3, §6.3a, §6.4, §7.1, §8.
+ * Research §3, §6.3a, §6.4, §6.6, §7.1, §8.
  */
 
 import type { GameConstants } from '../constants/types.js';
@@ -210,27 +213,40 @@ function runSingleTrial(
 
   // ── Reward accumulators ────────────────────────────────────────────────────
   let totalXp = 0;
-  // Material tier for regular enemies = depth; bosses also use depth tier.
-  const materialTier = config.depth as 1 | 2 | 3 | 4;
+  // Materials accrue per depth tier actually visited (the run ramps through
+  // lower depths — see below), so track them per-tier rather than at one depth.
   const dungeonElement: Element = dungeon.element;
-  let materialCount = 0;
+  const materialByTier = new Map<1 | 2 | 3 | 4, number>();
 
   // ── Step 3: Room loop ──────────────────────────────────────────────────────
-  const bossRoom = BOSS_ROOM_FOR_DEPTH[config.depth];
+  // A run RAMPS through depths (research §3, §11.1): rooms 1–6 are Depth 1
+  // (boss at room 6), 7–16 Depth 2 (boss 16), 17–30 Depth 3 (boss 30), 31–60
+  // Depth 4 (boss 60), capped at the target `config.depth`. So a "D3 run" must
+  // clear the D1 and D2 bosses before reaching D3 enemies — encoding the
+  // sequential depth prerequisite directly in the run. Rooms beyond the target
+  // depth's boss keep farming the target depth.
   let roomsCleared = 0;
+
+  // Phoenix Feather pool — a run-wide shared budget (research §6.6.4). Each
+  // feather auto-revives one fallen pet at the start of the next turn.
+  let feathersRemaining = config.phoenixFeathers ?? 0;
+  const maxTurns = resolve(constants.combat.maxTurnsPerFight);
+  const phoenixRestore = resolve(constants.items.phoenixFeatherHpRestore);
 
   for (let room = 1; room <= config.rooms; room++) {
     // Check if all allies are dead before entering the room.
     const livingAllies = allies.filter(a => a.currentHp > 0);
     if (livingAllies.length === 0) break;
 
-    const isBossRoom = room === bossRoom;
+    // Depth ramps with room number, capped at the run's target depth.
+    const roomDepth = depthForRoom(room, config.depth);
+    const isBossRoom = isBossRoomForTarget(room, config.depth);
 
-    // Build the enemy list for this room.
+    // Build the enemy list for this room (at this room's depth).
     const enemies: CombatContext[] = buildRoomEnemies(
       room,
       isBossRoom,
-      config.depth,
+      roomDepth,
       config.difficulty,
       dungeon,
       allies,
@@ -244,16 +260,44 @@ function runSingleTrial(
       continue;
     }
 
-    // ── Combat resolution loop ─────────────────────────────────────────────
-    const ROUND_CAP = 1000;
-    for (let round = 0; round < ROUND_CAP; round++) {
-      const livingEnemies = enemies.filter(e => e.currentHp > 0);
-      if (livingEnemies.length === 0) break; // All enemies defeated.
+    // ── Combat resolution: turn loop (research §6.6) ────────────────────────
+    // Each turn, all living combatants act in a randomized interleaved order
+    // (resolveRound). A fight is WON only by wiping the enemies; a fight is LOST
+    // by a full ally wipe OR by exceeding the 50-turn cap (auto-loss, §6.6.2).
+    //
+    // Phoenix Feathers (§6.6.4): when a pet dies it is queued for revival and
+    // restored to 20% max HP at the START of the next turn, consuming one feather
+    // from the run-wide pool. With no feathers left, the death is permanent.
+    const pendingRevival = new Set<CombatContext>();
 
-      const livingAlliesNow = allies.filter(a => a.currentHp > 0);
-      if (livingAlliesNow.length === 0) break; // All allies dead.
+    const processRevivals = (): void => {
+      if (pendingRevival.size === 0) return;
+      for (const ctx of pendingRevival) {
+        if (ctx.currentHp > 0) continue; // already alive (shouldn't happen)
+        if (feathersRemaining > 0) {
+          feathersRemaining--;
+          ctx.currentHp = Math.max(1, ctx.stats.hp * phoenixRestore);
+        } else if (ctx.petId !== undefined) {
+          deadPetIds.add(ctx.petId);
+        }
+      }
+      pendingRevival.clear();
+    };
 
-      // Snapshot HP before the round so we can compute damage taken afterwards.
+    let fightWon = false;
+    for (let turn = 0; turn < maxTurns; turn++) {
+      // Start of turn: apply any queued Phoenix Feather revivals.
+      processRevivals();
+
+      if (enemies.every(e => e.currentHp <= 0)) {
+        fightWon = true;
+        break; // All enemies defeated.
+      }
+      if (allies.every(a => a.currentHp <= 0)) {
+        break; // Full wipe and nothing left to revive → fight lost.
+      }
+
+      // Snapshot HP before the turn so we can compute damage taken afterwards.
       // resolveRound mutates currentHp in-place, so we must capture this now.
       const hpBefore = new Map<string, number>();
       for (const ally of allies) {
@@ -273,9 +317,7 @@ function runSingleTrial(
       }
 
       // Accumulate damage taken by each pet from enemy attackers.
-      // Computed as the HP drop between pre-round snapshot and post-round outcome.
-      // resolveRound mutates currentHp, so we use the pre-round snapshot captured above
-      // and the allyHpAfter map from the outcome (which equals currentHp after mutation).
+      // Computed as the HP drop between pre-turn snapshot and post-turn outcome.
       for (const slot of config.team.slots) {
         const accum = perPetMap.get(slot.petId);
         if (accum === undefined) continue;
@@ -285,12 +327,13 @@ function runSingleTrial(
         accum.taken += damageTaken;
       }
 
-      // Process deaths: record ally deaths and XP from enemy deaths.
+      // Process deaths: queue ally revivals and award XP/materials from kills.
       for (const deadKey of outcome.deaths) {
-        // Is it an ally death?
+        // Is it an ally death? → queue for Phoenix Feather revival next turn.
         const deadAlly = allies.find(a => a.petId === deadKey);
         if (deadAlly !== undefined && deadAlly.petId !== undefined) {
-          deadPetIds.add(deadAlly.petId);
+          pendingRevival.add(deadAlly);
+          continue;
         }
 
         // Is it an enemy death? → Award XP and materials.
@@ -300,9 +343,10 @@ function runSingleTrial(
           const archetype = findArchetypeByContextId(deadKey, dungeon);
           if (archetype !== undefined) {
             const xpValue = archetype.xpValue;
-            // Award XP to every currently-living ally.
+            // Award XP to every ally currently alive (dead/down pets get none).
             for (const slot of config.team.slots) {
-              if (!deadPetIds.has(slot.petId)) {
+              const allyCtx = allies.find(a => a.petId === slot.petId);
+              if (allyCtx !== undefined && allyCtx.currentHp > 0) {
                 const accum = perPetMap.get(slot.petId);
                 if (accum !== undefined) {
                   accum.xpGained += xpValue;
@@ -310,24 +354,35 @@ function runSingleTrial(
                 }
               }
             }
-            // Accrue materials: 1 per regular enemy, 3 per boss.
-            materialCount += isBossRoom ? 3 : 1;
+            // Accrue materials at THIS room's depth tier: 1 per regular, 3 per boss.
+            materialByTier.set(roomDepth, (materialByTier.get(roomDepth) ?? 0) + (isBossRoom ? 3 : 1));
           }
         }
       }
+
+      // Post-turn victory check — break before another revival phase so we don't
+      // spend a feather reviving for a fight that is already won.
+      if (enemies.every(e => e.currentHp <= 0)) {
+        fightWon = true;
+        break;
+      }
     }
 
-    // After room combat: check if any allies died and mark them.
+    // On a win, revive any pet that fell on the killing turn so it carries into
+    // the next room (consuming a feather); otherwise leave it down.
+    if (fightWon) {
+      processRevivals();
+    }
+
+    // Mark any allies still down as permanently dead for the rest of the run.
     for (const a of allies) {
       if (a.currentHp <= 0 && a.petId !== undefined) {
         deadPetIds.add(a.petId);
       }
     }
 
-    // Count room as cleared only if at least one ally survived the room.
-    const survivorsAfter = allies.filter(a => a.currentHp > 0);
-    if (survivorsAfter.length === 0) {
-      // Full wipe — run ends here (don't count this room as cleared).
+    if (!fightWon) {
+      // Full wipe or 50-turn auto-loss — the run ends here; room not cleared.
       break;
     }
     roomsCleared++;
@@ -337,20 +392,27 @@ function runSingleTrial(
   const minutesPerRoom = resolve(constants.timing.minutesPerRoom);
   const nrdcReduction = resolve(constants.timing.nrdcReductionPerCompletion);
   const timePerRoom = minutesPerRoom * (1 - nrdcReduction * config.nrdcCompletions);
-  const elapsedMinutes = roomsCleared * timePerRoom;
+  // A failed run (wipe / 50-turn auto-loss) costs the rooms attempted PLUS a
+  // rest penalty before the team can restart (research §11.2).
+  const cleared = roomsCleared === config.rooms;
+  const wipeRest = cleared ? 0 : resolve(constants.timing.wipeRestMinutes);
+  const elapsedMinutes = roomsCleared * timePerRoom + wipeRest;
 
   // ── Step 5: Assemble rewards ──────────────────────────────────────────────
-  // Accrued materials: sparse record for the dungeon element at the depth tier.
+  // Accrued materials: sparse record for the dungeon element, by depth tier
+  // actually visited during the run's depth ramp.
   // TODO: full reward modelling per research §8 — events (≥6-room), GP, Lucky Draws,
   // pet stones, equipment drops, key materials, runes. These are zero for now.
   const materialRecord: Partial<Record<1 | 2 | 3 | 4, number>> = {};
-  if (materialCount > 0) {
-    materialRecord[materialTier] = materialCount;
+  let materialTotal = 0;
+  for (const [tier, count] of materialByTier) {
+    if (count > 0) {
+      materialRecord[tier] = count;
+      materialTotal += count;
+    }
   }
   const materials: Partial<Record<Element, Partial<Record<1 | 2 | 3 | 4, number>>>> =
-    materialCount > 0
-      ? { [dungeonElement]: materialRecord }
-      : {};
+    materialTotal > 0 ? { [dungeonElement]: materialRecord } : {};
 
   const rewards: RewardBundle = {
     godPower: 0,       // TODO: model GP rewards from events/rooms (research §8.1)
@@ -373,8 +435,6 @@ function runSingleTrial(
       xpGained: accum.xpGained,
     });
   }
-
-  const cleared = roomsCleared === config.rooms;
 
   return {
     cleared,
@@ -400,6 +460,42 @@ const BOSS_ROOM_FOR_DEPTH: Readonly<Record<Depth, number>> = {
   3: 30,
   4: 60,
 } as const;
+
+/**
+ * The depth of a given room within the run's depth ramp (research §3, §11.1),
+ * capped at the run's `targetDepth`.
+ *
+ * Rooms 1–6 are Depth 1, 7–16 Depth 2, 17–30 Depth 3, 31+ Depth 4 — but never
+ * deeper than the target. Rooms past the target depth's boss keep farming the
+ * target depth.
+ */
+function depthForRoom(room: number, targetDepth: Depth): Depth {
+  let segment: Depth;
+  if (room <= BOSS_ROOM_FOR_DEPTH[1]) segment = 1;
+  else if (room <= BOSS_ROOM_FOR_DEPTH[2]) segment = 2;
+  else if (room <= BOSS_ROOM_FOR_DEPTH[3]) segment = 3;
+  else segment = 4;
+  return (segment < targetDepth ? segment : targetDepth) as Depth;
+}
+
+/** Room → the depth whose boss sits there (6→1, 16→2, 30→3, 60→4), else undefined. */
+const BOSS_DEPTH_AT_ROOM: ReadonlyMap<number, Depth> = new Map([
+  [BOSS_ROOM_FOR_DEPTH[1], 1],
+  [BOSS_ROOM_FOR_DEPTH[2], 2],
+  [BOSS_ROOM_FOR_DEPTH[3], 3],
+  [BOSS_ROOM_FOR_DEPTH[4], 4],
+]);
+
+/**
+ * Whether `room` is a boss checkpoint that is actually reached on the way to
+ * `targetDepth`. The Depth-d boss at its checkpoint room only appears when the
+ * run is going at least that deep (so a D2-capped run never spawns the D3 boss,
+ * even if it farms past room 16).
+ */
+function isBossRoomForTarget(room: number, targetDepth: Depth): boolean {
+  const bossDepth = BOSS_DEPTH_AT_ROOM.get(room);
+  return bossDepth !== undefined && bossDepth <= targetDepth;
+}
 
 // ── Room enemy construction ───────────────────────────────────────────────────
 

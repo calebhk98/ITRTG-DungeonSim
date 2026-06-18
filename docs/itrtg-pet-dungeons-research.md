@@ -393,14 +393,99 @@ for mages/rogues.
 
 ---
 
+## 6.6 Fight resolution: turns, action order, and the 50-turn cap
+
+### 6.6.1 Turn/round structure and action counts
+
+A single **room encounter** proceeds in discrete **turns** (also called **rounds** in
+the codebase). Within each turn, every living creature (pet or enemy) performs actions
+equal to its speed, subject to the actions-per-round table (research §6.3):
+
+- **Speed 0:** 1 action/turn
+- **Speed 1–500:** base 1 action + `(speed/5)%` chance of a 2nd action
+- **Speed 501–1500:** base 1 action + `((speed−500)/10)%` chance of a 3rd action
+- **Speed 1500+:** hard cap at 3 actions/turn
+
+**Action order within a turn** is **randomized per turn**. Although faster creatures
+are probabilistically more likely to act first (via the higher chance of multiple
+actions), the exact order of all actions in a given turn is rolled each turn — there
+is no fixed turn-order initiative list. This creates a stochastic element even in
+expected-value simulations.
+
+**Wiki-confirmed** (Dungeons page): "Combat consists of one or more rounds (also called
+turns), in which your pets and the enemies attack each other… Speed also determines
+the order of everyone's actions, with faster pets/enemies being more likely to act
+first."
+
+### 6.6.2 50-turn auto-loss limit
+
+Fights have a **hard limit of 50 turns**. If a fight does not end (one side or the
+other dead) within 50 turns, the team **loses automatically**. This is the primary
+game-balance mechanism preventing degenerate stalemates (e.g., extreme defense vs.
+low attack).
+
+**Wiki-confirmed** (search results for dungeon mechanics): "In ITRTG dungeons, you
+simply need to survive the incoming damage, and deal enough damage of your own to win
+within the 50 turn limit."
+
+### 6.6.3 Room structure: single room = one encounter
+
+A **room** is the basic unit (15 minutes play-time). Each room contains **one encounter
+with a variable number of enemies**. There are no sequential waves within a room — all
+enemies are present simultaneously and fight as one group.
+
+Enemies are rolled from the dungeon's `RoomEnemyTable` (a weighted pool) for each room.
+The number of enemies per room is determined by:
+- **Draws per room:** typically 1 draw from the table
+- **Count per enemy:** each rolled enemy archetype has a min/max spawn count
+
+Example: a room might roll "1 Ancient Mimic" or "3 Fire Slimes + 2 Fire Mages",
+depending on the table and RNG.
+
+**Boss rooms** (rooms 6, 16, 30, 60 per depth) contain the appropriate boss archetype
+scaled by the `bossMult` formula (research §7.1).
+
+### 6.6.4 Phoenix Feather and revival consumables
+
+**Phoenix Feathers** are consumable items used during dungeon runs that revive fallen
+pets.
+
+Mechanic:
+- **Trigger:** when a pet's HP drops to ≤ 0 during a turn, the game checks for an
+  available Phoenix Feather in the inventory.
+- **Effect:** if available, the feather is consumed at the **start of the next turn**,
+  and the dead pet **auto-revives with 20% max HP restored**.
+- **Availability:** players carry a limited number of feathers into a run (no in-run
+  crafting). Multiple feathers can be used across a single run, reviving different pets
+  as needed.
+- **Crafting cost:** "6 Herbs, 1 Feather, 1 Hot Stone, 3 Antidote, 1 Magic Herb / 12 hr"
+  (expensive, making them a strategic resource).
+
+**Wiki-confirmed** (Items/Materials page): "Revives one party member and heals 20% HP.
+Is used at the beginning of a turn after a party member died."
+
+**Related consumables** (from Depth 4 guide):
+- **Healing Potions:** restore HP during a run. Exact values not documented on fetched
+  pages.
+- **Freezing Bombs:** reduce enemy speed by 50% (once per enemy/turn unclear).
+- **Nanotraps:** special mechanic for Scrapyard Nanobots (damage interaction not
+  specified).
+
+The current ITRTG-DungeonSim implementation models pets as permanently dead once killed
+in a room (no revive mechanic implemented). A TODO notes this as a limitation for
+future work.
+
+---
+
 ## 10. Simulator Implications (for ITRTG-DungeonSim)
 
 Things a faithful sim needs to model:
 
 - **Per-pet stat derivation** from DL, Growth, Equip, Dojo, Strategy Room, Class
   (§6.1).
-- **Round resolution** with the Speed→actions table (§6.3) and damage formula
-  with Defense diminishing returns (§6.2).
+- **Turn resolution** with the Speed→actions table (§6.3), randomized action order
+  per turn, and the 50-turn auto-loss limit (§6.6.1–6.6.2).
+- **Damage formula** with Defense diminishing returns (§6.2).
 - **Elemental level system** and weakness cycle (§5.3).
 - **Front/back row** targeting rules + Mage/Sniper exemption (§3).
 - **Per-enemy scaling** (mixed linear/exponential — don't assume one curve) and
@@ -409,6 +494,151 @@ Things a faithful sim needs to model:
 - **Reward/event rolls** per room (≥6-room runs), drop-rate formulas (§8).
 - **Class abilities** as combat modifiers (Supporter dmg reduction, heals,
   Lucky Coin burst, etc.) (§5.6).
+- **Consumable mechanics** — Phoenix Feather revival, healing potions, speed debuffs,
+  etc. (§6.6.4) — **currently unimplemented in the simulator**.
+
+---
+
+## 11. Depth unlocks, wipe penalty, and run consumables
+
+### 11.1 Depth unlocks — sequential, within-run ramp
+
+> **CORRECTION (player-confirmed).** An earlier draft of this section guessed that
+> D1–D3 had no hard gate. That is **wrong**. Depths are a **strict sequential gate**:
+> you cannot do Depth N until you have killed the Depth N-1 **boss**.
+
+**How a run works (player-confirmed):** A run does **not** play every room at the
+selected depth. Instead it **ramps up through the depths**, and you must clear each
+depth's boss to proceed to the next. A run targeting Depth D plays Depth-1 rooms up to
+the D1 boss, then Depth-2 rooms up to the D2 boss, …, then Depth-D rooms; any rooms past
+the D boss keep farming Depth D. Concretely, with the documented boss rooms:
+
+| Segment | Rooms | Boss at | Must clear to proceed |
+|---|---|---|---|
+| **Depth 1** | 1–6 | room 6 | D1 boss → unlocks D2 rooms |
+| **Depth 2** | 7–16 | room 16 | D2 boss → unlocks D3 rooms |
+| **Depth 3** | 17–30 | room 30 | D3 boss → unlocks D4 rooms |
+| **Depth 4** | 31–60 | room 60 | — (also requires all 20 NRDCs to access at all) |
+
+So a 60-room "D3 run" spends its early rooms on D1, then D2, then D3 (the player's
+"15 D1, then 15 for D2, then the last 30 D3" — exact split approximate; the boss rooms
+6/16/30/60 are the wiki figures). A team that cannot beat, say, the **D2 boss** never
+reaches D3 enemies, regardless of the selected depth.
+
+**Consequences:**
+- The sequential prerequisite ("kill D1 before D2", "D2 boss before D3") is enforced
+  **automatically** by simulating the ramp — clearing Depth D *requires* clearing the
+  bosses of depths 1..D-1 in the same run.
+- **Depth 4 additionally requires all 20 NRDCs** to be accessible at all (research §2,
+  §3) — modelled as an account-level unlock cap in the optimizer.
+
+**Confidence:** high (player-confirmed mechanic). Exact per-depth room counts use the
+wiki boss-room figures (6/16/30/60); the player notes the split numbers approximately.
+
+### 11.2 Team-wipe rest penalty
+
+**Full-team defeat mechanic:** When all 6 pets in a dungeon team are defeated during
+a run (team wipe / total party kill), the run ends and the team becomes unavailable
+for a period.
+
+**Reported cooldown:** Player-reported as "about an hour rest, then you restart" (i.e.,
+the team cannot be sent on a new run for ~60 minutes following a wipe).
+
+**Restart behavior:** Once the cooldown expires, the next run **restarts from room 1**
+(no mid-run resume or checkpointing).
+
+**Status:** This mechanic is **player-reported but not wiki-confirmed** on accessible
+pages. No exact duration found in documentation. The in-game info tab (research §8.3)
+may display the exact cooldown on a defeated team.
+
+**Confidence:** low. The rule seems plausible (time penalties for failure are common in
+idle games) but the exact duration (60 minutes vs. other values) is unverified.
+
+**Simulator implications:** Wipe penalties do not affect combat resolution or per-room
+mechanics, so they are out of scope for the current simulator (which models single runs).
+A scheduler/planning tool might incorporate this as a team-availability constraint.
+
+### 11.3 Consumables — potions, bombs, traps, and events
+
+Consumable items are single-use or limited-use resources carried into a dungeon run.
+The following are confirmed or partially documented:
+
+#### Phoenix Feathers (fully researched in §6.6.4)
+
+Already covered: **Revive mechanic**, **20% HP restore**, **12 hr crafting cost**.
+
+#### Healing Potions
+
+**Confirmed to exist** but **exact mechanic not fully documented.**
+
+- **Effect (inferred):** likely restore a fixed or percentage-based amount of HP to one
+  pet or the whole team.
+- **Usage (unclear):** auto-triggered when HP drops below a threshold, or manually
+  activated by the player (ITRTG is fully autonomous, so likely automatic).
+- **Inventory limit:** unknown whether capped or stackable.
+- **Source:** crafted or earned as run rewards.
+
+**Confidence:** low. Neither the amount restored nor the usage rule is confirmed on
+fetched wiki pages.
+
+#### Freezing Bombs
+
+**Confirmed name and general effect**, but **exact mechanics unresolved.**
+
+- **Effect (inferred):** reduce enemy Speed by 50% for some duration.
+- **Scope (unclear):** single enemy vs. all enemies in the room.
+- **Duration (unclear):** one turn, entire room, or permanent.
+- **Per-use limit:** "once per enemy/turn" is unclear — does each bomb affect one enemy,
+  or multiple?
+- **Source:** likely crafted or looted.
+
+**Wiki reference:** mentioned in Depth 4 guide as a trap-mitigation tool.
+
+**Confidence:** low. The precise scope and duration are not documented.
+
+#### Nanotraps (for Scrapyard Nanobots)
+
+**Special mechanics for Scrapyard Depth 4 Nanobot enemies** (which have a replication
+hazard — uncontrolled spawning if not handled).
+
+- **Effect:** prevent or disable Nanobot replication.
+- **Interaction (unspecified):** exact interaction with Nanobot damage or spawning
+  rules unknown.
+- **Usage:** likely one-time use per room or per Nanobot encounter.
+
+**Source:** crafted or looted; required for high-difficulty Scrapyard D4 runs with
+Nanobots.
+
+**Confidence:** very low. Nanobot mechanics themselves are only partially documented
+(replication hazard noted; formula not found).
+
+#### Event-triggered consumables
+
+Some dungeon events require specific items to *unlock a bonus outcome*:
+
+- **Nothing (Other)** + **Hot Stone** at Scrapyard D2 (room 16 area) enables a
+  special event reward. See research §8.3 (event examples); consult in-game event
+  info tab for exact item requirements per dungeon/event.
+
+**Confidence:** medium. The Nothing + Hot Stone combo is documented in community guides
+and the data file; other event prerequisites may exist.
+
+#### Summary table
+
+| Item | Confirms usage | Effect | Duration | Per-room? | Source |
+|---|---|---|---|---|---|
+| **Phoenix Feather** | Yes | Revive + 20% HP | 1 pet, 1 use | Consumed per use | Crafted (12 h) |
+| **Healing Potion** | Partial | Restore HP (amt unknown) | Unknown | Unclear | Crafted / Looted |
+| **Freezing Bomb** | Partial | -50% enemy Speed | Unknown | Likely 1 per room | Crafted / Looted |
+| **Nanotraps** | Partial | Disable Nanobot replication | Unknown | Likely per room | Crafted / Looted |
+| **Nothing + Hot Stone** | Yes (event) | Unlock event bonus | Encounter | Event-specific | Looted / Crafted |
+
+**Simulator implications:** Phoenix Feathers are partially modeled (field in `RunConfig`,
+though revival logic is not yet implemented per §6.6.4, §10). Healing potions, freezing
+bombs, and Nanotraps are **not currently modeled** — they would require:
+1. Inventory/capacity tracking (items carried per run).
+2. Auto-trigger logic (when/how items are used during combat).
+3. Stat/damage adjustments mid-run (Speed debuffs, healing actions, etc.).
 
 ---
 

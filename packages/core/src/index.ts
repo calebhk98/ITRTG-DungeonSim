@@ -24,6 +24,8 @@ export type {
   TimingConstants,
   XpConstants,
   RewardConstants,
+  CombatResolutionConstants,
+  ItemConstants,
 } from './constants/types.js';
 export { resolve } from './constants/types.js';
 export { DEFAULT_CONSTANTS } from './constants/gameConstants.js';
@@ -111,6 +113,15 @@ export type {
   GearAssignment,
   GearPlacement,
 } from './optimizer/problems/gearAllocation.js';
+
+// ── Optimizer — multi-team roster partition ──────────────────────────────────
+export { makeMultiTeamProblem, summarizeMultiTeamPlan } from './optimizer/problems/multiTeam.js';
+export type {
+  MultiTeamInputs,
+  MultiTeamPlan,
+  TeamPlan,
+  TeamPlanSummary,
+} from './optimizer/problems/multiTeam.js';
 
 // ── Optimizer — joint coordinate descent (WP-JOINT) ──────────────────────────
 export { optimizeJoint, applyGear } from './optimizer/joint.js';

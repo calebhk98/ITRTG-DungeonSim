@@ -88,6 +88,13 @@ export interface RunConfig {
    * Research §6.3a: 20 completions → 12 min/room.
    */
   readonly nrdcCompletions: number;
+  /**
+   * Number of Phoenix Feathers carried into the run (research §6.6.4).
+   * Each feather auto-revives one fallen pet at the start of the next turn with
+   * 20% max HP. Feathers are consumed across the whole run (a shared pool, not
+   * per-room). Omit or set 0 for the no-revive baseline.
+   */
+  readonly phoenixFeathers?: number;
   /** Which simulation strategy to use. */
   readonly evaluationMode: EvaluationMode;
   /**
