@@ -37,6 +37,7 @@ export default function SimulateTab({ roster }: SimulateTabProps): React.ReactEl
   const [rooms, setRooms] = useState(16);
   const [mode, setMode] = useState<EvaluationMode>('expected');
   const [seed, setSeed] = useState(12345);
+  const [phoenixFeathers, setPhoenixFeathers] = useState(0);
   const [slots, setSlots] = useState<SlotConfig[]>([]);
   const [result, setResult] = useState<RunResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -118,6 +119,7 @@ export default function SimulateTab({ roster }: SimulateTabProps): React.ReactEl
         rooms,
         nrdcCompletions: 0,
         evaluationMode: mode,
+        ...(phoenixFeathers > 0 ? { phoenixFeathers } : {}),
         ...(mode === 'monteCarlo' ? { rngSeed: seed, monteCarloTrials: 50 } : {}),
       };
 
@@ -176,6 +178,10 @@ export default function SimulateTab({ roster }: SimulateTabProps): React.ReactEl
           <div className="field">
             <label>Rooms</label>
             <input type="number" min={1} max={60} value={rooms} onChange={e => setRooms(Number(e.target.value))} style={{ width: 80 }} />
+          </div>
+          <div className="field">
+            <label>Phoenix Feathers</label>
+            <input type="number" min={0} value={phoenixFeathers} onChange={e => setPhoenixFeathers(Math.max(0, Number(e.target.value)))} style={{ width: 80 }} />
           </div>
           {mode === 'monteCarlo' && (
             <div className="field">

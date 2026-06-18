@@ -210,6 +210,11 @@ program
   .option('--seed <n>', 'RNG seed (for Monte Carlo)')
   .option('--trials <n>', 'Monte Carlo trial count (default: 100)', '100')
   .option(
+    '--phoenix-feathers <n>',
+    'Phoenix Feathers carried into the run (auto-revive at 20% HP, default: 0)',
+    '0',
+  )
+  .option(
     '--team <spec>',
     'comma-separated pet ids (default: first up-to-6 from roster)',
   )
@@ -223,6 +228,7 @@ program
       mode: string;
       seed?: string;
       trials: string;
+      phoenixFeathers: string;
       team?: string;
     }) => {
       // Parse roster.
@@ -262,6 +268,7 @@ program
       const seed =
         options.seed !== undefined ? parseNonNegInt(options.seed, '--seed') : undefined;
       const trials = parsePositiveInt(options.trials, '--trials');
+      const phoenixFeathers = parseNonNegInt(options.phoenixFeathers, '--phoenix-feathers');
 
       // Build team.
       let team: Team;
@@ -291,6 +298,7 @@ program
         rooms,
         nrdcCompletions: 0,
         evaluationMode,
+        ...(phoenixFeathers > 0 ? { phoenixFeathers } : {}),
         ...(seed !== undefined ? { rngSeed: seed } : {}),
         ...(evaluationMode === 'monteCarlo' ? { monteCarloTrials: trials } : {}),
       };

@@ -140,6 +140,25 @@ export interface TowerConstants {
   xpCapFloor: Const<number>;
 }
 
+/** Combat resolution constants (research §6.6). */
+export interface CombatResolutionConstants {
+  /**
+   * Hard cap on the number of turns a single fight (room encounter) may run.
+   * If neither side is wiped within this many turns, the team LOSES automatically
+   * (research §6.6.2). Replaces the old "round safety cap" with a game-accurate rule.
+   */
+  maxTurnsPerFight: Const<number>;
+}
+
+/** Consumable-item constants (research §6.6.4). */
+export interface ItemConstants {
+  /**
+   * Fraction of a pet's max HP restored when a Phoenix Feather revives it.
+   * Research §6.6.4: revive at the start of the next turn with 20% max HP.
+   */
+  phoenixFeatherHpRestore: Const<number>;
+}
+
 /** Run timing constants (research §6.3a). */
 export interface TimingConstants {
   /** Base minutes per room before NRDC reductions (research §3: 15). */
@@ -219,6 +238,14 @@ export interface GameConstants {
   // ── §6.3 Speed → actions ───────────────────────────────────────────────────
   /** Speed threshold constants for multi-action mechanic. */
   speedThresholds: SpeedThresholds;
+
+  // ── §6.6 Combat resolution ─────────────────────────────────────────────────
+  /** Turn-loop resolution constants (50-turn auto-loss cap). */
+  combat: CombatResolutionConstants;
+
+  // ── §6.6.4 Consumable items ────────────────────────────────────────────────
+  /** Consumable-item constants (Phoenix Feather revive, etc.). */
+  items: ItemConstants;
 
   // ── §5.5 Class modifiers ───────────────────────────────────────────────────
   /** Stat multipliers for each pet class. */

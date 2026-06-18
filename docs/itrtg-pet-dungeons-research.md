@@ -393,14 +393,99 @@ for mages/rogues.
 
 ---
 
+## 6.6 Fight resolution: turns, action order, and the 50-turn cap
+
+### 6.6.1 Turn/round structure and action counts
+
+A single **room encounter** proceeds in discrete **turns** (also called **rounds** in
+the codebase). Within each turn, every living creature (pet or enemy) performs actions
+equal to its speed, subject to the actions-per-round table (research §6.3):
+
+- **Speed 0:** 1 action/turn
+- **Speed 1–500:** base 1 action + `(speed/5)%` chance of a 2nd action
+- **Speed 501–1500:** base 1 action + `((speed−500)/10)%` chance of a 3rd action
+- **Speed 1500+:** hard cap at 3 actions/turn
+
+**Action order within a turn** is **randomized per turn**. Although faster creatures
+are probabilistically more likely to act first (via the higher chance of multiple
+actions), the exact order of all actions in a given turn is rolled each turn — there
+is no fixed turn-order initiative list. This creates a stochastic element even in
+expected-value simulations.
+
+**Wiki-confirmed** (Dungeons page): "Combat consists of one or more rounds (also called
+turns), in which your pets and the enemies attack each other… Speed also determines
+the order of everyone's actions, with faster pets/enemies being more likely to act
+first."
+
+### 6.6.2 50-turn auto-loss limit
+
+Fights have a **hard limit of 50 turns**. If a fight does not end (one side or the
+other dead) within 50 turns, the team **loses automatically**. This is the primary
+game-balance mechanism preventing degenerate stalemates (e.g., extreme defense vs.
+low attack).
+
+**Wiki-confirmed** (search results for dungeon mechanics): "In ITRTG dungeons, you
+simply need to survive the incoming damage, and deal enough damage of your own to win
+within the 50 turn limit."
+
+### 6.6.3 Room structure: single room = one encounter
+
+A **room** is the basic unit (15 minutes play-time). Each room contains **one encounter
+with a variable number of enemies**. There are no sequential waves within a room — all
+enemies are present simultaneously and fight as one group.
+
+Enemies are rolled from the dungeon's `RoomEnemyTable` (a weighted pool) for each room.
+The number of enemies per room is determined by:
+- **Draws per room:** typically 1 draw from the table
+- **Count per enemy:** each rolled enemy archetype has a min/max spawn count
+
+Example: a room might roll "1 Ancient Mimic" or "3 Fire Slimes + 2 Fire Mages",
+depending on the table and RNG.
+
+**Boss rooms** (rooms 6, 16, 30, 60 per depth) contain the appropriate boss archetype
+scaled by the `bossMult` formula (research §7.1).
+
+### 6.6.4 Phoenix Feather and revival consumables
+
+**Phoenix Feathers** are consumable items used during dungeon runs that revive fallen
+pets.
+
+Mechanic:
+- **Trigger:** when a pet's HP drops to ≤ 0 during a turn, the game checks for an
+  available Phoenix Feather in the inventory.
+- **Effect:** if available, the feather is consumed at the **start of the next turn**,
+  and the dead pet **auto-revives with 20% max HP restored**.
+- **Availability:** players carry a limited number of feathers into a run (no in-run
+  crafting). Multiple feathers can be used across a single run, reviving different pets
+  as needed.
+- **Crafting cost:** "6 Herbs, 1 Feather, 1 Hot Stone, 3 Antidote, 1 Magic Herb / 12 hr"
+  (expensive, making them a strategic resource).
+
+**Wiki-confirmed** (Items/Materials page): "Revives one party member and heals 20% HP.
+Is used at the beginning of a turn after a party member died."
+
+**Related consumables** (from Depth 4 guide):
+- **Healing Potions:** restore HP during a run. Exact values not documented on fetched
+  pages.
+- **Freezing Bombs:** reduce enemy speed by 50% (once per enemy/turn unclear).
+- **Nanotraps:** special mechanic for Scrapyard Nanobots (damage interaction not
+  specified).
+
+The current ITRTG-DungeonSim implementation models pets as permanently dead once killed
+in a room (no revive mechanic implemented). A TODO notes this as a limitation for
+future work.
+
+---
+
 ## 10. Simulator Implications (for ITRTG-DungeonSim)
 
 Things a faithful sim needs to model:
 
 - **Per-pet stat derivation** from DL, Growth, Equip, Dojo, Strategy Room, Class
   (§6.1).
-- **Round resolution** with the Speed→actions table (§6.3) and damage formula
-  with Defense diminishing returns (§6.2).
+- **Turn resolution** with the Speed→actions table (§6.3), randomized action order
+  per turn, and the 50-turn auto-loss limit (§6.6.1–6.6.2).
+- **Damage formula** with Defense diminishing returns (§6.2).
 - **Elemental level system** and weakness cycle (§5.3).
 - **Front/back row** targeting rules + Mage/Sniper exemption (§3).
 - **Per-enemy scaling** (mixed linear/exponential — don't assume one curve) and
@@ -409,6 +494,8 @@ Things a faithful sim needs to model:
 - **Reward/event rolls** per room (≥6-room runs), drop-rate formulas (§8).
 - **Class abilities** as combat modifiers (Supporter dmg reduction, heals,
   Lucky Coin burst, etc.) (§5.6).
+- **Consumable mechanics** — Phoenix Feather revival, healing potions, speed debuffs,
+  etc. (§6.6.4) — **currently unimplemented in the simulator**.
 
 ---
 

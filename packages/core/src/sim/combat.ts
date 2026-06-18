@@ -341,20 +341,47 @@ function effectiveAttackerSpeed(attacker: CombatContext, constants: GameConstant
 }
 
 /**
- * Resolve one round of combat.
+ * Fisher–Yates shuffle in place, driven by the injected RNG.
+ *
+ * Used to randomize the within-turn action order (research §6.6.1). In MC mode
+ * this produces a fresh random order each turn; in EV mode `ExpectedValueRng`
+ * makes it deterministic — but EV resolution sorts by speed instead (see
+ * `resolveRound`), so this is only exercised in MC mode.
+ */
+function shuffleInPlace<T>(arr: T[], rng: Rng): void {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = rng.int(i + 1);
+    const tmp = arr[i]!;
+    arr[i] = arr[j]!;
+    arr[j] = tmp;
+  }
+}
+
+/** One combatant tagged with the side it fights for (for interleaved ordering). */
+interface OrderedCombatant {
+  readonly ctx: CombatContext;
+  readonly isAlly: boolean;
+}
+
+/**
+ * Resolve one TURN of combat (research §6.6.1).
  *
  * ── Execution order ──────────────────────────────────────────────────────────
  *
- *   For each ally (in array order, skipping dead):
- *     1. Pick target from enemies (front-row first).
- *     2. Compute damage pipeline (Steps 1–5, §6.2).
- *     3. Check attacker abilities (luckyCoin, succubusHeal).
- *     4. Check defender-side supporterDmgReduction from any living enemy Supporter.
- *        (Enemies don't have supporterDmgReduction in the base game, but the registry
- *        is checked symmetrically for extensibility.)
- *     5. Apply damage to target.currentHp; record death if ≤ 0.
+ *   All living combatants — allies AND enemies — act in a single interleaved
+ *   order, not allies-then-enemies. This matches the game's randomized per-turn
+ *   action order ("faster pets/enemies are more likely to act first"):
+ *     - MC mode: the combined list is shuffled with the seeded RNG each turn.
+ *     - EV mode: the list is sorted by effective speed (descending) as a
+ *       deterministic proxy for "faster acts first" (no variance in EV).
  *
- *   Repeat for each enemy against allies.
+ *   For each combatant in that order (skipping any already dead this turn):
+ *     1. Pick a target from the opposing living side (front-row first).
+ *     2. Compute the damage pipeline (Steps 1–5, §6.2).
+ *     3. Apply attacker abilities (luckyCoin, succubusHeal) and defender-side
+ *        supporterDmgReduction.
+ *     4. Apply damage to target.currentHp; record death if ≤ 0. A combatant that
+ *        dies mid-turn no longer acts and can no longer be targeted.
  *
  * Modifies: `currentHp` on all passed `CombatContext` objects (they are
  * intended to be mutable working copies for the duration of the room fight).
@@ -363,7 +390,7 @@ function effectiveAttackerSpeed(attacker: CombatContext, constants: GameConstant
  * @param enemies  - Enemy combatants. `currentHp` is mutated.
  * @param constants - Game constants (DEFAULT_CONSTANTS in production).
  * @param strategy  - EV or MC strategy; drives `actionsForSpeed` and `roll`.
- * @param rng       - RNG passed through to ability hooks.
+ * @param rng       - RNG used for action order (MC) and ability hooks.
  * @returns A `RoundOutcome` with damage totals, deaths, and HP snapshots.
  */
 export function resolveRound(
@@ -388,165 +415,186 @@ export function resolveRound(
     }
   }
 
+  // Detect EV vs MC once per turn (not per attacker), since the probe consumes
+  // an RNG draw in MC mode. EV: roll returns a number; MC: roll returns boolean.
+  const isEvMode = typeof strategy.roll(0.5) === 'number';
+
+  // Pre-compute which side has a living Supporter (team-wide damage reduction).
+  const alliesHaveSupporter = allies.some(
+    a => a.currentHp > 0 && a.abilities.includes('supporterDmgReduction'),
+  );
+  const enemiesHaveSupporter = enemies.some(
+    e => e.currentHp > 0 && e.abilities.includes('supporterDmgReduction'),
+  );
+
   /**
-   * Apply one "side" of combat: `attackers` attack `defenders`.
-   *
-   * Each living attacker picks a target from the living defenders and applies
-   * the full damage pipeline, including ability hooks.
+   * Execute one attacker's full turn against the opposing side.
    */
-  function resolveOneSide(
-    attackers: ReadonlyArray<CombatContext>,
+  function executeAttack(
+    attacker: CombatContext,
+    ownSide: ReadonlyArray<CombatContext>,
     defenders: ReadonlyArray<CombatContext>,
+    defenderSideHasSupporter: boolean,
   ): void {
-    // Pre-compute which defending side has supporterDmgReduction active.
-    // (Any living defender with the flag triggers team-wide reduction.)
-    const defenderSideHasSupporter = defenders.some(
-      d => d.currentHp > 0 && d.abilities.includes('supporterDmgReduction'),
+    const target = pickTarget(defenders);
+    if (target === undefined) return; // all defenders dead — nothing to do
+
+    const attackerKey = combatantKey(attacker);
+    const targetKey = combatantKey(target);
+
+    // ── Speed → actions ──────────────────────────────────────────────────
+    const actions = strategy.actionsForSpeed(attacker.stats.spd, constants);
+
+    // ── Effective attacker speed (front-row bonus, §6.2) ─────────────────
+    const effAtkSpd = effectiveAttackerSpeed(attacker, constants);
+
+    // ── Hit chance (§6.2) ────────────────────────────────────────────────
+    //   hit% = min(1, max(hitChanceFloor, effAtkSpd / (defenderSpd × 1.2)))
+    const hitFloor = resolve(constants.damage.hitChanceFloor); // 0.05
+    const hitChance = Math.min(1, Math.max(hitFloor, effAtkSpd / (target.stats.spd * 1.2)));
+
+    // ── Elemental levels (§6.2 Step 2) ──────────────────────────────────
+    const { A: rawA, D: rawD } = pickElementalLevels(
+      attacker.element,
+      attacker.elementLevels,
+      target.elementLevels,
     );
+    const elemFactor = elementalFactor(rawA, rawD);
 
-    for (const attacker of attackers) {
-      if (attacker.currentHp <= 0) continue; // dead attackers don't act
+    // ── Defense factor (§6.2 Step 3) ─────────────────────────────────────
+    const K = resolve(constants.damage.defenseSoftCapK); // 200
+    const defFactor = 1 - target.stats.def / (target.stats.def + K);
 
-      const target = pickTarget(defenders);
-      if (target === undefined) break; // all defenders dead — combat over for this side
+    // ── Speed damage (§6.2 Step 4) ────────────────────────────────────────
+    const divisor = resolve(constants.damage.speedDamageDivisor); // 2
+    const speedDmg = Math.max(0, (effAtkSpd - target.stats.spd) / divisor);
 
-      const attackerKey = combatantKey(attacker);
-      const targetKey = combatantKey(target);
+    // ── Back-row modifier (§6.2 Step 5) ──────────────────────────────────
+    const backPenalty = resolve(constants.damage.backRowPenalty); // 0.80
+    const classMods = resolve(constants.classMods);
+    const ignoresBackRow =
+      attacker.assignedClass !== null &&
+      (classMods[attacker.assignedClass]?.ignoresBackRowPenalty ?? false);
+    const backRowMod = attacker.row === 'back' && !ignoresBackRow ? backPenalty : 1.0;
 
-      // ── Speed → actions ──────────────────────────────────────────────────
-      const actions = strategy.actionsForSpeed(attacker.stats.spd, constants);
+    // ── Base damage (§6.2 Step 1) ─────────────────────────────────────────
+    const baseDmg = attacker.stats.atk - target.stats.def / 2;
 
-      // ── Effective attacker speed (front-row bonus, §6.2) ─────────────────
-      const effAtkSpd = effectiveAttackerSpeed(attacker, constants);
+    // ── Per-hit damage ────────────────────────────────────────────────────
+    //   (BaseDmg × ElementalFactor × DefenseFactor + SpeedDmg) × backRowMod
+    //   Minimum: 1 when BaseDmg > 0; otherwise 0 (can't deal negative).
+    const rawPerHit =
+      (Math.max(0, baseDmg) * elemFactor * defFactor + speedDmg) * backRowMod;
+    const clampedPerHit = baseDmg > 0 ? Math.max(1, rawPerHit) : Math.max(0, rawPerHit);
 
-      // ── Hit chance (§6.2) ────────────────────────────────────────────────
-      //   hit% = min(1, max(hitChanceFloor, effAtkSpd / (defenderSpd × 1.2)))
-      const hitFloor = resolve(constants.damage.hitChanceFloor); // 0.05
-      const hitChance = Math.min(1, Math.max(hitFloor, effAtkSpd / (target.stats.spd * 1.2)));
+    // ── Accumulate damage ─────────────────────────────────────────────────
+    // Strategy splits here:
+    //   EV mode: actions is fractional; damage is multiplied by expected hits
+    //            = actions × hitChance (also fractional, from strategy.roll).
+    //   MC mode: actions is integer; loop and gate each hit individually.
 
-      // ── Elemental levels (§6.2 Step 2) ──────────────────────────────────
-      const { A: rawA, D: rawD } = pickElementalLevels(
-        attacker.element,
-        attacker.elementLevels,
-        target.elementLevels,
-      );
-      const elemFactor = elementalFactor(rawA, rawD);
+    let totalDmgThisAttacker = 0;
 
-      // ── Defense factor (§6.2 Step 3) ─────────────────────────────────────
-      const K = resolve(constants.damage.defenseSoftCapK); // 200
-      const defFactor = 1 - target.stats.def / (target.stats.def + K);
+    // Helper to apply one hit (processes ability hooks, damage reduction, etc.)
+    const applyHit = (hitDmg: number): void => {
+      let hookContext: AbilityHookContext = {
+        attacker,
+        defender: target,
+        rawDamage: hitDmg,
+        strategy,
+        rng,
+        allies: ownSide,
+        enemies: defenders,
+      };
 
-      // ── Speed damage (§6.2 Step 4) ────────────────────────────────────────
-      const divisor = resolve(constants.damage.speedDamageDivisor); // 2
-      const speedDmg = Math.max(0, (effAtkSpd - target.stats.spd) / divisor);
-
-      // ── Back-row modifier (§6.2 Step 5) ──────────────────────────────────
-      const backPenalty = resolve(constants.damage.backRowPenalty); // 0.80
-      const classMods = resolve(constants.classMods);
-      const ignoresBackRow =
-        attacker.assignedClass !== null &&
-        (classMods[attacker.assignedClass]?.ignoresBackRowPenalty ?? false);
-      const backRowMod = attacker.row === 'back' && !ignoresBackRow ? backPenalty : 1.0;
-
-      // ── Base damage (§6.2 Step 1) ─────────────────────────────────────────
-      const baseDmg = attacker.stats.atk - target.stats.def / 2;
-
-      // ── Per-hit damage ────────────────────────────────────────────────────
-      //   (BaseDmg × ElementalFactor × DefenseFactor + SpeedDmg) × backRowMod
-      //   Minimum: 1 when BaseDmg > 0; otherwise 0 (can't deal negative).
-      const rawPerHit =
-        (Math.max(0, baseDmg) * elemFactor * defFactor + speedDmg) * backRowMod;
-      const clampedPerHit = baseDmg > 0 ? Math.max(1, rawPerHit) : Math.max(0, rawPerHit);
-
-      // ── Apply attacker ability hooks ──────────────────────────────────────
-      // Check attacker's own flags (succubusHeal, luckyCoin).
-      // Supporter dmg reduction is a defender-side check applied below.
-
-      // ── Accumulate damage ─────────────────────────────────────────────────
-      // Strategy splits here:
-      //   EV mode: actions is fractional; damage is multiplied by expected hits
-      //            = actions × hitChance (also fractional, from strategy.roll).
-      //   MC mode: actions is integer; loop and gate each hit individually.
-
-      let totalDmgThisAttacker = 0;
-
-      // Helper to apply one hit (processes ability hooks, damage reduction, etc.)
-      const applyHit = (hitDmg: number): void => {
-        let hookContext: AbilityHookContext = {
-          attacker,
-          defender: target,
-          rawDamage: hitDmg,
-          strategy,
-          rng,
-          allies,
-          enemies: defenders,
-        };
-
-        // Attacker-side abilities: iterate attacker's flags.
-        for (const flag of attacker.abilities) {
-          const mods = ABILITY_REGISTRY_BY_FLAG.get(flag);
-          if (mods !== undefined) {
-            // Only apply when it's an attacker-side ability (not supporterDmgReduction)
-            if (flag !== 'supporterDmgReduction') {
-              for (const mod of mods) {
-                const extra = mod.apply(hookContext);
-                hookContext = { ...hookContext, rawDamage: hookContext.rawDamage + extra };
-              }
-            }
-          }
-        }
-
-        // Defender-side: supporterDmgReduction from any alive team member.
-        if (defenderSideHasSupporter) {
-          const mods = ABILITY_REGISTRY_BY_FLAG.get('supporterDmgReduction');
-          if (mods !== undefined) {
+      // Attacker-side abilities: iterate attacker's flags.
+      for (const flag of attacker.abilities) {
+        const mods = ABILITY_REGISTRY_BY_FLAG.get(flag);
+        if (mods !== undefined) {
+          // Only apply when it's an attacker-side ability (not supporterDmgReduction)
+          if (flag !== 'supporterDmgReduction') {
             for (const mod of mods) {
               const extra = mod.apply(hookContext);
               hookContext = { ...hookContext, rawDamage: hookContext.rawDamage + extra };
             }
           }
         }
+      }
 
-        const finalDmg = Math.max(0, hookContext.rawDamage);
-        totalDmgThisAttacker += finalDmg;
-        target.currentHp -= finalDmg;
-        if (target.currentHp <= 0) {
-          recordDeath(targetKey);
-        }
-      };
-
-      // Detect EV vs MC by probing strategy.roll with a mid-range probability.
-      // EV mode: roll returns a number (the probability itself).
-      // MC mode: roll returns a boolean (sampled Bernoulli trial).
-      const probe = strategy.roll(0.5);
-      const isEvMode = typeof probe === 'number';
-
-      if (isEvMode) {
-        // EV mode: one composite hit weighted by hitChance × actions.
-        // effectiveDamage = clampedPerHit × hitChance × actions
-        applyHit(clampedPerHit * hitChance * actions);
-      } else {
-        // MC mode: integer loop over actions, each gated by an independent roll.
-        const intActions = Math.round(actions);
-        for (let i = 0; i < intActions; i++) {
-          if (target.currentHp <= 0) break; // target already dead
-          if (strategy.roll(hitChance)) {
-            applyHit(clampedPerHit);
+      // Defender-side: supporterDmgReduction from any alive team member.
+      if (defenderSideHasSupporter) {
+        const mods = ABILITY_REGISTRY_BY_FLAG.get('supporterDmgReduction');
+        if (mods !== undefined) {
+          for (const mod of mods) {
+            const extra = mod.apply(hookContext);
+            hookContext = { ...hookContext, rawDamage: hookContext.rawDamage + extra };
           }
         }
       }
 
-      // Record total damage by this attacker
-      damageByAttacker.set(
-        attackerKey,
-        (damageByAttacker.get(attackerKey) ?? 0) + totalDmgThisAttacker,
-      );
+      const finalDmg = Math.max(0, hookContext.rawDamage);
+      totalDmgThisAttacker += finalDmg;
+      target.currentHp -= finalDmg;
+      if (target.currentHp <= 0) {
+        recordDeath(targetKey);
+      }
+    };
+
+    if (isEvMode) {
+      // EV mode: one composite hit weighted by hitChance × actions.
+      // effectiveDamage = clampedPerHit × hitChance × actions
+      applyHit(clampedPerHit * hitChance * actions);
+    } else {
+      // MC mode: integer loop over actions, each gated by an independent roll.
+      const intActions = Math.round(actions);
+      for (let i = 0; i < intActions; i++) {
+        if (target.currentHp <= 0) break; // target already dead
+        if (strategy.roll(hitChance)) {
+          applyHit(clampedPerHit);
+        }
+      }
     }
+
+    // Record total damage by this attacker
+    damageByAttacker.set(
+      attackerKey,
+      (damageByAttacker.get(attackerKey) ?? 0) + totalDmgThisAttacker,
+    );
   }
 
-  // Allies attack enemies, then enemies retaliate against allies.
-  resolveOneSide(allies, enemies);
-  resolveOneSide(enemies, allies);
+  // ── Build the interleaved action order for this turn (§6.6.1) ────────────────
+  const order: OrderedCombatant[] = [];
+  for (const a of allies) order.push({ ctx: a, isAlly: true });
+  for (const e of enemies) order.push({ ctx: e, isAlly: false });
+
+  if (isEvMode) {
+    // Deterministic proxy for "faster acts first": sort by effective speed desc.
+    // Stable enough for golden tests; ties keep insertion order (allies first).
+    order.sort(
+      (x, y) =>
+        effectiveAttackerSpeed(y.ctx, constants) - effectiveAttackerSpeed(x.ctx, constants),
+    );
+  } else {
+    shuffleInPlace(order, rng);
+  }
+
+  // EV mode approximates the expectation over random action orders as a
+  // SIMULTANEOUS turn: every combatant alive at the START of the turn acts, with
+  // no first-strike bias (a combatant that drops mid-turn still got its swing).
+  // MC mode resolves SEQUENTIALLY in the shuffled order, so a combatant killed
+  // earlier this turn (by a faster one) does not get to act — honouring §6.6.1.
+  const aliveAtStart = isEvMode
+    ? new Set(order.filter(o => o.ctx.currentHp > 0).map(o => o.ctx))
+    : null;
+
+  for (const { ctx, isAlly } of order) {
+    const canAct = aliveAtStart !== null ? aliveAtStart.has(ctx) : ctx.currentHp > 0;
+    if (!canAct) continue;
+    const defenders = isAlly ? enemies : allies;
+    const ownSide = isAlly ? allies : enemies;
+    const defenderSideHasSupporter = isAlly ? enemiesHaveSupporter : alliesHaveSupporter;
+    executeAttack(ctx, ownSide, defenders, defenderSideHasSupporter);
+  }
 
   // ── Build HP snapshots ──────────────────────────────────────────────────────
   const allyHpAfter = new Map<string, number>();

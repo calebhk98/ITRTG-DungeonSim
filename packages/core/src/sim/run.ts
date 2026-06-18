@@ -9,9 +9,10 @@
  * ## Modeling choices (documented here and in JSDoc below)
  *
  * **HP persistence:** Pet HP carries over across rooms within a run. A pet that
- * is killed stays dead for the remainder of the run (no revives). This matches
- * ITRTG's autonomous-expedition model where there is no mid-run healing mechanic
- * documented in the research doc. TODO: model Supporter-heal or Succubus
+ * is killed is queued for Phoenix Feather revival (research §6.6.4): at the start
+ * of the next turn it is restored to 20% max HP, consuming one feather from the
+ * run-wide `RunConfig.phoenixFeathers` pool. With no feathers left, the death is
+ * permanent for the remainder of the run. TODO: model Supporter-heal or Succubus
  * cross-room regen if/when documented.
  *
  * **XP distribution:** When an enemy is killed, every LIVING ally receives
@@ -46,11 +47,13 @@
  * TODO: implement full event/drop reward modelling per research §8 once event
  * tables are available (requires ≥6-room runs, dungeon info-tab data).
  *
- * **Round safety cap:** Combat loops are capped at 1000 rounds per room to
- * guard against degenerate configurations where neither side can kill the other
- * (e.g. extremely high-defense enemies and low-attack pets).
+ * **50-turn auto-loss:** Each room's fight runs as a turn loop capped at
+ * `constants.combat.maxTurnsPerFight` (50, research §6.6.2). If the team has not
+ * wiped the enemies by then, the fight is an automatic LOSS and the run ends —
+ * this is the game's stalemate-breaker (e.g. high-defense enemies vs low attack),
+ * and replaces the old 1000-round "safety cap".
  *
- * Research §3, §6.3a, §6.4, §7.1, §8.
+ * Research §3, §6.3a, §6.4, §6.6, §7.1, §8.
  */
 
 import type { GameConstants } from '../constants/types.js';
@@ -219,6 +222,12 @@ function runSingleTrial(
   const bossRoom = BOSS_ROOM_FOR_DEPTH[config.depth];
   let roomsCleared = 0;
 
+  // Phoenix Feather pool — a run-wide shared budget (research §6.6.4). Each
+  // feather auto-revives one fallen pet at the start of the next turn.
+  let feathersRemaining = config.phoenixFeathers ?? 0;
+  const maxTurns = resolve(constants.combat.maxTurnsPerFight);
+  const phoenixRestore = resolve(constants.items.phoenixFeatherHpRestore);
+
   for (let room = 1; room <= config.rooms; room++) {
     // Check if all allies are dead before entering the room.
     const livingAllies = allies.filter(a => a.currentHp > 0);
@@ -244,16 +253,44 @@ function runSingleTrial(
       continue;
     }
 
-    // ── Combat resolution loop ─────────────────────────────────────────────
-    const ROUND_CAP = 1000;
-    for (let round = 0; round < ROUND_CAP; round++) {
-      const livingEnemies = enemies.filter(e => e.currentHp > 0);
-      if (livingEnemies.length === 0) break; // All enemies defeated.
+    // ── Combat resolution: turn loop (research §6.6) ────────────────────────
+    // Each turn, all living combatants act in a randomized interleaved order
+    // (resolveRound). A fight is WON only by wiping the enemies; a fight is LOST
+    // by a full ally wipe OR by exceeding the 50-turn cap (auto-loss, §6.6.2).
+    //
+    // Phoenix Feathers (§6.6.4): when a pet dies it is queued for revival and
+    // restored to 20% max HP at the START of the next turn, consuming one feather
+    // from the run-wide pool. With no feathers left, the death is permanent.
+    const pendingRevival = new Set<CombatContext>();
 
-      const livingAlliesNow = allies.filter(a => a.currentHp > 0);
-      if (livingAlliesNow.length === 0) break; // All allies dead.
+    const processRevivals = (): void => {
+      if (pendingRevival.size === 0) return;
+      for (const ctx of pendingRevival) {
+        if (ctx.currentHp > 0) continue; // already alive (shouldn't happen)
+        if (feathersRemaining > 0) {
+          feathersRemaining--;
+          ctx.currentHp = Math.max(1, ctx.stats.hp * phoenixRestore);
+        } else if (ctx.petId !== undefined) {
+          deadPetIds.add(ctx.petId);
+        }
+      }
+      pendingRevival.clear();
+    };
 
-      // Snapshot HP before the round so we can compute damage taken afterwards.
+    let fightWon = false;
+    for (let turn = 0; turn < maxTurns; turn++) {
+      // Start of turn: apply any queued Phoenix Feather revivals.
+      processRevivals();
+
+      if (enemies.every(e => e.currentHp <= 0)) {
+        fightWon = true;
+        break; // All enemies defeated.
+      }
+      if (allies.every(a => a.currentHp <= 0)) {
+        break; // Full wipe and nothing left to revive → fight lost.
+      }
+
+      // Snapshot HP before the turn so we can compute damage taken afterwards.
       // resolveRound mutates currentHp in-place, so we must capture this now.
       const hpBefore = new Map<string, number>();
       for (const ally of allies) {
@@ -273,9 +310,7 @@ function runSingleTrial(
       }
 
       // Accumulate damage taken by each pet from enemy attackers.
-      // Computed as the HP drop between pre-round snapshot and post-round outcome.
-      // resolveRound mutates currentHp, so we use the pre-round snapshot captured above
-      // and the allyHpAfter map from the outcome (which equals currentHp after mutation).
+      // Computed as the HP drop between pre-turn snapshot and post-turn outcome.
       for (const slot of config.team.slots) {
         const accum = perPetMap.get(slot.petId);
         if (accum === undefined) continue;
@@ -285,12 +320,13 @@ function runSingleTrial(
         accum.taken += damageTaken;
       }
 
-      // Process deaths: record ally deaths and XP from enemy deaths.
+      // Process deaths: queue ally revivals and award XP/materials from kills.
       for (const deadKey of outcome.deaths) {
-        // Is it an ally death?
+        // Is it an ally death? → queue for Phoenix Feather revival next turn.
         const deadAlly = allies.find(a => a.petId === deadKey);
         if (deadAlly !== undefined && deadAlly.petId !== undefined) {
-          deadPetIds.add(deadAlly.petId);
+          pendingRevival.add(deadAlly);
+          continue;
         }
 
         // Is it an enemy death? → Award XP and materials.
@@ -300,9 +336,10 @@ function runSingleTrial(
           const archetype = findArchetypeByContextId(deadKey, dungeon);
           if (archetype !== undefined) {
             const xpValue = archetype.xpValue;
-            // Award XP to every currently-living ally.
+            // Award XP to every ally currently alive (dead/down pets get none).
             for (const slot of config.team.slots) {
-              if (!deadPetIds.has(slot.petId)) {
+              const allyCtx = allies.find(a => a.petId === slot.petId);
+              if (allyCtx !== undefined && allyCtx.currentHp > 0) {
                 const accum = perPetMap.get(slot.petId);
                 if (accum !== undefined) {
                   accum.xpGained += xpValue;
@@ -315,19 +352,30 @@ function runSingleTrial(
           }
         }
       }
+
+      // Post-turn victory check — break before another revival phase so we don't
+      // spend a feather reviving for a fight that is already won.
+      if (enemies.every(e => e.currentHp <= 0)) {
+        fightWon = true;
+        break;
+      }
     }
 
-    // After room combat: check if any allies died and mark them.
+    // On a win, revive any pet that fell on the killing turn so it carries into
+    // the next room (consuming a feather); otherwise leave it down.
+    if (fightWon) {
+      processRevivals();
+    }
+
+    // Mark any allies still down as permanently dead for the rest of the run.
     for (const a of allies) {
       if (a.currentHp <= 0 && a.petId !== undefined) {
         deadPetIds.add(a.petId);
       }
     }
 
-    // Count room as cleared only if at least one ally survived the room.
-    const survivorsAfter = allies.filter(a => a.currentHp > 0);
-    if (survivorsAfter.length === 0) {
-      // Full wipe — run ends here (don't count this room as cleared).
+    if (!fightWon) {
+      // Full wipe or 50-turn auto-loss — the run ends here; room not cleared.
       break;
     }
     roomsCleared++;
