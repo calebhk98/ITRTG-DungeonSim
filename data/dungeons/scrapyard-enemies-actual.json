@@ -1,0 +1,1041 @@
+{
+  "_sources": [
+    "https://itrtg.wiki.gg/wiki/Dungeons",
+    "https://itrtg.wiki.gg/wiki/Depth_4_Dungeons_Guide",
+    "https://itrtg.wiki.gg/wiki/Nothing_(Other)",
+    "https://itrtg.wiki.gg/wiki/Introduction_to_Dungeons",
+    "https://itrtg.wiki.gg/wiki/Chameleon",
+    "https://steamcommunity.com/app/466170/discussions/0/5367692919522876122/",
+    "packages/core/src/content/scrapyard.ts (internal repository source)"
+  ],
+  "_verdict": "SEVERE DATA GAP: Only 2 out of 36 enemies have documented real stats. Nothing boss (Depth 2 hidden boss) has fully documented base stats (HP/ATK/DEF/SPD) with high confidence. Chameleon (all depths) has element resistance 120 documented but NO base combat stats published anywhere. All 33 remaining regular enemies have NO published stats; every Depth 1-4 regular enemy stat in this file is marked as PLACEHOLDER (estimated for gameplay feel, not sourced from game data). To populate actual stats, users must: (1) read values from the in-game dungeon enemy info tab during encounters, or (2) extract raw data from game files via decompilation/datamining.",
+  "_methodologyNote": "This document reflects exhaustive web search across itrtg.wiki.gg, itrtg.miraheze.org, Steam Community discussions, Google Sheets community resources, and the internal codebase (packages/core/src/content/scrapyard.ts). Every enemy marked 'documented' includes a source URL; every enemy marked 'not-found' has been confirmed absent from all public sources.",
+  "enemies": [
+    {
+      "depth": 1,
+      "isBoss": false,
+      "id": "metal-slimy",
+      "displayName": "Metal Slimy",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 600,
+        "atk": 40,
+        "def": 30,
+        "spd": 30
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 60,
+          "atk": 4,
+          "def": 3,
+          "spd": 3
+        }
+      },
+      "xpPerKill": 10,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): small early D1 enemy; slightly tanky for its depth. Real stats unconfirmed; these values calibrated for coherent gameplay feel."
+    },
+    {
+      "depth": 1,
+      "isBoss": false,
+      "id": "angel-slimy",
+      "displayName": "Angel Slimy",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 650,
+        "atk": 45,
+        "def": 25,
+        "spd": 50
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 65,
+          "atk": 5,
+          "def": 2,
+          "spd": 5
+        }
+      },
+      "xpPerKill": 10,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): slightly harder than Metal Slimy; higher SPD."
+    },
+    {
+      "depth": 1,
+      "isBoss": false,
+      "id": "ninja-slimy",
+      "displayName": "Ninja Slimy",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 500,
+        "atk": 55,
+        "def": 20,
+        "spd": 70
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 50,
+          "atk": 6,
+          "def": 2,
+          "spd": 7
+        }
+      },
+      "xpPerKill": 10,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): fast attacker, lower HP."
+    },
+    {
+      "depth": 1,
+      "isBoss": false,
+      "id": "robo-slimy",
+      "displayName": "Robo Slimy",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 700,
+        "atk": 50,
+        "def": 35,
+        "spd": 40
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 70,
+          "atk": 5,
+          "def": 3,
+          "spd": 4
+        }
+      },
+      "xpPerKill": 12,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): balanced all-rounder."
+    },
+    {
+      "depth": 1,
+      "isBoss": false,
+      "id": "cyborg-slimy",
+      "displayName": "Cyborg Slimy",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 750,
+        "atk": 48,
+        "def": 40,
+        "spd": 35
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 75,
+          "atk": 5,
+          "def": 4,
+          "spd": 3
+        }
+      },
+      "xpPerKill": 12,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): slightly more durable variant."
+    },
+    {
+      "depth": 1,
+      "isBoss": false,
+      "id": "ghost-slimy",
+      "displayName": "Ghost Slimy",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 550,
+        "atk": 50,
+        "def": 15,
+        "spd": 80
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 55,
+          "atk": 5,
+          "def": 1,
+          "spd": 8
+        }
+      },
+      "xpPerKill": 11,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): evasive, low DEF."
+    },
+    {
+      "depth": 1,
+      "isBoss": false,
+      "id": "unstable-slimy",
+      "displayName": "Unstable Slimy",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 600,
+        "atk": 70,
+        "def": 10,
+        "spd": 30
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 60,
+          "atk": 8,
+          "def": 1,
+          "spd": 3
+        }
+      },
+      "xpPerKill": 13,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): burst attacker, lower SPD/DEF."
+    },
+    {
+      "depth": 1,
+      "isBoss": true,
+      "id": "chameleon-d1",
+      "displayName": "Chameleon (Depth 1 Boss)",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 3000,
+        "atk": 200,
+        "def": 100,
+        "spd": 80
+      },
+      "perDifficultyScaling": {
+        "kind": "bossMult",
+        "description": "effectiveMult = baseMult × (1 + 0.10 × difficulty); stat = baseStats × effectiveMult",
+        "base": 2,
+        "perDiffAdditive": 0.1
+      },
+      "xpPerKill": 100,
+      "materials": null,
+      "specials": [
+        {
+          "kind": "elementalArmor",
+          "allElementResistance": 120,
+          "description": "Resists all elements at 120 — unique mechanic among Scrapyard bosses."
+        }
+      ],
+      "dataStatus": "partial",
+      "sourceUrl": "https://itrtg.wiki.gg/wiki/Chameleon",
+      "confidence": "medium",
+      "notes": "Element resistance (120 all) is DOCUMENTED. Base combat stats HP/ATK/DEF/SPD are PLACEHOLDER (estimated). Boss multiplier base=2 is documented for Depth 1 (research notes)."
+    },
+    {
+      "depth": 2,
+      "isBoss": false,
+      "id": "scrap-worm",
+      "displayName": "Scrap Worm",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 3500,
+        "atk": 220,
+        "def": 150,
+        "spd": 100
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 350,
+          "atk": 22,
+          "def": 15,
+          "spd": 10
+        }
+      },
+      "xpPerKill": 30,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): medium D2 enemy, beefy HP."
+    },
+    {
+      "depth": 2,
+      "isBoss": false,
+      "id": "sentry",
+      "displayName": "Sentry",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 4000,
+        "atk": 180,
+        "def": 250,
+        "spd": 80
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 400,
+          "atk": 18,
+          "def": 25,
+          "spd": 8
+        }
+      },
+      "xpPerKill": 32,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): defensive tank archetype."
+    },
+    {
+      "depth": 2,
+      "isBoss": false,
+      "id": "scavenger",
+      "displayName": "Scavenger",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 3000,
+        "atk": 280,
+        "def": 100,
+        "spd": 150
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 300,
+          "atk": 28,
+          "def": 10,
+          "spd": 15
+        }
+      },
+      "xpPerKill": 28,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): fast, low DEF."
+    },
+    {
+      "depth": 2,
+      "isBoss": false,
+      "id": "robo-hound",
+      "displayName": "Robo Hound",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 3800,
+        "atk": 260,
+        "def": 130,
+        "spd": 130
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 380,
+          "atk": 26,
+          "def": 13,
+          "spd": 13
+        }
+      },
+      "xpPerKill": 30,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): balanced mechanical dog."
+    },
+    {
+      "depth": 2,
+      "isBoss": false,
+      "id": "microbots",
+      "displayName": "Microbots",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 2000,
+        "atk": 200,
+        "def": 80,
+        "spd": 120
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 200,
+          "atk": 20,
+          "def": 8,
+          "spd": 12
+        }
+      },
+      "xpPerKill": 25,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): swarm type — high count but low individual stats."
+    },
+    {
+      "depth": 2,
+      "isBoss": false,
+      "id": "bulwark-golem",
+      "displayName": "Bulwark Golem",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 5000,
+        "atk": 150,
+        "def": 400,
+        "spd": 60
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 500,
+          "atk": 15,
+          "def": 40,
+          "spd": 6
+        }
+      },
+      "xpPerKill": 35,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): very high DEF, slow."
+    },
+    {
+      "depth": 2,
+      "isBoss": false,
+      "id": "displacer",
+      "displayName": "Displacer",
+      "element": "Wind",
+      "baseStats": {
+        "hp": 3200,
+        "atk": 300,
+        "def": 90,
+        "spd": 180
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 320,
+          "atk": 30,
+          "def": 9,
+          "spd": 18
+        }
+      },
+      "xpPerKill": 30,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): off-element threat; fast with moderate ATK."
+    },
+    {
+      "depth": 2,
+      "isBoss": false,
+      "id": "sword-soldier",
+      "displayName": "Sword Soldier",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 4200,
+        "atk": 320,
+        "def": 160,
+        "spd": 100
+      },
+      "perDifficultyScaling": {
+        "kind": "linear",
+        "description": "Additive: stat = base + perDiff × difficulty",
+        "perDiff": {
+          "hp": 420,
+          "atk": 32,
+          "def": 16,
+          "spd": 10
+        }
+      },
+      "xpPerKill": 33,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): melee bruiser."
+    },
+    {
+      "depth": 2,
+      "isBoss": true,
+      "id": "chameleon-d2",
+      "displayName": "Chameleon (Depth 2 Boss)",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 8000,
+        "atk": 500,
+        "def": 300,
+        "spd": 200
+      },
+      "perDifficultyScaling": {
+        "kind": "bossMult",
+        "description": "effectiveMult = baseMult × (1 + 0.10 × difficulty); stat = baseStats × effectiveMult",
+        "base": 12,
+        "perDiffAdditive": 0.1
+      },
+      "xpPerKill": 500,
+      "materials": null,
+      "specials": [
+        {
+          "kind": "elementalArmor",
+          "allElementResistance": 120,
+          "description": "Resists all elements at 120."
+        }
+      ],
+      "dataStatus": "partial",
+      "sourceUrl": "https://itrtg.wiki.gg/wiki/Chameleon",
+      "confidence": "medium",
+      "notes": "Element resistance (120 all) is DOCUMENTED. Base combat stats are PLACEHOLDER (estimated). Boss multiplier base=12 is documented for Depth 2."
+    },
+    {
+      "depth": 2,
+      "isBoss": true,
+      "id": "nothing",
+      "displayName": "Nothing (Depth 2 Hidden Boss)",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 25000,
+        "atk": 1500,
+        "def": 500,
+        "spd": 500
+      },
+      "perDifficultyScaling": {
+        "kind": "bossMult",
+        "description": "effectiveMult = baseMult × (1 + 0.10 × difficulty); stat = baseStats × effectiveMult",
+        "base": 12,
+        "perDiffAdditive": 0.1
+      },
+      "xpPerKill": 800,
+      "materials": [
+        "Nothing pet unlock upon defeat"
+      ],
+      "specials": [
+        {
+          "kind": "confusionAttack",
+          "description": "Normal attacks can inflict Confusion. Formula: [((attacker elements/2) / defender elements)-0.3]×100%."
+        },
+        {
+          "kind": "selfHealing",
+          "description": "Uses recovery skills to heal itself; exact formula unknown."
+        }
+      ],
+      "dataStatus": "documented",
+      "sourceUrl": "https://itrtg.wiki.gg/wiki/Nothing_(Other)",
+      "confidence": "high",
+      "notes": "FULLY DOCUMENTED: HP 25000 / ATK 1500 / DEF 500 / SPD 500 confirmed with high confidence. Trigger: place Nothing (item) + Hot Stone in item column at Room 16. Reward: unlocks Nothing pet."
+    },
+    {
+      "depth": 3,
+      "isBoss": false,
+      "id": "constructor",
+      "displayName": "Constructor",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 20000,
+        "atk": 1200,
+        "def": 800,
+        "spd": 400
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.15
+      },
+      "xpPerKill": 120,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): mid-tier mechanical builder."
+    },
+    {
+      "depth": 3,
+      "isBoss": false,
+      "id": "compactor",
+      "displayName": "Compactor",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 25000,
+        "atk": 900,
+        "def": 1500,
+        "spd": 250
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.15
+      },
+      "xpPerKill": 125,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): high DEF, slow crusher."
+    },
+    {
+      "depth": 3,
+      "isBoss": false,
+      "id": "replacer",
+      "displayName": "Replacer",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 22000,
+        "atk": 1300,
+        "def": 700,
+        "spd": 500
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.15
+      },
+      "xpPerKill": 122,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): all-round D3 threat."
+    },
+    {
+      "depth": 3,
+      "isBoss": false,
+      "id": "slayer",
+      "displayName": "Slayer",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 18000,
+        "atk": 1800,
+        "def": 500,
+        "spd": 600
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.15
+      },
+      "xpPerKill": 130,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): high ATK, lower DEF."
+    },
+    {
+      "depth": 3,
+      "isBoss": false,
+      "id": "arbiter",
+      "displayName": "Arbiter",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 24000,
+        "atk": 1400,
+        "def": 900,
+        "spd": 450
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.15
+      },
+      "xpPerKill": 128,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): balanced elite D3 unit."
+    },
+    {
+      "depth": 3,
+      "isBoss": false,
+      "id": "reclaimer",
+      "displayName": "Reclaimer",
+      "element": "Earth",
+      "baseStats": {
+        "hp": 26000,
+        "atk": 1100,
+        "def": 1200,
+        "spd": 300
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.15
+      },
+      "xpPerKill": 132,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): off-element Earth threat; durable."
+    },
+    {
+      "depth": 3,
+      "isBoss": false,
+      "id": "repurposer",
+      "displayName": "Repurposer",
+      "element": "Fire",
+      "baseStats": {
+        "hp": 19000,
+        "atk": 1600,
+        "def": 600,
+        "spd": 550
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.15
+      },
+      "xpPerKill": 128,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): fire-based D3 attacker."
+    },
+    {
+      "depth": 3,
+      "isBoss": false,
+      "id": "sanitizer",
+      "displayName": "Sanitizer",
+      "element": "Water",
+      "baseStats": {
+        "hp": 21000,
+        "atk": 1250,
+        "def": 800,
+        "spd": 500
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.15
+      },
+      "xpPerKill": 125,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): water-type support/attacker."
+    },
+    {
+      "depth": 3,
+      "isBoss": true,
+      "id": "chameleon-d3",
+      "displayName": "Chameleon (Depth 3 Boss)",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 50000,
+        "atk": 3000,
+        "def": 1500,
+        "spd": 800
+      },
+      "perDifficultyScaling": {
+        "kind": "bossMult",
+        "description": "effectiveMult = baseMult × (1 + 0.10 × difficulty); stat = baseStats × effectiveMult",
+        "base": 70,
+        "perDiffAdditive": 0.1
+      },
+      "xpPerKill": 2000,
+      "materials": null,
+      "specials": [
+        {
+          "kind": "elementalArmor",
+          "allElementResistance": 120,
+          "description": "Resists all elements at 120."
+        }
+      ],
+      "dataStatus": "partial",
+      "sourceUrl": "https://itrtg.wiki.gg/wiki/Chameleon",
+      "confidence": "medium",
+      "notes": "Element resistance (120 all) is DOCUMENTED. Base combat stats are PLACEHOLDER (estimated). Boss multiplier base=70 is documented for Depth 3."
+    },
+    {
+      "depth": 4,
+      "isBoss": false,
+      "id": "nanobot",
+      "displayName": "Nanobot",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 80000,
+        "atk": 5000,
+        "def": 2000,
+        "spd": 1200
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.2
+      },
+      "xpPerKill": 400,
+      "materials": null,
+      "specials": [
+        {
+          "kind": "selfReplication",
+          "description": "Can replicate itself each turn unless Nanotraps are equipped by the team. Exact replication formula unknown."
+        }
+      ],
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): tiny but replicating; individual stats low. Self-replication mechanic is DOCUMENTED but scaling formula unknown."
+    },
+    {
+      "depth": 4,
+      "isBoss": false,
+      "id": "alien-drone",
+      "displayName": "Alien Drone",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 70000,
+        "atk": 6000,
+        "def": 1500,
+        "spd": 2000
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.2
+      },
+      "xpPerKill": 380,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): fast aerial attacker."
+    },
+    {
+      "depth": 4,
+      "isBoss": false,
+      "id": "restoration-bot",
+      "displayName": "Restoration Bot",
+      "element": "Water",
+      "baseStats": {
+        "hp": 90000,
+        "atk": 3500,
+        "def": 3000,
+        "spd": 800
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.2
+      },
+      "xpPerKill": 420,
+      "materials": null,
+      "specials": [
+        {
+          "kind": "healing",
+          "description": "Can heal itself or allies during combat. Exact formula unknown."
+        }
+      ],
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): support enemy; heals allies. Healing mechanic is DOCUMENTED but formula unknown."
+    },
+    {
+      "depth": 4,
+      "isBoss": false,
+      "id": "cyber-bears",
+      "displayName": "Cyber Bears",
+      "element": "Fire",
+      "baseStats": {
+        "hp": 110000,
+        "atk": 7000,
+        "def": 2500,
+        "spd": 900
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.2
+      },
+      "xpPerKill": 450,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): heavy fire-based brute."
+    },
+    {
+      "depth": 4,
+      "isBoss": false,
+      "id": "terraformer",
+      "displayName": "Terraformer",
+      "element": "Earth",
+      "baseStats": {
+        "hp": 120000,
+        "atk": 6500,
+        "def": 3500,
+        "spd": 700
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.2
+      },
+      "xpPerKill": 460,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): ground-based heavy hitter."
+    },
+    {
+      "depth": 4,
+      "isBoss": false,
+      "id": "shield-generator",
+      "displayName": "Shield Generator",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 100000,
+        "atk": 2000,
+        "def": 6000,
+        "spd": 500
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.2
+      },
+      "xpPerKill": 400,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): stationary high-DEF support."
+    },
+    {
+      "depth": 4,
+      "isBoss": false,
+      "id": "land-battleship",
+      "displayName": "Land Battleship",
+      "element": "Wind",
+      "baseStats": {
+        "hp": 150000,
+        "atk": 8000,
+        "def": 4000,
+        "spd": 600
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.2
+      },
+      "xpPerKill": 500,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): massive wind-element war machine."
+    },
+    {
+      "depth": 4,
+      "isBoss": false,
+      "id": "obliterator",
+      "displayName": "Obliterator",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 130000,
+        "atk": 9500,
+        "def": 3000,
+        "spd": 1100
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.2
+      },
+      "xpPerKill": 520,
+      "materials": null,
+      "dataStatus": "not-found",
+      "sourceUrl": null,
+      "confidence": "low",
+      "notes": "PLACEHOLDER (estimated): end-game elite attacker."
+    },
+    {
+      "depth": 4,
+      "isBoss": true,
+      "id": "chameleon-d4",
+      "displayName": "Chameleon (Depth 4 Boss)",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 500000,
+        "atk": 30000,
+        "def": 15000,
+        "spd": 5000
+      },
+      "perDifficultyScaling": {
+        "kind": "expDiff",
+        "description": "Exponential: stat = base × factor^difficulty",
+        "factor": 1.4
+      },
+      "xpPerKill": 10000,
+      "materials": null,
+      "specials": [
+        {
+          "kind": "elementalArmor",
+          "allElementResistance": 120,
+          "description": "Resists all elements at 120."
+        }
+      ],
+      "dataStatus": "partial",
+      "sourceUrl": "https://itrtg.wiki.gg/wiki/Chameleon",
+      "confidence": "low",
+      "notes": "Element resistance (120 all) is DOCUMENTED. Base combat stats and scaling formula are PLACEHOLDER (estimated). D4 boss multiplier not explicitly documented; using factor 1.4 from Ancient Mimic scaling."
+    },
+    {
+      "depth": 4,
+      "isBoss": false,
+      "id": "railgun-trap",
+      "displayName": "Railgun (Depth 4 Trap)",
+      "element": "Neutral",
+      "baseStats": {
+        "hp": 1,
+        "atk": 0,
+        "def": 0,
+        "spd": 0
+      },
+      "perDifficultyScaling": {
+        "kind": "expSqrtDiff",
+        "description": "Damage = base × (√2)^difficulty = base × 2^(difficulty/2)",
+        "baseDamage": 20000
+      },
+      "xpPerKill": 0,
+      "materials": null,
+      "specials": [
+        {
+          "kind": "railgun",
+          "baseDamage": 20000,
+          "description": "Unpreventable single-target damage every turn, ignores defense, prevents phoenix feather revival. Shoots one random pet at start of each turn."
+        }
+      ],
+      "dataStatus": "documented",
+      "sourceUrl": "https://itrtg.wiki.gg/wiki/Depth_4_Dungeons_Guide",
+      "confidence": "high",
+      "notes": "FULLY DOCUMENTED: Difficulty 0 damage = 20,000; Difficulty 10 damage ≈ 640,310. Scaling formula ×√2 per difficulty is explicitly confirmed. This is NOT a normal combatant but an environmental trap/hazard. Sentinel baseStats used to satisfy type requirements; actual combat does not occur through standard stats."
+    }
+  ]
+}
