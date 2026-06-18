@@ -1,0 +1,262 @@
+{
+  "_sources": [
+    "https://itrtg.wiki.gg/wiki/Pets",
+    "https://itrtg.wiki.gg/wiki/Pet_Training",
+    "https://itrtg.wiki.gg/wiki/Equipment",
+    "https://itrtg.wiki.gg/wiki/Challenges",
+    "https://itrtg.wiki.gg/wiki/Milestones",
+    "https://itrtg.wiki.gg/wiki/Patreon_Gods_Challenge",
+    "https://itrtg.wiki.gg/wiki/Strategy_Room",
+    "https://itrtg.wiki.gg/wiki/Dungeons",
+    "https://itrtg.wiki.gg/wiki/Dojo",
+    "https://itrtg.wiki.gg/wiki/Token_Pet_Guide",
+    "https://itrtg.wiki.gg/wiki/Pet_Campaigns",
+    "https://itrtg.wiki.gg/wiki/Equip",
+    "https://itrtg.wiki.gg/wiki/Introduction_to_Dungeons",
+    "https://gameplay.tips/guides/idling-to-rule-the-gods-ultimate-dungeons-guide.html"
+  ],
+  "modifiers": [
+    {
+      "id": "pgc-growth-multiplier",
+      "displayName": "Patreon Gods Challenge Growth Multiplier",
+      "effectCategory": "growth-affecting",
+      "whatItAffects": "Multiplies total growth for all pets retroactively across all growth sources (feeding, lucky draws, dungeon events, campaigns, special quests)",
+      "formula": "1% growth multiplier per challenge completed (max 50% at 25/25 challenges); Applied as: Total Growth × (1 + PGC%)",
+      "maxLevelOrCap": "50% (1.5x when all 25 PGCs completed)",
+      "stacking": "multiplicative",
+      "notes": "Retroactive and permanent; also multiplies negative growth on certain pets; combines with Magic Egg: 1.5 × 1.3 = 1.95x total",
+      "_confidence": "high"
+    },
+    {
+      "id": "magic-egg-growth-multiplier",
+      "displayName": "Magic Egg Growth Multiplier",
+      "effectCategory": "growth-affecting",
+      "whatItAffects": "Multiplies total growth for a single pet when equipped as Tier 4 weapon",
+      "formula": "1.3x multiplier applied to current growth and dungeon event growth",
+      "maxLevelOrCap": "1.3x per pet (can be removed after evolution requirement met)",
+      "stacking": "multiplicative",
+      "notes": "Can be temporarily equipped to reduce evolution requirements; combines with PGC for up to 1.95x total growth multiplier",
+      "_confidence": "high"
+    },
+    {
+      "id": "total-growth-dungeon-stat-bonus",
+      "displayName": "Total Growth Dungeon Stat Bonus",
+      "effectCategory": "combat-stat-multiplicative",
+      "whatItAffects": "Multiplies all dungeon combat stats (HP, Attack, Defense, Speed) based on accumulated total growth",
+      "formula": "(1 + Total Growth / 200000) applied to combat stats; Every +2,000 growth ≈ +1% to all dungeon stats",
+      "maxLevelOrCap": "Theoretically unlimited; scales with total growth",
+      "stacking": "multiplicative",
+      "notes": "Example: 200,000 total growth = 2x multiplier; 100,000 growth = 1.5x multiplier; this is the primary mechanism converting growth to combat power",
+      "_confidence": "high"
+    },
+    {
+      "id": "milestone-total-growth",
+      "displayName": "Total Growth Milestones (Permanent Base Growth Addition)",
+      "effectCategory": "growth-affecting",
+      "whatItAffects": "Permanently adds fixed base growth to all pets globally, cumulative with each milestone tier completed",
+      "formula": "Additive bonuses per milestone: 10k (+10), 50k (+50), 100k (+100), 500k (+250), 1M (+500), 2M (+750), 5M (+1000), 10M (+1500), 20M (+2500)",
+      "maxLevelOrCap": "Stackable: up to +6560 base growth when all milestones completed",
+      "stacking": "additive",
+      "notes": "Permanent and cumulative; independent of individual pets; flows through growth formulas",
+      "_confidence": "high"
+    },
+    {
+      "id": "strategy-room-stat-bonus",
+      "displayName": "Strategy Room Dungeon Stat Bonus",
+      "effectCategory": "combat-stat-additive",
+      "whatItAffects": "Adds flat numerical bonuses to all dungeon combat stats for pets on active teams",
+      "formula": "SRMod = (0.1 + Growth_4th/5000) × (1 + Books/0.4800); added additively to base stat formula before class multiplier; for element levels: 1 + (ElementLevel/30) × SRMod (multiplicative)",
+      "maxLevelOrCap": "11 levels in Dojo upgrades; theoretically unlimited with sufficient growth and strategy books",
+      "stacking": "additive",
+      "notes": "Growth_4th = 4th-lowest total pet growth among team pets; Books = strategy books in inventory; only applies to pets on active team; can be optimized per class",
+      "_confidence": "high"
+    },
+    {
+      "id": "dojo-stat-buffs",
+      "displayName": "Dojo Stat Multiplier Buffs",
+      "effectCategory": "combat-stat-multiplicative",
+      "whatItAffects": "Increases specific combat stat categories by percentage via Dojo upgrades: Attack, HP, Speed, Speed Damage, elemental bonuses (Water/Fire/Earth/Wind), class training (Physical/Mystic/Battle)",
+      "formula": "+1% per level purchased for each buff type; XP cost: base_cost × (number_already_bought + 1)",
+      "maxLevelOrCap": "Unlimited scaling (diminishing returns on XP cost)",
+      "stacking": "additive",
+      "notes": "Base costs vary: 1M XP (Attack/HP/Speed), 1.5M XP (Speed Damage), 2M XP (Elements and Class training); each buff stacks independently",
+      "_confidence": "high"
+    },
+    {
+      "id": "equipment-quality-multiplier",
+      "displayName": "Equipment Quality Multiplier",
+      "effectCategory": "combat-stat-multiplicative",
+      "whatItAffects": "Multiplies all equipment stat contributions based on rarity/quality rating",
+      "formula": "Quality multiplier scales 1 (F-grade) to 9 (SSS-grade); Applied as: base_equipment_stats × quality_multiplier × (1 + upgrade_level)",
+      "maxLevelOrCap": "9x at SSS quality",
+      "stacking": "multiplicative",
+      "notes": "Quality grades: F=1, E=2, D=3, C=4, B=5, A=6, S=7, SS=8, SSS=9; directly multiplies equipment mod in stat formula",
+      "_confidence": "high"
+    },
+    {
+      "id": "enchantment-neutral-element-bonus",
+      "displayName": "Enchantment Element Bonus (Neutral Equipment)",
+      "effectCategory": "element-level",
+      "whatItAffects": "Adds elemental level bonuses to all element types on neutral-element equipment",
+      "formula": "T1-T3 or T5: bonus = (enchantment_level × tier) / 2.2; T4: bonus = enchantment_level × 3.2",
+      "maxLevelOrCap": "Enchantment max typically E20",
+      "stacking": "additive",
+      "notes": "Non-neutral equipment uses enchantment differently: reduces elemental vulnerabilities by 5% per level (multiplicative, max E20 = 100% vulnerability reduction); elemental bonuses are added to base element levels before Dojo/Strategy Room multipliers",
+      "_confidence": "high"
+    },
+    {
+      "id": "equipment-gems-element-stats",
+      "displayName": "Equipment Gems - Element Stat Addition",
+      "effectCategory": "element-level",
+      "whatItAffects": "Adds bonus stats to element levels when gems are attached to equipment",
+      "formula": "Neutral gems: (1 × gem_level × equipment_tier) added to all element stats; Element-specific gems: (1% × gem_level × equipment_tier) bonus applied to corresponding stat (Health for Water, Attack for Fire, etc.)",
+      "maxLevelOrCap": "Scales with gem level (1-20+) and equipment tier (1-5)",
+      "stacking": "additive",
+      "notes": "Gems persist when upgrading to higher tier equipment; combined with enchantments and Dojo element buffs; specific element gems provide focused stat bonuses beyond element levels",
+      "_confidence": "medium"
+    },
+    {
+      "id": "dojo-element-buffs",
+      "displayName": "Dojo Element Buffs (Water/Fire/Wind/Earth)",
+      "effectCategory": "element-level",
+      "whatItAffects": "Increases elemental damage levels for dungeons via Dojo upgrades",
+      "formula": "+1% per level purchased to each element's damage multiplier in combat; Applied multiplicatively: (1 + A/100) / (1 + D_elem/100) in damage calculation",
+      "maxLevelOrCap": "Unlimited scaling",
+      "stacking": "additive",
+      "notes": "Base cost: 2M XP per element; works on top of equipment enchantments, gems, and base pet element levels; affects both attacker advantage and defender weakness calculations",
+      "_confidence": "high"
+    },
+    {
+      "id": "pet-base-element-levels",
+      "displayName": "Pet Base Element Levels (Species-Dependent)",
+      "effectCategory": "element-level",
+      "whatItAffects": "Determines base elemental stats for each pet species before equipment/training bonuses",
+      "formula": "Neutral pets: 0.75 × DL for each element; Non-neutral pets: primary_element = 50 + 3×DL, weak_element = -50, others = 0",
+      "maxLevelOrCap": "Scales with Dungeon Level (DL)",
+      "stacking": "additive",
+      "notes": "Equipment enchantments and gems are added to these base values; weakness cycle: Water > Fire > Wind > Earth > Water",
+      "_confidence": "high"
+    },
+    {
+      "id": "total-growth-campaign-multiplier",
+      "displayName": "Total Growth Campaign Multiplier",
+      "effectCategory": "growth-affecting",
+      "whatItAffects": "Multiplies pet growth gained from growth campaigns and exploration campaigns",
+      "formula": "growth_gain = hours × (log15(total_growth) - 1.75) × pet_ability_multi × UPC_multi; awarded to lowest-growth pet in group",
+      "maxLevelOrCap": "Scales logarithmically with total growth; approaches asymptote",
+      "stacking": "multiplicative",
+      "notes": "log15 represents base-15 logarithm; pet_ability_multi and UPC_multi are separate multipliers from abilities and upgrades; only lowest-growth pet in campaign receives the growth",
+      "_confidence": "medium"
+    },
+    {
+      "id": "pet-campaign-class-bonus",
+      "displayName": "Pet Campaign Class Bonus",
+      "effectCategory": "combat-stat-multiplicative",
+      "whatItAffects": "Multiplies campaign effectiveness and growth based on pet evolution requirements and class level",
+      "formula": "Class_Bonus = ((growth_required_for_evolution / 50000) + 1) × 0.5; Many pets also display campaign multipliers as 0.5% × CL percentage",
+      "maxLevelOrCap": "Scales with evolution requirement and class level (CL up to 100)",
+      "stacking": "multiplicative",
+      "notes": "Higher-requirement evolutions grant better campaign multipliers; independent of individual pet species",
+      "_confidence": "high"
+    },
+    {
+      "id": "dojo-master-growth-boost",
+      "displayName": "Dojo Master and Pupil Growth Boost",
+      "effectCategory": "growth-affecting",
+      "whatItAffects": "Increases pet growth rate through Dojo Master channeling and pupil training",
+      "formula": "Master boost: 0.01 × (Master_CL - 50); Pupil growth: (current_Dojo_XP)^0.2 × (Master_CL_bonuses) / 100 per hour",
+      "maxLevelOrCap": "Two Masters possible at Dojo level 11; scales with Master Class Level (50+)",
+      "stacking": "multiplicative",
+      "notes": "Requires CL 50+ volunteers as Masters; XP accumulation scales with Master's Class Level; Dojo pupils gain growth based on accumulated XP at the Dojo",
+      "_confidence": "medium"
+    },
+    {
+      "id": "defender-hp-class-scaling",
+      "displayName": "Defender Class HP Scaling (Post CL 25)",
+      "effectCategory": "combat-stat-multiplicative",
+      "whatItAffects": "Increases HP class multiplier for Defender-class pets beyond CL 25",
+      "formula": "Base Defender ClassMod_HP = 1.20; Above CL 25: ClassMod_HP = 1.20 + max(0, (CL - 25) / 100)",
+      "maxLevelOrCap": "CL 100 → ClassMod_HP = 1.95x",
+      "stacking": "multiplicative",
+      "notes": "Only applies to Defender class pets; enhances tank survivability in endgame; standard ClassMod for Defenders at CL 25 and below is 1.20",
+      "_confidence": "high"
+    },
+    {
+      "id": "pet-specific-growth-passives",
+      "displayName": "Pet Species-Specific Growth Passives",
+      "effectCategory": "growth-affecting",
+      "whatItAffects": "Individual pet species provide unique growth multipliers and modifiers based on specific mechanics",
+      "formula": "Variable by species. Examples: Gold Dragon multiplies food growth by (# Pets - 1) × 0.25; Chocobear adds 50% camp bonus when fed chocolate; Lizard converts half discovered food to growth; Sloth adds camp hours × 10% (max 120%); Vampire adds Sqrt(Total Growth) to crafting speed",
+      "maxLevelOrCap": "Varies by pet species",
+      "stacking": "multiplicative or additive depending on pet",
+      "notes": "Requires specific pets in team/camp; mechanics range from direct growth multiplication to indirect bonuses (e.g., Mysterious Egg shadow clone XP +2% × CL, max 100% at CL 50); Llysnafedda provides Experience × (1 + CL × 0.19), max 1000% at CL 100",
+      "_confidence": "medium"
+    },
+    {
+      "id": "front-row-speed-bonus",
+      "displayName": "Front-Row Speed Bonus",
+      "effectCategory": "combat-stat-additive",
+      "whatItAffects": "Adds bonus Speed to pets positioned in front row of dungeon team",
+      "formula": "+20% Speed bonus applied to front-row pets; affects SpeedDamage calculation: (Attacker_Speed - Defender_Speed) / 2",
+      "maxLevelOrCap": "20% flat bonus to speed stat",
+      "stacking": "additive",
+      "notes": "Back-row pets receive 20% speed penalty (except Mages and Snipers which are exempt); affects multi-action threshold chances in combat",
+      "_confidence": "high"
+    },
+    {
+      "id": "back-row-damage-penalty",
+      "displayName": "Back-Row Damage Penalty",
+      "effectCategory": "combat-stat-multiplicative",
+      "whatItAffects": "Reduces damage dealt by back-row pets except Mages and Snipers",
+      "formula": "0.80x multiplier to back-row pet damage output (80% of normal damage)",
+      "maxLevelOrCap": "20% reduction flat",
+      "stacking": "multiplicative",
+      "notes": "Mages and Snipers are exempt from this penalty; front-row pets get +20% speed instead of damage penalty; affects position strategy",
+      "_confidence": "high"
+    },
+    {
+      "id": "total-growth-challenge-multiplier",
+      "displayName": "Total Growth Challenge Multiplier",
+      "effectCategory": "growth-affecting",
+      "whatItAffects": "Multiplies pet stat gains from all sources when TGC challenge is active",
+      "formula": "Challenge goal: Earn 10,000 + (3,000 × challenges_completed) total growth across all pets; Multiplier magnitude not explicitly documented",
+      "maxLevelOrCap": "Infinitely repeatable; exponential growth goal scaling",
+      "stacking": "multiplicative",
+      "notes": "Growth from new pet unlocks does not count toward challenge; mentioned alongside PGC, Space Dimension, Strategy Room, and Dojo as growth multiplier sources; specific formula not yet documented",
+      "_confidence": "low"
+    },
+    {
+      "id": "dojo-xp-gain-multiplier",
+      "displayName": "Dojo XP Gain Multipliers (Dungeon & Other)",
+      "effectCategory": "indirect",
+      "whatItAffects": "Increases XP earned from dungeons and other activities, indirectly accelerating pet training and class level progression",
+      "formula": "Dungeon XP Gain: +1% per level; Other XP Gain: +1% per level; Base cost: 2M XP each",
+      "maxLevelOrCap": "Unlimited scaling",
+      "stacking": "additive",
+      "notes": "Supports faster progression through DL and CL; separate upgrade lines for dungeon vs other XP; not a direct combat stat modifier but critical for progression",
+      "_confidence": "high"
+    },
+    {
+      "id": "pet-to-god-stat-conversion",
+      "displayName": "Pet Stats to God Stat Bonus Conversion",
+      "effectCategory": "combat-stat-additive",
+      "whatItAffects": "Grants percentage bonuses to player God's equivalent stats (Physical, Mystic, Battle) based on pet training stats",
+      "formula": "0.01% bonus per pet stat point; Equivalently: 1% God bonus per 100 pet stats; feeds into rebirth multiplier scaling",
+      "maxLevelOrCap": "Relates to rebirth multiplier cap of 999%",
+      "stacking": "additive",
+      "notes": "Basis for rebirth multiplier scaling in endgame progression; pet stats become increasingly valuable as players approach rebirth",
+      "_confidence": "high"
+    },
+    {
+      "id": "supporter-team-damage-reduction",
+      "displayName": "Supporter Class Team Damage Reduction",
+      "effectCategory": "combat-stat-multiplicative",
+      "whatItAffects": "Reduces damage taken by entire team when Supporter pet reaches CL 50+",
+      "formula": "Up to ~50% team-wide damage reduction at CL 50+",
+      "maxLevelOrCap": "CL 50 minimum for significant reduction",
+      "stacking": "multiplicative",
+      "notes": "Single most impactful high-end dungeon ability; makes Supporter class priority for advanced teams; scales with Supporter's Class Level",
+      "_confidence": "high"
+    }
+  ]
+}
