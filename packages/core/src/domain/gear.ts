@@ -53,3 +53,10 @@ export interface ElementLevels {
 export type EquipmentLoadout = {
   [S in GearSlot]?: GearPiece;
 };
+
+/**
+ * A pool of gear pieces available to allocate across pets. Each piece is
+ * assignable to at most one (pet, slot) at a time. Used by the gear-allocation
+ * optimizer dimension; candidate assignments reference pieces by `GearPiece.id`.
+ */
+export type GearInventory = ReadonlyArray<GearPiece>;

@@ -58,6 +58,10 @@ export type { RoundOutcome, AbilityHookContext, AbilityModifier } from './sim/co
 export { scaleEnemyStats, scaleEnemyToContext } from './sim/scaling.js';
 export type { ScaleEnemyOpts, ScaleEnemyToContextOpts } from './sim/scaling.js';
 
+// ── Sim — Run executor (WP-H) ────────────────────────────────────────────────
+export { simulateRun } from './sim/run.js';
+export type { SimulateRunDeps } from './sim/run.js';
+
 // ── Objectives (interface + built-ins WP-E) ──────────────────────────────────
 export type { Objective, ObjectiveContext } from './objectives/Objective.js';
 export { objectiveRegistry } from './objectives/Objective.js';
