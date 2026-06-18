@@ -111,3 +111,7 @@ export type {
   GearAssignment,
   GearPlacement,
 } from './optimizer/problems/gearAllocation.js';
+
+// ── Optimizer — joint coordinate descent (WP-JOINT) ──────────────────────────
+export { optimizeJoint, applyGear } from './optimizer/joint.js';
+export type { JointOptimizeInputs, JointResult } from './optimizer/joint.js';
