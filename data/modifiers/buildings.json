@@ -1,0 +1,146 @@
+{
+  "_sources": [
+    "https://itrtg.wiki.gg/wiki/Dojo",
+    "https://itrtg.wiki.gg/wiki/Strategy_Room",
+    "https://itrtg.wiki.gg/wiki/Dungeon",
+    "https://itrtg.wiki.gg/wiki/Pet_Village",
+    "https://itrtg.wiki.gg/wiki/Fishing_Pond",
+    "https://itrtg.wiki.gg/wiki/Tavern"
+  ],
+  "buildings": [
+    {
+      "id": "dojo",
+      "displayName": "Dojo",
+      "effectCategory": "combat-stat-multiplicative",
+      "whatItAffects": "Pet attack, HP, defense, speed, speed damage bonus, element levels (fire/water/earth/wind), and stat distribution (physical/mystic/battle) in dungeons. Each purchased buff increases the relevant stat by 1% per level.",
+      "formula": "Each stat bonus: (base + stat_level) × Dojo_multiplier where Dojo_multiplier = 1 + (sum_of_buff_levels / 100). For speed damage: (speed_difference / 2) × (1 + speed_damage_level / 100). Base XP costs scale: base_cost × (num_bought + 1).",
+      "maxLevelOrCap": "Building Level 11. Individual buffs scale indefinitely (cost increases exponentially but benefit is 1% per level).",
+      "notes": "Requires 50M Dojo XP before first buff purchase. Buying first buff disables Ego Sword leeching. Can assign up to 2 Dojo Masters (class level 51+) to increase XP gain rate. Masters gain class XP via formula: sqrt(Total_Growth_capped_1M) × Master_CL × sqrt(Dojo_Level) / 3600. Up to 2 pupil slots unlock at Level 11 to gain growth per hour.",
+      "_confidence": "very_high",
+      "_confidenceNote": "Directly from official wiki page with detailed tables and formulas"
+    },
+    {
+      "id": "strategy_room",
+      "displayName": "Strategy Room",
+      "effectCategory": "combat-stat-additive-and-multiplicative",
+      "whatItAffects": "Pet HP, Attack, Defense, and Speed (additive bonuses to all team pets). Element levels: Water, Fire, Earth, Wind (multiplicative bonus). Stat distribution of all pets via stat ratio adjustments.",
+      "formula": "Multiplier (for all 8 slots): (0.1 + sqrt(Growth_4th_lowest) / 5000) × (1 + Books^0.48 / 800). Main stats (additive): Slotted_pet_stat × Multiplier. Elements (multiplicative): (1 + sqrt(Element_level) / 30 × Multiplier). Example: 80k 4th growth + 20k books = 0.1668 (16.68%) multiplier. With 443k growth + 767k books + 10% Milestone = 32.89% multiplier.",
+      "maxLevelOrCap": "Building Level 11. Each level unlocks stat slots (starting at Level 4). Total upgrade costs: 2,277,000 Hot Stone/Feather, 151,800 Health Potions, 151,800 Strategy Books, 455,400 Sacred Stones.",
+      "notes": "8 assignment slots: 4 for main dungeon stats (HP/Attack/Defense/Speed), 4 for element stats. Uses 4th-lowest pet growth (not highest), forcing inclusion of weaker pets in optimization. Optimal classes: Defender (HP), Mage (Attack), Blacksmith (Defense), Rogue (Speed). Pets in slots gain dungeon level XP via: sqrt(growth_capped_1M) × CL × sqrt(SR_level) / 3600 every 5 seconds. Changes may require game reload to reflect in UI.",
+      "_confidence": "very_high",
+      "_confidenceNote": "Detailed formulas and examples from wiki; well-documented mechanics"
+    },
+    {
+      "id": "fishing_pond",
+      "displayName": "Fishing Pond",
+      "effectCategory": "growth-affecting",
+      "whatItAffects": "Pet growth multiplier when eating food (indirect combat effect). Increases meal growth value in early rebirth period.",
+      "formula": "Growth bonus: (Fishing_Power ^ 0.25) × (1 + Milestone_boost). Bonus decreases over 30 hours post-rebirth, strongest in first 3 hours. Each Milestone at levels 15 and 27 adds +10% bonus (stacks additively with other food growth bonuses).",
+      "maxLevelOrCap": "Bonus capped at 200% (with all milestones). Decays to 0% after 30 hours.",
+      "notes": "Up to 3 pets assigned to fish and sell fish, accumulating Fishing Power (FP). Strongest during early rebirth when growth scaling is most valuable. Does NOT directly boost combat stats, but indirectly increases combat stat values through higher growth rates.",
+      "_confidence": "high",
+      "_confidenceNote": "Growth-affecting mechanism confirmed, but specific FP formulas and level details not fully documented in wiki extract"
+    },
+    {
+      "id": "tavern",
+      "displayName": "Tavern",
+      "effectCategory": "indirect",
+      "whatItAffects": "Class Experience (XP), God Power, crafting materials, pet growth items, and Quest Points earned. Does NOT affect dungeon combat stats directly.",
+      "formula": null,
+      "maxLevelOrCap": "Building Level 11.",
+      "notes": "Up to 6 pets per quest team. One pet assigned as Tavern Keeper gains bonus quest XP based on keeper class level and ale quantity. Quest ranks: F through SSS, plus Ultimate (rank unlocked via Quest Points). Only indirect combat effect: Class XP eventually increases class levels which provide class modifiers in combat (varies by class: Mage 1.5×, Defender 0.4×, etc.).",
+      "_confidence": "high",
+      "_confidenceNote": "Confirmed non-direct combat building, but class XP→class modifier chain is well-established"
+    },
+    {
+      "id": "material_factory",
+      "displayName": "Material Factory",
+      "effectCategory": "indirect",
+      "whatItAffects": "Dungeon drop rates (+2% per level) and production speed only. Does NOT affect pet combat stats.",
+      "formula": null,
+      "maxLevelOrCap": null,
+      "notes": "Specialist bonus (Mage extra damage) irrelevant for this building. Pure drop-rate and production facility.",
+      "_confidence": "very_high",
+      "_confidenceNote": "Explicitly confirmed non-combat in wiki"
+    },
+    {
+      "id": "alchemy_hut",
+      "displayName": "Alchemy Hut",
+      "effectCategory": "indirect",
+      "whatItAffects": "Material transmutation and crafter speed bonuses only. Does NOT affect pet combat stats.",
+      "formula": null,
+      "maxLevelOrCap": null,
+      "notes": "Production-focused building. No combat impact.",
+      "_confidence": "very_high",
+      "_confidenceNote": "Explicitly confirmed non-combat in wiki"
+    },
+    {
+      "id": "divine_hut",
+      "displayName": "Divine Hut",
+      "effectCategory": "indirect",
+      "whatItAffects": "God's Physical, Mystic, Battle, and Creating stats, plus god rebirth multiplier. Does NOT affect pet dungeon combat stats.",
+      "formula": null,
+      "maxLevelOrCap": null,
+      "notes": "Affects god progression only, not pet combat. Pets assigned here gain Dungeon Level XP but this does not provide direct stat boosts to their combat stats.",
+      "_confidence": "very_high",
+      "_confidenceNote": "Explicitly confirmed non-combat in wiki"
+    }
+  ],
+  "combatStatFormulas": {
+    "description": "Core pet combat stat calculation formulas. Dojo and Strategy Room plug into these.",
+    "baseStats": {
+      "health": "((10 + 24×DL) × (1 + Growth/200000) × EquipMod × DojoMod + StrategyRoomMod) × ClassMod",
+      "attack": "((1 + 2.4×DL) × (1 + Growth/200000) × EquipMod × DojoMod + StrategyRoomMod) × ClassMod",
+      "defense": "((1 + 2.4×DL) × (1 + Growth/200000) × EquipMod × DojoMod + StrategyRoomMod) × ClassMod",
+      "speed": "((1 + 2.4×DL) × (1 + Growth/200000) × EquipMod × DojoMod + StrategyRoomMod) × ClassMod"
+    },
+    "components": {
+      "DL": "Dungeon Level (0-indexed pet progression)",
+      "Growth": "Total pet growth (permanent, does not reset on rebirth)",
+      "EquipMod": "Equipment modifier (additive bonuses from equipped gear)",
+      "DojoMod": "Dojo percentage bonus applied as multiplier: 1 + (sum_of_dojo_buff_levels / 100)",
+      "StrategyRoomMod": "Direct additive bonus from Strategy Room slot assignment",
+      "ClassMod": "Class-specific multiplier (e.g., Mage 1.5× Attack, Defender 0.4× Attack)"
+    },
+    "damageFormula": {
+      "step1": "Base damage = Attacker_Attack - (Defender_Defense / 2)",
+      "step2": "Elemental multiplier = (1 + Attacker_element/100) / (1 + Defender_element/100)",
+      "step3": "Defense factor = 1 - (Defender_def / (Defender_def + 200))",
+      "step4": "Class modifiers applied per class",
+      "step5": "Speed bonus (if attacker faster) = (speed_diff / 2) × (1 + Dojo_speed_damage_level/100)",
+      "step6": "Position penalty: Back-row non-Mages deal 20% less damage"
+    },
+    "elements": {
+      "neutral_pets": "Element distribution: 0.75 × DL per element, spread equally across 4 elements",
+      "non_neutral_pets": {
+        "primary_element": "50 + 3×DL",
+        "weak_element": "-50 (flat, not scaling)",
+        "other_elements": "0"
+      },
+      "equipment_effect": "Equipment adds directly to element values (never multiplies)"
+    },
+    "speed_mechanics": {
+      "speed_0": "1 action per round",
+      "speed_1_to_500": "1 + (speed/5)% chance of second action per round",
+      "speed_501_to_1500": "(speed-500)/10% chance of third action per round",
+      "maximum": "3 actions per round at 1500+ speed"
+    }
+  },
+  "summary": {
+    "combatStatMultiplicativeBuildings": [
+      "Dojo - applies percentage bonuses to all combat stats and element levels"
+    ],
+    "combatStatAdditiveBuildings": [
+      "Strategy Room - adds direct bonuses to main stats; multiplies element levels"
+    ],
+    "growthAffectingBuildings": [
+      "Fishing Pond - indirectly increases combat via higher growth-based scaling"
+    ],
+    "indirectBuildings": [
+      "Tavern - class XP → class levels (chain to combat modifiers)",
+      "Material Factory - drop rates only",
+      "Alchemy Hut - production only",
+      "Divine Hut - god progression only"
+    ]
+  }
+}
