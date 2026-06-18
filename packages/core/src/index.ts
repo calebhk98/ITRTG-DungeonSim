@@ -63,10 +63,28 @@ export type { Objective, ObjectiveContext } from './objectives/Objective.js';
 export { objectiveRegistry } from './objectives/Objective.js';
 export * from './objectives/builtins.js';
 
-// ── Optimizer (implementations in WP-I) ──────────────────────────────────────
+// ── Optimizer — interfaces ───────────────────────────────────────────────────
 export type {
   SearchProblem,
   OptimizeOptions,
   ScoreTrace,
   Optimizer,
 } from './optimizer/SearchProblem.js';
+
+// ── Optimizer — algorithms (WP-I) ────────────────────────────────────────────
+export { EnumerationOptimizer } from './optimizer/algorithms/enumeration.js';
+export type { EnumerableSearchProblem } from './optimizer/algorithms/enumeration.js';
+export { GreedyOptimizer } from './optimizer/algorithms/greedy.js';
+export type { GreedyOptions } from './optimizer/algorithms/greedy.js';
+export { BeamSearchOptimizer } from './optimizer/algorithms/beam.js';
+export type { BeamOptions } from './optimizer/algorithms/beam.js';
+
+// ── Optimizer — decision-space adapters (WP-J) ───────────────────────────────
+export { makeFarmTargetProblem } from './optimizer/problems/farmTarget.js';
+export type {
+  FarmTargetCandidate,
+  FarmTargetInputs,
+  FarmTargetProblem,
+} from './optimizer/problems/farmTarget.js';
+export { makeTeamCompositionProblem } from './optimizer/problems/teamComposition.js';
+export type { TeamCompositionInputs } from './optimizer/problems/teamComposition.js';

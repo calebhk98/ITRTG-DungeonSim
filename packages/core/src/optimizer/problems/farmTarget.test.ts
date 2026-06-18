@@ -84,10 +84,7 @@ describe('allCandidates()', () => {
       constants: DEFAULT_CONSTANTS,
     });
 
-    let count = 0;
-    for (const _c of problem.allCandidates()) {
-      count++;
-    }
+    const count = [...problem.allCandidates()].length;
     // Defaults: 4 depths × 11 difficulties × 4 rooms = 176
     expect(count).toBe(4 * 11 * 4);
   });
@@ -108,10 +105,7 @@ describe('allCandidates()', () => {
       roomChoices,
     });
 
-    let count = 0;
-    for (const _c of problem.allCandidates()) {
-      count++;
-    }
+    const count = [...problem.allCandidates()].length;
     expect(count).toBe(2 * 3 * 2);
   });
 

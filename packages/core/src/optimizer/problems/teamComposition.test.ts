@@ -67,13 +67,6 @@ function makePet(
 
 // ── Test roster (8 pets) ──────────────────────────────────────────────────────
 
-const STRONG_IDS: readonly PetId[] = [
-  asPetId('s1'), asPetId('s2'), asPetId('s3'), asPetId('s4'),
-];
-const WEAK_IDS: readonly PetId[] = [
-  asPetId('w1'), asPetId('w2'), asPetId('w3'), asPetId('w4'),
-];
-
 const strongPets: Pet[] = [
   makePet('s1', 80, 200_000, 'Adventurer'),
   makePet('s2', 80, 200_000, 'Defender'),
