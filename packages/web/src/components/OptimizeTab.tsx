@@ -75,6 +75,7 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
   const [difficulty, setDifficulty] = useState<Difficulty>(0);
   const [rooms, setRooms] = useState(16);
   const [teamCount, setTeamCount] = useState(6);
+  const [acrossAllDungeons, setAcrossAllDungeons] = useState(false);
   const [result, setResult] = useState<OptResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [running, setRunning] = useState(false);
@@ -158,9 +159,16 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
         setResult({ kind: 'team', best: res.best, score: res.score, trace: res.trace, roster });
 
       } else if (dimension === 'multiteam') {
+        // Either spread teams across all standard (non-tower) dungeons, or pin
+        // them all to the selected dungeon.
+        const candidateDungeons = acrossAllDungeons
+          ? DUNGEON_IDS.filter(id => !id.includes(':'))
+              .map(id => getDungeon(id))
+              .filter((d): d is NonNullable<typeof d> => d !== undefined)
+          : [dungeon];
         const mtInputs = {
           roster,
-          dungeon,
+          dungeons: candidateDungeons,
           objective,
           constants: DEFAULT_CONSTANTS,
           teamCount,
@@ -238,10 +246,16 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
             </div>
           )}
           {dimension === 'multiteam' && (
-            <div className="field">
-              <label>Team slots</label>
-              <input type="number" min={1} max={12} value={teamCount} onChange={e => setTeamCount(Math.max(1, Number(e.target.value)))} style={{ width: 80 }} />
-            </div>
+            <>
+              <div className="field">
+                <label>Team slots</label>
+                <input type="number" min={1} max={12} value={teamCount} onChange={e => setTeamCount(Math.max(1, Number(e.target.value)))} style={{ width: 80 }} />
+              </div>
+              <div className="field">
+                <label>Across all dungeons</label>
+                <input type="checkbox" checked={acrossAllDungeons} onChange={e => setAcrossAllDungeons(e.target.checked)} />
+              </div>
+            </>
           )}
           {dimension === 'team' && (
             <>
@@ -342,7 +356,7 @@ export default function OptimizeTab({ roster }: OptimizeTabProps): React.ReactEl
           {result.summaries.map((s, i) => (
             <div key={i} style={{ marginTop: 12 }}>
               <h3 style={{ marginBottom: 4 }}>
-                Team {i + 1}: D{s.plan.depth}-{s.plan.difficulty}, {s.plan.rooms} rooms{' '}
+                Team {i + 1}: {s.plan.dungeonId} D{s.plan.depth}-{s.plan.difficulty}, {s.plan.rooms} rooms{' '}
                 — {s.result.cleared ? '✓ cleared' : `partial (${s.result.roomsCleared} rooms)`}
                 {s.feasible ? '' : ' — infeasible for objective'}
               </h3>

@@ -347,6 +347,10 @@ program
     'team slots for multiteam dimension (default: 6)',
     '6',
   )
+  .option(
+    '--dungeons <ids>',
+    'multiteam: comma-separated dungeon ids teams may pick from (default: --dungeon)',
+  )
   .option('--seed <n>', 'RNG seed for greedy/beam restarts')
   .option('--max-iterations <n>', 'max optimizer iterations (default: 1000)', '1000')
   .action(
@@ -360,6 +364,7 @@ program
       difficulty: string;
       rooms: string;
       teams: string;
+      dungeons?: string;
       seed?: string;
       maxIterations: string;
     }) => {
@@ -489,9 +494,24 @@ program
       // ── Multi-team dimension ──────────────────────────────────────────────
       if (options.dimension === 'multiteam') {
         const teamCount = parsePositiveInt(options.teams, '--teams');
+
+        // Candidate dungeons: --dungeons list (each resolved) or the single --dungeon.
+        let dungeons = [dungeon];
+        if (options.dungeons !== undefined && options.dungeons.trim().length > 0) {
+          dungeons = options.dungeons.split(',').map(s => {
+            const id = parseDungeonId(s.trim());
+            const d = getDungeon(id);
+            if (d === undefined) {
+              console.error(`Error: dungeon "${id}" not found (in --dungeons).`);
+              process.exit(1);
+            }
+            return d;
+          });
+        }
+
         const mtInputs = {
           roster,
-          dungeon,
+          dungeons,
           objective,
           constants: DEFAULT_CONSTANTS,
           teamCount,

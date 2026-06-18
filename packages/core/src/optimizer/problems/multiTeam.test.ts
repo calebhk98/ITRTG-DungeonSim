@@ -43,6 +43,17 @@ const dungeon: Dungeon = {
   archetypes: { goblin },
 };
 
+/** A second dungeon (different element/id) for multi-dungeon tests. */
+const forestDungeon: Dungeon = {
+  id: 'Forest',
+  element: 'Earth',
+  enemyTable: {
+    1: { drawsPerRoom: 1, entries: [{ enemyId: 'goblin', weight: 1, minCount: 1, maxCount: 1 }] },
+  },
+  bossArchetypeId: {},
+  archetypes: { goblin },
+};
+
 function makePet(id: string): Pet {
   return {
     id: asPetId(id),
@@ -108,8 +119,8 @@ describe('makeMultiTeamProblem — partitioning', () => {
     const dup = asPetId('pet-0');
     const bad: MultiTeamPlan = {
       teams: [
-        { team: { slots: [{ petId: dup, row: 'front', assignedClass: 'Adventurer' }] }, depth: 1, difficulty: 0, rooms: 3 },
-        { team: { slots: [{ petId: dup, row: 'front', assignedClass: 'Adventurer' }] }, depth: 1, difficulty: 0, rooms: 3 },
+        { team: { slots: [{ petId: dup, row: 'front', assignedClass: 'Adventurer' }] }, dungeonId: 'Scrapyard', depth: 1, difficulty: 0, rooms: 3 },
+        { team: { slots: [{ petId: dup, row: 'front', assignedClass: 'Adventurer' }] }, dungeonId: 'Scrapyard', depth: 1, difficulty: 0, rooms: 3 },
       ],
     };
     expect(problem.evaluate(bad)).toBe(REJECTION_SCORE);
@@ -127,6 +138,7 @@ describe('makeMultiTeamProblem — aggregate scoring', () => {
           { petId: asPetId('pet-1'), row: 'front' as const, assignedClass: 'Adventurer' as const },
         ],
       },
+      dungeonId: 'Scrapyard' as const,
       depth: 1 as const,
       difficulty: 0 as const,
       rooms: 3,
@@ -138,6 +150,7 @@ describe('makeMultiTeamProblem — aggregate scoring', () => {
           { petId: asPetId('pet-3'), row: 'front' as const, assignedClass: 'Adventurer' as const },
         ],
       },
+      dungeonId: 'Scrapyard' as const,
       depth: 1 as const,
       difficulty: 0 as const,
       rooms: 3,
@@ -154,15 +167,72 @@ describe('makeMultiTeamProblem — aggregate scoring', () => {
     const problem = makeMultiTeamProblem(baseInputs);
     const teamA = {
       team: { slots: [{ petId: asPetId('pet-0'), row: 'front' as const, assignedClass: 'Adventurer' as const }] },
+      dungeonId: 'Scrapyard' as const,
       depth: 1 as const,
       difficulty: 0 as const,
       rooms: 3,
     };
-    const empty = { team: { slots: [] }, depth: 1 as const, difficulty: 0 as const, rooms: 3 };
+    const empty = { team: { slots: [] }, dungeonId: 'Scrapyard' as const, depth: 1 as const, difficulty: 0 as const, rooms: 3 };
 
     const withEmpty = problem.evaluate({ teams: [teamA, empty] });
     const without = problem.evaluate({ teams: [teamA] });
     expect(withEmpty).toBeCloseTo(without, 5);
+  });
+});
+
+describe('makeMultiTeamProblem — multiple dungeons', () => {
+  const multiInputs: MultiTeamInputs = {
+    roster,
+    dungeons: [dungeon, forestDungeon],
+    objective: xpPerHour,
+    constants: DEFAULT_CONSTANTS,
+    teamCount: 2,
+    maxTeamSize: 6,
+    depthChoices: [1],
+    difficultyChoices: [0],
+    roomChoices: [3],
+  };
+
+  it('initial() assigns teams across the candidate dungeons', () => {
+    const problem = makeMultiTeamProblem(multiInputs);
+    const plan = problem.initial();
+    const used = new Set(plan.teams.map(t => t.dungeonId));
+    // Round-robin over two dungeons → both appear.
+    expect(used.has('Scrapyard')).toBe(true);
+    expect(used.has('Forest')).toBe(true);
+  });
+
+  it('summarizeMultiTeamPlan reports each team under its own dungeon', () => {
+    const problem = makeMultiTeamProblem(multiInputs);
+    const plan = problem.initial();
+    const summary = summarizeMultiTeamPlan(plan, multiInputs);
+    for (const s of summary) {
+      expect(['Scrapyard', 'Forest']).toContain(s.plan.dungeonId);
+    }
+  });
+
+  it('rejects a team assigned to a dungeon outside the candidate set', () => {
+    const problem = makeMultiTeamProblem(multiInputs);
+    const bad: MultiTeamPlan = {
+      teams: [
+        {
+          team: { slots: [{ petId: asPetId('pet-0'), row: 'front', assignedClass: 'Adventurer' }] },
+          dungeonId: 'Volcano', // not in candidates
+          depth: 1,
+          difficulty: 0,
+          rooms: 3,
+        },
+      ],
+    };
+    expect(problem.evaluate(bad)).toBe(REJECTION_SCORE);
+  });
+
+  it('greedy search over two dungeons stays valid and ≥ initial', () => {
+    const problem = makeMultiTeamProblem(multiInputs);
+    const initialScore = problem.evaluate(problem.initial());
+    const res = new GreedyOptimizer(mulberry32(7)).run(problem, { maxIterations: 300 });
+    expect(res.score).toBeGreaterThanOrEqual(initialScore);
+    expect(res.score).toBeGreaterThan(REJECTION_SCORE);
   });
 });
 

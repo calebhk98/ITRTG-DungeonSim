@@ -14,9 +14,9 @@
  *
  * ## Candidate representation (`MultiTeamPlan`)
  *   - `teams`: an array of `TeamPlan`s, one per team slot in use. Each `TeamPlan`
- *     carries its own `Team` (pets/rows/classes) AND its own farm target
- *     (`depth` / `difficulty` / `rooms`) so a strong team can push D4 while a
- *     weak team farms D1 in the same dungeon.
+ *     carries its own `Team` (pets/rows/classes), its own DUNGEON (`dungeonId`),
+ *     AND its own farm target (`depth` / `difficulty` / `rooms`) — so different
+ *     teams can farm different dungeons at different depths simultaneously.
  *
  * ## Validity (violations → REJECTION_SCORE)
  *   1. `teams.length <= teamCount`.
@@ -50,7 +50,7 @@ import type { Team, TeamSlot, Row } from '../../domain/team.js';
 import type { Pet } from '../../domain/pet.js';
 import type { PetId } from '../../domain/ids.js';
 import type { PetClassName } from '../../domain/class.js';
-import type { Dungeon, Depth, Difficulty } from '../../domain/dungeon.js';
+import type { Dungeon, Depth, Difficulty, DungeonId } from '../../domain/dungeon.js';
 import type { RunConfig, EvaluationMode, RunResult } from '../../domain/run.js';
 import type { GameConstants } from '../../constants/types.js';
 import type { Objective, ObjectiveContext } from '../../objectives/Objective.js';
@@ -90,9 +90,11 @@ const DEFAULT_ROOM_CHOICES: readonly number[] = [16];
 
 // ── Public types ──────────────────────────────────────────────────────────────
 
-/** One team plus its own farm target. */
+/** One team plus the dungeon it runs and its own farm target. */
 export interface TeamPlan {
   readonly team: Team;
+  /** Which dungeon this team runs (must be one of the candidate dungeons). */
+  readonly dungeonId: DungeonId;
   readonly depth: Depth;
   readonly difficulty: Difficulty;
   readonly rooms: number;
@@ -107,8 +109,16 @@ export interface MultiTeamPlan {
 export interface MultiTeamInputs {
   /** Available pets to partition. Keys are PetId. */
   readonly roster: ReadonlyMap<PetId, Pet>;
-  /** Dungeon every team runs (single-dungeon for this dimension). */
-  readonly dungeon: Dungeon;
+  /**
+   * Candidate dungeons teams may be assigned to. When present, each team picks
+   * one of these. Provide this for multi-dungeon optimization.
+   */
+  readonly dungeons?: ReadonlyArray<Dungeon> | undefined;
+  /**
+   * Single-dungeon convenience: if `dungeons` is omitted, every team runs this
+   * one dungeon. At least one of `dungeon` / `dungeons` must be provided.
+   */
+  readonly dungeon?: Dungeon | undefined;
   /** Objective to maximise (summed across teams). */
   readonly objective: Objective;
   /** Game constants. Pass DEFAULT_CONSTANTS for production. */
@@ -159,8 +169,47 @@ export function makeMultiTeamProblem(
 
   const rosterPets: readonly Pet[] = Array.from(inputs.roster.values());
 
-  const defaultTarget = (): { depth: Depth; difficulty: Difficulty; rooms: number } => ({
-    depth: depthChoices[0] ?? 1,
+  // Candidate dungeons: explicit list, else the single `dungeon`.
+  const candidateDungeons: readonly Dungeon[] =
+    inputs.dungeons !== undefined && inputs.dungeons.length > 0
+      ? inputs.dungeons
+      : inputs.dungeon !== undefined
+        ? [inputs.dungeon]
+        : [];
+  if (candidateDungeons.length === 0) {
+    throw new Error('makeMultiTeamProblem: provide `dungeon` or a non-empty `dungeons`');
+  }
+  const dungeonMap = new Map<DungeonId, Dungeon>(candidateDungeons.map(d => [d.id, d]));
+  const dungeonIds: readonly DungeonId[] = candidateDungeons.map(d => d.id);
+
+  /** Depths actually present in a dungeon (has a normal table or a boss). */
+  function availableDepths(d: Dungeon): Depth[] {
+    const present = new Set<Depth>();
+    for (const k of Object.keys(d.enemyTable)) present.add(Number(k) as Depth);
+    for (const k of Object.keys(d.bossArchetypeId)) present.add(Number(k) as Depth);
+    return ([1, 2, 3, 4] as Depth[]).filter(dp => present.has(dp));
+  }
+
+  /** depthChoices intersected with what a given dungeon actually offers. */
+  function validDepthsFor(dungeonId: DungeonId): Depth[] {
+    const d = dungeonMap.get(dungeonId);
+    if (d === undefined) return [];
+    const avail = availableDepths(d);
+    const inter = depthChoices.filter(dp => avail.includes(dp));
+    return inter.length > 0 ? inter : avail;
+  }
+
+  /** Clamp a depth to the nearest valid one for a dungeon. */
+  function clampDepth(dungeonId: DungeonId, depth: Depth): Depth {
+    const valid = validDepthsFor(dungeonId);
+    if (valid.includes(depth)) return depth;
+    return valid[0] ?? 1;
+  }
+
+  const defaultTarget = (
+    dungeonId: DungeonId,
+  ): { depth: Depth; difficulty: Difficulty; rooms: number } => ({
+    depth: validDepthsFor(dungeonId)[0] ?? 1,
     difficulty: difficultyChoices[0] ?? 0,
     rooms: roomChoices[0] ?? 16,
   });
@@ -216,6 +265,9 @@ export function makeMultiTeamProblem(
     const globalSeen = new Set<PetId>();
     for (const tp of plan.teams) {
       if (tp.rooms < 1) return false;
+      const dungeon = dungeonMap.get(tp.dungeonId);
+      if (dungeon === undefined) return false; // unknown dungeon
+      if (!availableDepths(dungeon).includes(tp.depth)) return false; // depth absent here
       if (!validateTeam(tp.team)) return false;
       for (const slot of tp.team.slots) {
         if (globalSeen.has(slot.petId)) return false; // pet on two teams
@@ -225,19 +277,21 @@ export function makeMultiTeamProblem(
     return true;
   }
 
-  // ── SimulateRunDeps (constant across all evaluations) ───────────────────────
+  // ── Per-team SimulateRunDeps (dungeon varies per team) ──────────────────────
 
-  const deps: SimulateRunDeps = {
-    dungeon: inputs.dungeon,
-    roster: inputs.roster,
-    constants: inputs.constants,
-    ...(inputs.globals !== undefined ? { globals: inputs.globals } : {}),
-  };
+  function depsFor(dungeonId: DungeonId): SimulateRunDeps {
+    return {
+      dungeon: dungeonMap.get(dungeonId)!,
+      roster: inputs.roster,
+      constants: inputs.constants,
+      ...(inputs.globals !== undefined ? { globals: inputs.globals } : {}),
+    };
+  }
 
   function runConfigFor(tp: TeamPlan): RunConfig {
     return {
       team: tp.team,
-      dungeonId: inputs.dungeon.id,
+      dungeonId: tp.dungeonId,
       depth: tp.depth,
       difficulty: tp.difficulty,
       rooms: tp.rooms,
@@ -252,7 +306,7 @@ export function makeMultiTeamProblem(
     if (tp.team.slots.length === 0) return 0;
     let result: RunResult;
     try {
-      result = simulateRun(runConfigFor(tp), deps);
+      result = simulateRun(runConfigFor(tp), depsFor(tp.dungeonId));
     } catch {
       return REJECTION_PER_TEAM;
     }
@@ -274,7 +328,6 @@ export function makeMultiTeamProblem(
   // ── initial(): round-robin fill across teamCount teams ──────────────────────
 
   function initial(): MultiTeamPlan {
-    const t = defaultTarget();
     const slotLists: TeamSlot[][] = Array.from({ length: teamCount }, () => []);
     const rowCounts = Array.from({ length: teamCount }, () => ({ front: 0, back: 0 }));
 
@@ -304,19 +357,17 @@ export function makeMultiTeamProblem(
       if (!placed) break; // all teams full
     }
 
-    const teams: TeamPlan[] = slotLists.map(slots => ({
-      team: { slots },
-      depth: t.depth,
-      difficulty: t.difficulty,
-      rooms: t.rooms,
-    }));
+    const teams: TeamPlan[] = slotLists.map((slots, i) => {
+      const dungeonId = dungeonIds[i % dungeonIds.length]!;
+      const t = defaultTarget(dungeonId);
+      return { team: { slots }, dungeonId, depth: t.depth, difficulty: t.difficulty, rooms: t.rooms };
+    });
     return { teams };
   }
 
   // ── randomCandidate(): random valid partition ───────────────────────────────
 
   function randomCandidate(rng: Rng): MultiTeamPlan {
-    const t = defaultTarget();
     const slotLists: TeamSlot[][] = Array.from({ length: teamCount }, () => []);
     const rowCounts = Array.from({ length: teamCount }, () => ({ front: 0, back: 0 }));
 
@@ -357,11 +408,13 @@ export function makeMultiTeamProblem(
     }
 
     const teams: TeamPlan[] = slotLists.map(slots => {
-      const depth = depthChoices[rng.int(depthChoices.length)] ?? t.depth;
+      const dungeonId = dungeonIds[rng.int(dungeonIds.length)]!;
+      const validDepths = validDepthsFor(dungeonId);
+      const depth = validDepths[rng.int(validDepths.length)] ?? validDepths[0] ?? 1;
       const difficulty =
-        difficultyChoices[rng.int(difficultyChoices.length)] ?? t.difficulty;
-      const rooms = roomChoices[rng.int(roomChoices.length)] ?? t.rooms;
-      return { team: { slots }, depth, difficulty, rooms };
+        difficultyChoices[rng.int(difficultyChoices.length)] ?? 0;
+      const rooms = roomChoices[rng.int(roomChoices.length)] ?? 16;
+      return { team: { slots }, dungeonId, depth, difficulty, rooms };
     });
     return { teams };
   }
@@ -464,9 +517,10 @@ export function makeMultiTeamProblem(
       }
 
       // ── CHANGE_TARGET (±1 depth, ±1 difficulty, each room choice) ───────────
-      const di = depthChoices.indexOf(tp.depth);
+      const teamDepths = validDepthsFor(tp.dungeonId);
+      const di = teamDepths.indexOf(tp.depth);
       for (const ndi of [di - 1, di + 1]) {
-        const d = depthChoices[ndi];
+        const d = teamDepths[ndi];
         if (d !== undefined) yield withTarget(plan, ti, { depth: d });
       }
       const fi = difficultyChoices.indexOf(tp.difficulty);
@@ -476,6 +530,14 @@ export function makeMultiTeamProblem(
       }
       for (const r of roomChoices) {
         if (r !== tp.rooms) yield withTarget(plan, ti, { rooms: r });
+      }
+
+      // ── CHANGE_DUNGEON (switch this team to each other candidate dungeon) ───
+      for (const did of dungeonIds) {
+        if (did === tp.dungeonId) continue;
+        const teams = plan.teams.slice();
+        teams[ti] = { ...tp, dungeonId: did, depth: clampDepth(did, tp.depth) };
+        yield { teams };
       }
     }
   }
@@ -497,19 +559,29 @@ export function summarizeMultiTeamPlan(
   const evaluationMode = inputs.evaluationMode ?? 'expected';
   const nrdcCompletions = inputs.nrdcCompletions ?? 0;
   const phoenixFeathers = inputs.phoenixFeathers ?? 0;
-  const deps: SimulateRunDeps = {
-    dungeon: inputs.dungeon,
-    roster: inputs.roster,
-    constants: inputs.constants,
-    ...(inputs.globals !== undefined ? { globals: inputs.globals } : {}),
-  };
+
+  const candidates: readonly Dungeon[] =
+    inputs.dungeons !== undefined && inputs.dungeons.length > 0
+      ? inputs.dungeons
+      : inputs.dungeon !== undefined
+        ? [inputs.dungeon]
+        : [];
+  const dungeonMap = new Map<DungeonId, Dungeon>(candidates.map(d => [d.id, d]));
 
   const out: TeamPlanSummary[] = [];
   for (const tp of plan.teams) {
     if (tp.team.slots.length === 0) continue;
+    const dungeon = dungeonMap.get(tp.dungeonId);
+    if (dungeon === undefined) continue;
+    const deps: SimulateRunDeps = {
+      dungeon,
+      roster: inputs.roster,
+      constants: inputs.constants,
+      ...(inputs.globals !== undefined ? { globals: inputs.globals } : {}),
+    };
     const config: RunConfig = {
       team: tp.team,
-      dungeonId: inputs.dungeon.id,
+      dungeonId: tp.dungeonId,
       depth: tp.depth,
       difficulty: tp.difficulty,
       rooms: tp.rooms,

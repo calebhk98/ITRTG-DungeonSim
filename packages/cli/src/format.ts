@@ -238,7 +238,7 @@ export function formatMultiTeamResult(
     const tp = s.plan;
     const status = s.result.cleared ? 'CLEARED' : `partial (${s.result.roomsCleared} rooms)`;
     lines.push(
-      `  Team ${i + 1}: D${tp.depth}-${tp.difficulty}, ${tp.rooms} rooms — ${status}` +
+      `  Team ${i + 1}: ${tp.dungeonId} D${tp.depth}-${tp.difficulty}, ${tp.rooms} rooms — ${status}` +
         (s.feasible ? '' : ' [infeasible for objective]'),
     );
     for (const slot of tp.team.slots) {
