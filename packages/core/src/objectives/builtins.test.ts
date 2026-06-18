@@ -10,7 +10,8 @@
  *   - shallowClear     — cleared at D1 diff=0
  */
 
-import { describe, it, expect, beforeAll } from 'vitest';
+import { describe, it, expect } from 'vitest';
+import type { PetId } from '../domain/ids.js';
 import type { RunConfig, RunResult, RewardBundle, RunResultDistribution } from '../domain/run.js';
 import type { ObjectiveContext } from './Objective.js';
 import { objectiveRegistry } from './Objective.js';
@@ -132,7 +133,7 @@ const failedPartial: RunResult = makeResult({
   roomsCleared: 15,
   elapsedMinutes: 225,
   rewards: makeRewards({ godPower: 300, xpTotal: 1500 }),
-  petDeaths: ['pet_1' as import('../domain/ids.js').PetId],
+  petDeaths: ['pet_1' as PetId],
 });
 
 // A Monte Carlo run with a distribution object
@@ -327,8 +328,8 @@ describe('survivalRate', () => {
     const deathRun = makeResult({
       ...clearedFastRich,
       petDeaths: [
-        'p1' as import('../domain/ids.js').PetId,
-        'p2' as import('../domain/ids.js').PetId,
+        'p1' as PetId,
+        'p2' as PetId,
       ],
     });
     // base=1, 2 deaths → 1 - 0.10 = 0.90
@@ -341,7 +342,7 @@ describe('survivalRate', () => {
       roomsCleared: 0,
       elapsedMinutes: 15,
       rewards: makeRewards(),
-      petDeaths: Array.from({ length: 30 }, (_, i) => `p${i}` as import('../domain/ids.js').PetId),
+      petDeaths: Array.from({ length: 30 }, (_, i) => `p${i}` as PetId),
     });
     expect(survivalRate.score(ctx(manyDeaths))).toBe(0);
   });

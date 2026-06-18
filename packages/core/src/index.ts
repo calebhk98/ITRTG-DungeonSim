@@ -43,9 +43,14 @@ export { mulberry32, ExpectedValueRng } from './sim/rng.js';
 // ── Sim — Strategy (type only; implementations in WP-F) ─────────────────────
 export type { CombatStrategy } from './sim/strategy.js';
 
-// ── Objectives (implementations in WP-E) ─────────────────────────────────────
+// ── Sim — Stat pipeline (WP-B) ───────────────────────────────────────────────
+export { deriveCombatContext } from './sim/stats.js';
+export type { StatDerivationInput } from './sim/stats.js';
+
+// ── Objectives (interface + built-ins WP-E) ──────────────────────────────────
 export type { Objective, ObjectiveContext } from './objectives/Objective.js';
 export { objectiveRegistry } from './objectives/Objective.js';
+export * from './objectives/builtins.js';
 
 // ── Optimizer (implementations in WP-I) ──────────────────────────────────────
 export type {

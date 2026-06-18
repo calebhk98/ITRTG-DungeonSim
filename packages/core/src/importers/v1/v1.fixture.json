@@ -1,0 +1,92 @@
+{
+  "exportedPets": [
+    {
+      "petId": "mouse-001",
+      "name": "Squeaky",
+      "element": "N",
+      "dungeonLvl": 42,
+      "classLvl": 55,
+      "className": "adventurer",
+      "totalGrowth": 84000,
+      "training": {
+        "phys": 120,
+        "myst": 80,
+        "btl": 200
+      },
+      "gear": [
+        {
+          "gearId": "sword-t2-001",
+          "label": "Iron Blade",
+          "type": "weapon",
+          "bonus": 0.12,
+          "tier": 2,
+          "enchant": { "F": 1 }
+        },
+        {
+          "gearId": "armor-t1-003",
+          "label": "Leather Vest",
+          "type": "armor",
+          "bonus": 0.08,
+          "tier": 1
+        }
+      ],
+      "abilities": ["lucky-coin"]
+    },
+    {
+      "petId": "dragon-001",
+      "name": "Blaze",
+      "element": "F",
+      "dungeonLvl": 120,
+      "classLvl": 100,
+      "className": "mage",
+      "totalGrowth": 300000,
+      "training": {
+        "phys": 500,
+        "myst": 250,
+        "btl": 750
+      },
+      "gear": [
+        {
+          "gearId": "staff-t4-007",
+          "label": "Dragon Staff",
+          "type": "weapon",
+          "bonus": 0.35,
+          "tier": 4,
+          "enchant": { "F": 5, "W": 0, "Wi": 0, "E": 0 }
+        },
+        {
+          "gearId": "robe-t3-002",
+          "label": "Ember Robe",
+          "type": "armor",
+          "bonus": 0.20,
+          "tier": 3
+        },
+        {
+          "gearId": "ring-t2-005",
+          "label": "Flame Ring",
+          "type": "accessory",
+          "bonus": 0.10,
+          "tier": 2,
+          "enchant": { "F": 2 }
+        }
+      ],
+      "abilities": ["sup-dmg-red", "vesuvius"]
+    },
+    {
+      "petId": "cat-001",
+      "name": "Whisker",
+      "element": "Wi",
+      "dungeonLvl": 15,
+      "classLvl": 0,
+      "className": null,
+      "totalGrowth": 12000,
+      "training": {
+        "phys": 30,
+        "myst": 20,
+        "btl": 40
+      },
+      "gear": [],
+      "abilities": []
+    }
+  ]
+}

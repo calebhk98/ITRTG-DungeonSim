@@ -30,3 +30,5 @@ export { ImporterRegistry } from './registry.js';
 // ── Importer registrations (append only below this line) ──────────────────────
 // import './v1/v1Importer.js';
 // import './v2/v2Importer.js';
+import './v1/v1Importer.js';
+import './v2/v2Importer.js';

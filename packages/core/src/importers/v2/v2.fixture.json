@@ -1,0 +1,97 @@
+{
+  "_formatVersion": 2,
+  "roster": [
+    {
+      "uid": "slime-001",
+      "displayName": "Blobby",
+      "element": "Water",
+      "dungeonLevel": 75,
+      "classLevel": 80,
+      "evolvedClass": "Defender",
+      "totalGrowth": 180000,
+      "evolutionDifficulty": 100000,
+      "training": {
+        "physical": 300,
+        "mystic": 450,
+        "battle": 150
+      },
+      "loadout": {
+        "weapon": {
+          "id": "trident-t3-001",
+          "name": "Sea Trident",
+          "tier": 3,
+          "statBonus": 0.22,
+          "enchantLevels": { "Water": 3 }
+        },
+        "armor": {
+          "id": "shell-t2-004",
+          "name": "Shell Plate",
+          "tier": 2,
+          "statBonus": 0.14
+        },
+        "trinket": {
+          "id": "pearl-t1-002",
+          "name": "Lucky Pearl",
+          "tier": 1,
+          "statBonus": 0.05,
+          "enchantLevels": { "Water": 1 }
+        }
+      },
+      "abilityFlags": ["succubusHeal"]
+    },
+    {
+      "uid": "fox-001",
+      "displayName": "Vixie",
+      "element": "Wind",
+      "dungeonLevel": 200,
+      "classLevel": 100,
+      "evolvedClass": "Assassin",
+      "totalGrowth": 520000,
+      "evolutionDifficulty": 150000,
+      "training": {
+        "physical": 800,
+        "mystic": 200,
+        "battle": 1200
+      },
+      "loadout": {
+        "weapon": {
+          "id": "dagger-t4-009",
+          "name": "Gale Dagger",
+          "tier": 4,
+          "statBonus": 0.40,
+          "enchantLevels": { "Wind": 6 }
+        },
+        "armor": {
+          "id": "cloak-t3-001",
+          "name": "Wind Cloak",
+          "tier": 3,
+          "statBonus": 0.18
+        },
+        "accessory": {
+          "id": "feather-t2-003",
+          "name": "Storm Feather",
+          "tier": 2,
+          "statBonus": 0.09,
+          "enchantLevels": { "Wind": 2 }
+        }
+      },
+      "abilityFlags": ["chameleonElement", "luckyCoin"]
+    },
+    {
+      "uid": "turtle-001",
+      "displayName": "Shellsworth",
+      "element": "Earth",
+      "dungeonLevel": 8,
+      "classLevel": 0,
+      "totalGrowth": 3200,
+      "evolutionDifficulty": 50000,
+      "training": {
+        "physical": 10,
+        "mystic": 5,
+        "battle": 8
+      },
+      "loadout": {},
+      "abilityFlags": []
+    }
+  ]
+}
