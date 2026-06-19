@@ -216,18 +216,28 @@ export function deriveCombatContext(input: StatDerivationInput): CombatContext {
   const DL = pet.dungeonLevel;
   const CL = pet.classLevel;
 
-  // ── Step 1: EquipMod ────────────────────────────────────────────────────────
-  // Research §6.1: gear pieces stack additively, then the total multiplies base.
-  // TODO: per-stat gear bonuses — currently `statMultiplierBonus` is a single
-  //       scalar that applies uniformly to all stats. Future refinement will add
-  //       per-stat enchant fields (e.g. atkBonus, defBonus) to GearPiece.
+  // ── Step 1: EquipMod (per-stat) ─────────────────────────────────────────────
+  // Research §6.1: quality+upgrade contribution (statMultiplierBonus) applies to
+  // all four stats uniformly. Gem bonuses are stat-specific and additive on top:
+  //   EquipModHP  = 1 + Σ(statMultiplierBonus) + Σ(gemHpBonus)
+  //   EquipModATK = 1 + Σ(statMultiplierBonus) + Σ(gemAtkBonus)
+  //   EquipModDEF = 1 + Σ(statMultiplierBonus) + Σ(gemDefBonus)
+  //   EquipModSPD = 1 + Σ(statMultiplierBonus) + Σ(gemSpdBonus)
   let equipBonusSum = 0;
+  let gemHpSum = 0, gemAtkSum = 0, gemDefSum = 0, gemSpdSum = 0;
   for (const piece of Object.values(pet.equipment)) {
     if (piece !== undefined) {
       equipBonusSum += piece.statMultiplierBonus;
+      gemHpSum  += piece.gemHpBonus  ?? 0;
+      gemAtkSum += piece.gemAtkBonus ?? 0;
+      gemDefSum += piece.gemDefBonus ?? 0;
+      gemSpdSum += piece.gemSpdBonus ?? 0;
     }
   }
-  const equipMod = 1 + equipBonusSum;
+  const equipModHp  = 1 + equipBonusSum + gemHpSum;
+  const equipModAtk = 1 + equipBonusSum + gemAtkSum;
+  const equipModDef = 1 + equipBonusSum + gemDefSum;
+  const equipModSpd = 1 + equipBonusSum + gemSpdSum;
 
   // ── Step 2: growthFactor ────────────────────────────────────────────────────
   // Research §5.4 / §6.1: `(1 + TotalGrowth / 200,000)`.
@@ -266,15 +276,12 @@ export function deriveCombatContext(input: StatDerivationInput): CombatContext {
   }
 
   // ── Step 5: Stat derivation ─────────────────────────────────────────────────
-  // Research §6.1 formula (same structure for all four stats):
-  //   stat = (base × growthFactor × EquipMod × statMultiplier + statAdditive) × ClassMod
-  const innerHp  = hpBase  * growthFactor * equipMod * statMultiplier + statAdditive;
-  const innerAds = adsBase * growthFactor * equipMod * statMultiplier + statAdditive;
-
-  const hp  = innerHp  * classModHp;
-  const atk = innerAds * classMod.atk;
-  const def = innerAds * classMod.def;
-  const spd = innerAds * classMod.spd;
+  // Research §6.1: stat = (base × growthFactor × EquipMod × statMultiplier + statAdditive) × ClassMod
+  // Each stat uses its own EquipMod (gem bonuses are stat-specific).
+  const hp  = (hpBase  * growthFactor * equipModHp  * statMultiplier + statAdditive) * classModHp;
+  const atk = (adsBase * growthFactor * equipModAtk * statMultiplier + statAdditive) * classMod.atk;
+  const def = (adsBase * growthFactor * equipModDef * statMultiplier + statAdditive) * classMod.def;
+  const spd = (adsBase * growthFactor * equipModSpd * statMultiplier + statAdditive) * classMod.spd;
 
   // ── Step 6: Element levels (§5.3) ──────────────────────────────────────────
   // Step 6a: Base element levels from pet type.

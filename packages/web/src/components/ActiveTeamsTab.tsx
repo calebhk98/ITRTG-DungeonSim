@@ -6,6 +6,7 @@ import type {
   Difficulty,
   GearSlot,
   GearQuality,
+  GemType,
   ElementLevels,
 } from '@itrtg-sim/core';
 import {
@@ -15,6 +16,7 @@ import {
   simulateRun,
   DEFAULT_CONSTANTS,
   computeGearMultiplier,
+  computeGemStatBonus,
 } from '@itrtg-sim/core';
 
 // ── Action column parsing ─────────────────────────────────────────────────────
@@ -47,12 +49,14 @@ function parseActionColumn(text: string): Map<string, string> {
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type GearQualityOption = GearQuality;
+type GemTypeOption = GemType | 'none';
 
 interface SlotSpec {
   name: string;
+  tier: 1 | 2 | 3 | 4;
   upgradeLevel: number;
   quality: GearQualityOption;
-  gemElement: keyof ElementLevels | '';
+  gemType: GemTypeOption;
   gemLevel: number;
 }
 
@@ -76,10 +80,24 @@ interface TeamSweep {
 
 const GEAR_SLOTS: GearSlot[] = ['weapon', 'armor', 'accessory', 'trinket'];
 const QUALITIES: GearQualityOption[] = ['D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
-const ELEMENTS: (keyof ElementLevels)[] = ['Fire', 'Water', 'Wind', 'Earth'];
+const GEM_TYPES: { value: GemTypeOption; label: string }[] = [
+  { value: 'none',    label: '— no gem —' },
+  { value: 'Fire',    label: 'Fire (ATK)' },
+  { value: 'Water',   label: 'Water (HP)' },
+  { value: 'Earth',   label: 'Earth (DEF)' },
+  { value: 'Wind',    label: 'Wind (SPD)' },
+  { value: 'Neutral', label: 'Neutral (element lvls)' },
+];
 
-function emptySlotSpec(name = '', upgradeLevel = 0, quality: GearQuality = 'SSS', gemElement: keyof ElementLevels | '' = '', gemLevel = 0): SlotSpec {
-  return { name, upgradeLevel, quality, gemElement, gemLevel };
+function emptySlotSpec(
+  name = '',
+  tier: 1 | 2 | 3 | 4 = 4,
+  upgradeLevel = 0,
+  quality: GearQuality = 'SSS',
+  gemType: GemTypeOption = 'none',
+  gemLevel = 0,
+): SlotSpec {
+  return { name, tier, upgradeLevel, quality, gemType, gemLevel };
 }
 
 // ── Gear override application ─────────────────────────────────────────────────
@@ -97,17 +115,23 @@ function applyOverrides(
       if (spec === null) {
         delete newEquipment[slot];
       } else if (spec !== undefined && spec.name.trim() !== '') {
+        const { tier, gemType, gemLevel } = spec;
+        const gemBonus = gemType !== 'none' ? computeGemStatBonus(gemType, gemLevel, tier) : 0;
+        const elemBonus = gemType === 'Neutral' ? gemLevel * tier : 0;
         newEquipment[slot] = {
           id:   `override-${slot}`,
           name: spec.name.trim(),
           slot,
-          tier: 4 as const,
+          tier,
           statMultiplierBonus: computeGearMultiplier(spec.quality, spec.upgradeLevel),
-          ...(spec.gemElement !== ''
-            ? { elementEnchant: { [spec.gemElement]: spec.gemLevel } as Partial<ElementLevels> }
-            : {}),
+          ...(gemType === 'Water'   ? { gemHpBonus:  gemBonus } : {}),
+          ...(gemType === 'Fire'    ? { gemAtkBonus: gemBonus } : {}),
+          ...(gemType === 'Earth'   ? { gemDefBonus: gemBonus } : {}),
+          ...(gemType === 'Wind'    ? { gemSpdBonus: gemBonus } : {}),
+          ...(gemType === 'Neutral' ? { elementEnchant: { Fire: elemBonus, Water: elemBonus, Wind: elemBonus, Earth: elemBonus } as Partial<ElementLevels> } : {}),
           upgradeLevel: spec.upgradeLevel,
           quality: spec.quality,
+          ...(gemType !== 'none' ? { gemType, gemLevel } : {}),
         };
       }
     }
@@ -176,16 +200,13 @@ function cellLabel(cleared: boolean, overrideCleared?: boolean): string {
 
 // ── Gear slot display ──────────────────────────────────────────────────────────
 
-function gearLabel(piece: { name: string; upgradeLevel?: number; quality?: string; elementEnchant?: Partial<ElementLevels> } | undefined): string {
+function gearLabel(piece: { name: string; upgradeLevel?: number; quality?: string; gemType?: string; gemLevel?: number } | undefined): string {
   if (piece === undefined) return '—';
   let label = piece.name;
   if (piece.upgradeLevel !== undefined) label += ` +${piece.upgradeLevel}`;
   if (piece.quality !== undefined) label += ` ${piece.quality}`;
-  if (piece.elementEnchant !== undefined) {
-    const gems = Object.entries(piece.elementEnchant)
-      .filter(([, v]) => v !== undefined && (v as number) > 0)
-      .map(([el, v]) => `${el} lv${v as number}`);
-    if (gems.length > 0) label += ` (${gems.join(', ')})`;
+  if (piece.gemType !== undefined && piece.gemLevel !== undefined) {
+    label += ` (${piece.gemType} gem lv${piece.gemLevel})`;
   }
   return label;
 }
@@ -297,10 +318,11 @@ export default function ActiveTeamsTab({ roster, petExportText }: Props): React.
             if (piece !== undefined) {
               slotSpecs[slot] = emptySlotSpec(
                 piece.name,
+                piece.tier,
                 piece.upgradeLevel ?? 0,
                 (piece.quality as GearQuality | undefined) ?? 'SSS',
-                (Object.keys(piece.elementEnchant ?? {})[0] as keyof ElementLevels | undefined) ?? '',
-                Object.values(piece.elementEnchant ?? {})[0] ?? 0,
+                (piece.gemType as GemTypeOption | undefined) ?? 'none',
+                piece.gemLevel ?? 0,
               );
             } else {
               slotSpecs[slot] = null;
@@ -352,10 +374,11 @@ export default function ActiveTeamsTab({ roster, petExportText }: Props): React.
             ...petOvr,
             [slot]: emptySlotSpec(
               piece?.name ?? '',
+              piece?.tier ?? 4,
               piece?.upgradeLevel ?? 0,
               (piece?.quality as GearQuality | undefined) ?? 'SSS',
-              (Object.keys(piece?.elementEnchant ?? {})[0] as keyof ElementLevels | undefined) ?? '',
-              Object.values(piece?.elementEnchant ?? {})[0] ?? 0,
+              (piece?.gemType as GemTypeOption | undefined) ?? 'none',
+              piece?.gemLevel ?? 0,
             ),
           },
         };
@@ -549,7 +572,7 @@ export default function ActiveTeamsTab({ roster, petExportText }: Props): React.
                       const equipped = spec !== null && spec !== undefined;
                       const slotData: SlotSpec = equipped
                         ? (spec as SlotSpec)
-                        : emptySlotSpec(currentPiece?.name ?? '', currentPiece?.upgradeLevel ?? 0, (currentPiece?.quality as GearQuality | undefined) ?? 'SSS');
+                        : emptySlotSpec(currentPiece?.name ?? '', currentPiece?.tier ?? 4, currentPiece?.upgradeLevel ?? 0, (currentPiece?.quality as GearQuality | undefined) ?? 'SSS');
 
                       return (
                         <div key={slot} style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: 8, marginBottom: 8, alignItems: 'start' }}>
@@ -595,26 +618,41 @@ export default function ActiveTeamsTab({ roster, petExportText }: Props): React.
                                 {QUALITIES.map(q => <option key={q} value={q}>{q}</option>)}
                               </select>
                               <select
-                                value={slotData.gemElement}
-                                onChange={e => setSlotSpec(name, slot, 'gemElement', e.target.value)}
+                                value={slotData.gemType}
+                                onChange={e => setSlotSpec(name, slot, 'gemType', e.target.value as GemTypeOption)}
                                 style={{ fontSize: 12 }}
                               >
-                                <option value="">— no gem —</option>
-                                {ELEMENTS.map(el => <option key={el} value={el}>{el} gem</option>)}
+                                {GEM_TYPES.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
                               </select>
-                              {slotData.gemElement !== '' && (
+                              {slotData.gemType !== 'none' && (
                                 <label style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                                   <span style={{ color: '#71717a' }}>lv</span>
                                   <input
-                                    type="number" min={0}
+                                    type="number" min={0} max={30}
                                     value={slotData.gemLevel}
                                     onChange={e => setSlotSpec(name, slot, 'gemLevel', Math.max(0, Number(e.target.value)))}
                                     style={{ width: 52, fontSize: 12 }}
                                   />
                                 </label>
                               )}
+                              <label style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12 }}>
+                                <span style={{ color: '#71717a' }}>T</span>
+                                <select
+                                  value={slotData.tier}
+                                  onChange={e => setSlotSpec(name, slot, 'tier', Number(e.target.value) as 1|2|3|4)}
+                                  style={{ fontSize: 12, width: 52 }}
+                                >
+                                  {([1,2,3,4] as const).map(t => <option key={t} value={t}>{t}</option>)}
+                                </select>
+                              </label>
                               <span style={{ color: '#71717a', fontSize: 11, alignSelf: 'center' }}>
                                 ≈{(computeGearMultiplier(slotData.quality, slotData.upgradeLevel) * 100).toFixed(0)}%
+                                {slotData.gemType !== 'none' && slotData.gemType !== 'Neutral' && (
+                                  <> +{(computeGemStatBonus(slotData.gemType, slotData.gemLevel, slotData.tier) * 100).toFixed(0)}% {slotData.gemType === 'Water' ? 'HP' : slotData.gemType === 'Fire' ? 'ATK' : slotData.gemType === 'Earth' ? 'DEF' : 'SPD'}</>
+                                )}
+                                {slotData.gemType === 'Neutral' && (
+                                  <> +{slotData.gemLevel * slotData.tier} elem lvls</>
+                                )}
                               </span>
                             </div>
                           )}

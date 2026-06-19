@@ -55,8 +55,8 @@ import { defaultRegistry } from '../registry.js';
 import type { Pet } from '../../domain/pet.js';
 import type { Element } from '../../domain/element.js';
 import type { PetClassName } from '../../domain/class.js';
-import type { GearPiece, GearSlot, GearQuality, ElementLevels } from '../../domain/gear.js';
-import { GEAR_QUALITY_BASE, GEAR_UPGRADE_STEP, computeGearMultiplier } from '../../domain/gear.js';
+import type { GearPiece, GearSlot, GearQuality, GemType, ElementLevels } from '../../domain/gear.js';
+import { GEAR_QUALITY_BASE, computeGearMultiplier, computeGemStatBonus } from '../../domain/gear.js';
 import { asPetId } from '../../domain/ids.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -149,16 +149,8 @@ function gearTierHeuristic(name: string, quality: string): 1 | 2 | 3 | 4 {
   return 1;
 }
 
-/**
- * Maps gem element strings from the export to ElementLevels keys.
- * The export uses "Water gem lv 15", "Fire gem lv 10", etc.
- */
-const GEM_ELEMENT_MAP: Readonly<Record<string, keyof ElementLevels>> = {
-  Water: 'Water',
-  Fire: 'Fire',
-  Wind: 'Wind',
-  Earth: 'Earth',
-};
+/** Gem type tokens as they appear in the export (case-insensitive match on first word). */
+const VALID_GEM_TYPES = new Set<string>(['Fire', 'Water', 'Wind', 'Earth', 'Neutral']);
 
 /**
  * Parse a single gear slot string.
@@ -169,6 +161,13 @@ const GEM_ELEMENT_MAP: Readonly<Record<string, keyof ElementLevels>> = {
  *   "Ear Muffs + 20, SSS"
  *   "none"
  *   ""
+ *
+ * Gem formula:
+ *   Fire  gem → gemAtkBonus = gemLevel × 0.01 × tier
+ *   Water gem → gemHpBonus  = gemLevel × 0.01 × tier
+ *   Wind  gem → gemSpdBonus = gemLevel × 0.01 × tier
+ *   Earth gem → gemDefBonus = gemLevel × 0.01 × tier
+ *   Neutral gem → elementEnchant = { Fire/Water/Wind/Earth: gemLevel × tier } (integer)
  *
  * Returns null for "none"/empty strings (slot absent).
  */
@@ -192,34 +191,53 @@ function parseGearString(
   const itemName = plusMatch[1]!.trim();
   const upgradeLevel = parseInt(plusMatch[2]!, 10);
 
-  // Extract quality token (SSS / SS / S / A / B / C / …) — first all-caps word after the comma
+  // Extract quality token (SSS / SS / S / A / B / C / D)
   const qualityMatch = /,\s*(SSS|SS|S|A|B|C|D)(\s*\(\d+\))?/.exec(trimmed);
   const qualityStr = qualityMatch !== null ? qualityMatch[1]! : '';
   const quality = (qualityStr in GEAR_QUALITY_BASE) ? (qualityStr as GearQuality) : undefined;
 
-  // Extract gem: "Water gem lv 12", "Earth gem lv 15", etc.
-  const gemMatch = /(\w+)\s+gem\s+lv\s+(\d+)/i.exec(trimmed);
-  let elementEnchant: Partial<ElementLevels> | undefined;
-  if (gemMatch !== null) {
-    const gemEl = gemMatch[1]!;
-    const gemLv = parseInt(gemMatch[2]!, 10);
-    const mappedEl = GEM_ELEMENT_MAP[gemEl];
-    if (mappedEl !== undefined && !isNaN(gemLv)) {
-      elementEnchant = { [mappedEl]: gemLv };
-    } else if (gemEl.toLowerCase() !== 'neutral') {
-      warnings.push(
-        `Pet "${petName}", slot "${slot}": unrecognised gem element "${gemEl}" in "${trimmed}"; gem skipped.`,
-      );
-    }
-    // "Neutral gem" is valid in the export but contributes no element level bonus — skip silently.
-  }
-
   const tier = gearTierHeuristic(itemName, qualityStr);
 
-  // Compute statMultiplierBonus from quality+upgrade (community-estimated formula).
-  // Observed stats already include all gear; this value is used only in the forceDerive
-  // (gear what-if) path. Relative comparisons between gear options are reliable even
-  // if absolute accuracy is ±20%.
+  // Extract gem: "Fire gem lv 15", "Neutral gem lv 12", etc.
+  const gemMatch = /(\w+)\s+gem\s+lv\s+(\d+)/i.exec(trimmed);
+  let gemType: GemType | undefined;
+  let gemLevel: number | undefined;
+  let gemHpBonus: number | undefined;
+  let gemAtkBonus: number | undefined;
+  let gemDefBonus: number | undefined;
+  let gemSpdBonus: number | undefined;
+  let elementEnchant: Partial<ElementLevels> | undefined;
+
+  if (gemMatch !== null) {
+    const rawGemType = gemMatch[1]!;
+    // Capitalise first letter to normalise (e.g. "water" → "Water")
+    const normGemType = rawGemType.charAt(0).toUpperCase() + rawGemType.slice(1).toLowerCase();
+    const gemLv = parseInt(gemMatch[2]!, 10);
+
+    if (VALID_GEM_TYPES.has(normGemType) && !isNaN(gemLv)) {
+      gemType = normGemType as GemType;
+      gemLevel = gemLv;
+      const bonus = computeGemStatBonus(gemType, gemLv, tier);
+      switch (gemType) {
+        case 'Water':   gemHpBonus  = bonus; break;
+        case 'Fire':    gemAtkBonus = bonus; break;
+        case 'Earth':   gemDefBonus = bonus; break;
+        case 'Wind':    gemSpdBonus = bonus; break;
+        case 'Neutral': {
+          const elemBonus = gemLv * tier;
+          elementEnchant = { Fire: elemBonus, Water: elemBonus, Wind: elemBonus, Earth: elemBonus };
+          break;
+        }
+      }
+    } else {
+      warnings.push(
+        `Pet "${petName}", slot "${slot}": unrecognised gem "${rawGemType}" in "${trimmed}"; gem skipped.`,
+      );
+    }
+  }
+
+  // Compute statMultiplierBonus from quality+upgrade (community-estimated).
+  // Used only in the forceDerive (gear what-if) path; observed stats bypass this.
   const statMultiplierBonus = quality !== undefined
     ? computeGearMultiplier(quality, isNaN(upgradeLevel) ? 0 : upgradeLevel)
     : 0;
@@ -230,9 +248,15 @@ function parseGearString(
     slot,
     statMultiplierBonus,
     tier,
+    ...(gemHpBonus  !== undefined ? { gemHpBonus  } : {}),
+    ...(gemAtkBonus !== undefined ? { gemAtkBonus } : {}),
+    ...(gemDefBonus !== undefined ? { gemDefBonus } : {}),
+    ...(gemSpdBonus !== undefined ? { gemSpdBonus } : {}),
     ...(elementEnchant !== undefined ? { elementEnchant } : {}),
     ...(!isNaN(upgradeLevel) ? { upgradeLevel } : {}),
-    ...(quality !== undefined ? { quality } : {}),
+    ...(quality  !== undefined ? { quality  } : {}),
+    ...(gemType  !== undefined ? { gemType  } : {}),
+    ...(gemLevel !== undefined ? { gemLevel } : {}),
   };
 
   return piece;

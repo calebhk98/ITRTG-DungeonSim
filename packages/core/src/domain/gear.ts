@@ -5,18 +5,27 @@
  */
 export type GearSlot = 'weapon' | 'armor' | 'accessory' | 'trinket';
 
+/** Quality grades as they appear in the in-game export (low → high). */
+export type GearQuality = 'D' | 'C' | 'B' | 'A' | 'S' | 'SS' | 'SSS';
+
+/** Gem types that can be socketed into equipment. */
+export type GemType = 'Fire' | 'Water' | 'Wind' | 'Earth' | 'Neutral';
+
 /**
  * A single piece of equipment that can be assigned to a pet.
  *
  * Research §6.1: `EquipMod` is gear multiplier — "gear pieces stack additively,
  * then multiply base". So `statMultiplierBonus` values across all equipped pieces
- * are summed first, then the total is applied as a multiplier.
+ * are summed first, then the total is applied as a multiplier to each stat.
  *
- * Research §5.3: Equipment enchantments add to element levels.
+ * Gem bonuses are stat-specific and additive on top of the base EquipMod:
+ *   EquipModHP  = 1 + Σ(statMultiplierBonus) + Σ(gemHpBonus)
+ *   EquipModATK = 1 + Σ(statMultiplierBonus) + Σ(gemAtkBonus)
+ *   EquipModDEF = 1 + Σ(statMultiplierBonus) + Σ(gemDefBonus)
+ *   EquipModSPD = 1 + Σ(statMultiplierBonus) + Σ(gemSpdBonus)
+ *
+ * Neutral gems add to element levels (not stats); stored in `elementEnchant`.
  */
-/** Quality grades as they appear in the in-game export (low → high). */
-export type GearQuality = 'D' | 'C' | 'B' | 'A' | 'S' | 'SS' | 'SSS';
-
 export interface GearPiece {
   /** Unique identifier for this gear piece (e.g. from in-game export). */
   readonly id: string;
@@ -25,14 +34,34 @@ export interface GearPiece {
   /** Which slot this piece occupies. */
   readonly slot: GearSlot;
   /**
-   * Additive contribution to `EquipMod` in the stat formula (research §6.1).
-   * Multiple pieces stack additively: total EquipMod = 1 + Σ(statMultiplierBonus).
+   * Uniform additive contribution to all four EquipMod values (quality + upgrades).
+   * Formula: qualityBase + upgradeLevel × 0.05.
    */
   readonly statMultiplierBonus: number;
   /**
-   * Optional elemental enchantment. Values are ADDED to the pet's computed
-   * elemental levels before Dojo/Strategy modifiers apply (research §5.3).
-   * Negative values reduce element levels (from off-element gear penalties).
+   * Water gem: adds this fraction to the HP EquipMod only.
+   * Formula: gemLevel × 0.01 × tier  (e.g. lv15 tier4 → 0.60)
+   */
+  readonly gemHpBonus?: number;
+  /**
+   * Fire gem: adds this fraction to the ATK EquipMod only.
+   * Formula: gemLevel × 0.01 × tier
+   */
+  readonly gemAtkBonus?: number;
+  /**
+   * Earth gem: adds this fraction to the DEF EquipMod only.
+   * Formula: gemLevel × 0.01 × tier
+   */
+  readonly gemDefBonus?: number;
+  /**
+   * Wind gem: adds this fraction to the SPD EquipMod only.
+   * Formula: gemLevel × 0.01 × tier
+   */
+  readonly gemSpdBonus?: number;
+  /**
+   * Neutral gem: values are ADDED to the pet's element levels for combat.
+   * Formula per element: gemLevel × tier  (integer, not percentage).
+   * Also used for off-element gear penalties (negative values).
    */
   readonly elementEnchant?: Partial<ElementLevels>;
   /** Gear tier 1–4, matching the dungeon material tiers (research §8.4). */
@@ -41,6 +70,10 @@ export interface GearPiece {
   readonly upgradeLevel?: number;
   /** Quality grade from the in-game export. Used for display and gear-swap UI. */
   readonly quality?: GearQuality;
+  /** Gem type socketed into this piece. Used for display and gear-swap UI. */
+  readonly gemType?: GemType;
+  /** Gem level socketed into this piece. Used for display and gear-swap UI. */
+  readonly gemLevel?: number;
 }
 
 /**
@@ -74,8 +107,6 @@ export type GearInventory = ReadonlyArray<GearPiece>;
 /**
  * Community-estimated quality base values for `statMultiplierBonus`.
  * Scale: A=50% baseline, ±10% per tier. Source: ITRTG wiki; confidence: medium.
- * (Pet dungeon vs adventure-mode gear distinction is uncertain; reliable for
- * relative comparisons between gear options.)
  */
 export const GEAR_QUALITY_BASE: Readonly<Record<GearQuality, number>> = {
   D: 0.20,
@@ -96,4 +127,14 @@ export const GEAR_UPGRADE_STEP = 0.05;
  */
 export function computeGearMultiplier(quality: GearQuality, upgradeLevel: number): number {
   return Math.max(0, GEAR_QUALITY_BASE[quality] + upgradeLevel * GEAR_UPGRADE_STEP);
+}
+
+/**
+ * Compute a stat-specific gem bonus.
+ * Colored gems (Fire/Water/Wind/Earth): gemLevel × 0.01 × tier
+ * Neutral gem: returns 0 (Neutral gem adds to element levels, not stats).
+ */
+export function computeGemStatBonus(gemType: GemType, gemLevel: number, tier: number): number {
+  if (gemType === 'Neutral') return 0;
+  return gemLevel * 0.01 * tier;
 }
