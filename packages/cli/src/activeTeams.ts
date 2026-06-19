@@ -16,7 +16,7 @@ import {
   DEFAULT_CONSTANTS,
 } from '@itrtg-sim/core';
 import type { Pet, PetId, Team, RunResult, GearSlot, GearQuality, GemType, ElementLevels } from '@itrtg-sim/core';
-import { computeGearMultiplier, computeGemStatBonus } from '@itrtg-sim/core';
+import { computeGemStatBonus, lookupGearItem, getGearItemFallback } from '@itrtg-sim/core';
 
 // ── Action → DungeonId mapping ────────────────────────────────────────────────
 
@@ -239,19 +239,32 @@ export function applyGearOverrides(
           ? computeGemStatBonus(gemType, gemLevel, tier) : 0;
         const elemBonus = gemType === 'Neutral' ? gemLevel * tier : 0;
 
+        // Look up per-stat base bonuses from the gear registry.
+        const itemName = spec.name ?? current?.name ?? slot;
+        const registryItem = lookupGearItem(itemName);
+        const fallback = getGearItemFallback(slot);
+        const baseHpBonus  = registryItem?.baseHpBonus  ?? current?.baseHpBonus  ?? fallback.baseHpBonus;
+        const baseAtkBonus = registryItem?.baseAtkBonus ?? current?.baseAtkBonus ?? fallback.baseAtkBonus;
+        const baseDefBonus = registryItem?.baseDefBonus ?? current?.baseDefBonus ?? fallback.baseDefBonus;
+        const baseSpdBonus = registryItem?.baseSpdBonus ?? current?.baseSpdBonus ?? fallback.baseSpdBonus;
+        const resolvedTier = (registryItem?.tier ?? tier) as 1 | 2 | 3 | 4 | 5;
+
         newEquipment[slot] = {
           id:   `override-${slot}`,
-          name: spec.name ?? current?.name ?? `${slot}`,
+          name: itemName,
           slot,
-          tier,
-          statMultiplierBonus: computeGearMultiplier(quality, upg),
+          tier: resolvedTier,
+          baseHpBonus,
+          baseAtkBonus,
+          baseDefBonus,
+          baseSpdBonus,
+          quality,
+          upgradeLevel: upg,
           ...(gemType === 'Water'   ? { gemHpBonus:  gemBonus } : {}),
           ...(gemType === 'Fire'    ? { gemAtkBonus: gemBonus } : {}),
           ...(gemType === 'Earth'   ? { gemDefBonus: gemBonus } : {}),
           ...(gemType === 'Wind'    ? { gemSpdBonus: gemBonus } : {}),
           ...(gemType === 'Neutral' ? { elementEnchant: { Fire: elemBonus, Water: elemBonus, Wind: elemBonus, Earth: elemBonus } as Partial<ElementLevels> } : {}),
-          upgradeLevel: upg,
-          quality,
           ...(gemType  !== undefined ? { gemType  } : {}),
           ...(gemLevel > 0          ? { gemLevel } : {}),
         };

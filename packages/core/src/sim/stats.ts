@@ -12,6 +12,7 @@ import { resolve } from '../constants/types.js';
 import type { GameConstants } from '../constants/types.js';
 import type { CombatContext } from '../domain/combat.js';
 import type { ElementLevels } from '../domain/gear.js';
+import { computeGearQualityMult, computeGearUpgradeMult } from '../domain/gear.js';
 import type { Pet } from '../domain/pet.js';
 import type { Row } from '../domain/team.js';
 import type { PetClassName } from '../domain/class.js';
@@ -217,27 +218,34 @@ export function deriveCombatContext(input: StatDerivationInput): CombatContext {
   const CL = pet.classLevel;
 
   // ── Step 1: EquipMod (per-stat) ─────────────────────────────────────────────
-  // Research §6.1: quality+upgrade contribution (statMultiplierBonus) applies to
-  // all four stats uniformly. Gem bonuses are stat-specific and additive on top:
-  //   EquipModHP  = 1 + Σ(statMultiplierBonus) + Σ(gemHpBonus)
-  //   EquipModATK = 1 + Σ(statMultiplierBonus) + Σ(gemAtkBonus)
-  //   EquipModDEF = 1 + Σ(statMultiplierBonus) + Σ(gemDefBonus)
-  //   EquipModSPD = 1 + Σ(statMultiplierBonus) + Σ(gemSpdBonus)
-  let equipBonusSum = 0;
+  // Research §12 (itrtg.wiki.gg/wiki/Equip): each gear piece contributes
+  // per-stat base bonuses multiplied by quality × upgrade multipliers.
+  //   effectiveStat = baseStatBonus × qualityMult × upgradeMult
+  //   EquipModHP  = 1 + Σ(baseHpBonus  × qMult × uMult) + Σ(gemHpBonus)
+  //   EquipModATK = 1 + Σ(baseAtkBonus × qMult × uMult) + Σ(gemAtkBonus)
+  //   EquipModDEF = 1 + Σ(baseDefBonus × qMult × uMult) + Σ(gemDefBonus)
+  //   EquipModSPD = 1 + Σ(baseSpdBonus × qMult × uMult) + Σ(gemSpdBonus)
+  let hpGearSum = 0, atkGearSum = 0, defGearSum = 0, spdGearSum = 0;
   let gemHpSum = 0, gemAtkSum = 0, gemDefSum = 0, gemSpdSum = 0;
   for (const piece of Object.values(pet.equipment)) {
     if (piece !== undefined) {
-      equipBonusSum += piece.statMultiplierBonus;
+      const qMult = computeGearQualityMult(piece.quality);
+      const uMult = computeGearUpgradeMult(piece.upgradeLevel);
+      const combined = qMult * uMult;
+      hpGearSum  += piece.baseHpBonus  * combined;
+      atkGearSum += piece.baseAtkBonus * combined;
+      defGearSum += piece.baseDefBonus * combined;
+      spdGearSum += piece.baseSpdBonus * combined;
       gemHpSum  += piece.gemHpBonus  ?? 0;
       gemAtkSum += piece.gemAtkBonus ?? 0;
       gemDefSum += piece.gemDefBonus ?? 0;
       gemSpdSum += piece.gemSpdBonus ?? 0;
     }
   }
-  const equipModHp  = 1 + equipBonusSum + gemHpSum;
-  const equipModAtk = 1 + equipBonusSum + gemAtkSum;
-  const equipModDef = 1 + equipBonusSum + gemDefSum;
-  const equipModSpd = 1 + equipBonusSum + gemSpdSum;
+  const equipModHp  = 1 + hpGearSum  + gemHpSum;
+  const equipModAtk = 1 + atkGearSum + gemAtkSum;
+  const equipModDef = 1 + defGearSum + gemDefSum;
+  const equipModSpd = 1 + spdGearSum + gemSpdSum;
 
   // ── Step 2: growthFactor ────────────────────────────────────────────────────
   // Research §5.4 / §6.1: `(1 + TotalGrowth / 200,000)`.

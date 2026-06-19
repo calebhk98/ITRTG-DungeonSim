@@ -143,8 +143,8 @@ describe('petExportImporter.import(): Mouse spot-check', () => {
     expect(mouse?.equipment.weapon?.quality).toBe('SSS');
   });
 
-  it('Mouse: weapon statMultiplierBonus = SSS base (0.80) + 20 × 0.05 = 1.80', () => {
-    expect(mouse?.equipment.weapon?.statMultiplierBonus).toBeCloseTo(1.80, 5);
+  it('Mouse: weapon upgradeLevel = 20', () => {
+    expect(mouse?.equipment.weapon?.upgradeLevel).toBe(20);
   });
 });
 

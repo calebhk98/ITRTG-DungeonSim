@@ -1,12 +1,14 @@
 /**
  * The four equipment slots available to each pet.
- * Exact slot names are not explicitly listed in the research doc but are
- * consistent with standard RPG conventions referenced in the wiki.
  */
 export type GearSlot = 'weapon' | 'armor' | 'accessory' | 'trinket';
 
-/** Quality grades as they appear in the in-game export (low → high). */
-export type GearQuality = 'D' | 'C' | 'B' | 'A' | 'S' | 'SS' | 'SSS';
+/**
+ * Quality grades — 9 steps from F (lowest) to SSS (highest).
+ * Each step is ±10% relative to the A baseline (A = 1.00×).
+ * Source: itrtg.wiki.gg/wiki/Equip — high confidence.
+ */
+export type GearQuality = 'F' | 'E' | 'D' | 'C' | 'B' | 'A' | 'S' | 'SS' | 'SSS';
 
 /** Gem types that can be socketed into equipment. */
 export type GemType = 'Fire' | 'Water' | 'Wind' | 'Earth' | 'Neutral';
@@ -14,17 +16,27 @@ export type GemType = 'Fire' | 'Water' | 'Wind' | 'Earth' | 'Neutral';
 /**
  * A single piece of equipment that can be assigned to a pet.
  *
- * Research §6.1: `EquipMod` is gear multiplier — "gear pieces stack additively,
- * then multiply base". So `statMultiplierBonus` values across all equipped pieces
- * are summed first, then the total is applied as a multiplier to each stat.
+ * ## Stat formula (research §12, source: itrtg.wiki.gg/wiki/Equip)
  *
- * Gem bonuses are stat-specific and additive on top of the base EquipMod:
- *   EquipModHP  = 1 + Σ(statMultiplierBonus) + Σ(gemHpBonus)
- *   EquipModATK = 1 + Σ(statMultiplierBonus) + Σ(gemAtkBonus)
- *   EquipModDEF = 1 + Σ(statMultiplierBonus) + Σ(gemDefBonus)
- *   EquipModSPD = 1 + Σ(statMultiplierBonus) + Σ(gemSpdBonus)
+ * Each item's contribution to a stat is multiplicative:
+ *   effectiveStat = baseStatBonus × qualityMult × upgradeMult
+ *
+ * where:
+ *   qualityMult  = GEAR_QUALITY_MULT[quality]         (F=0.50 … SSS=1.30)
+ *   upgradeMult  = 1 + upgradeLevel × 0.05            (+5% per upgrade level)
+ *   baseStatBonus = the item's inherent stat at quality A, upgrade +0
+ *
+ * The four EquipMods are then built per-stat:
+ *   EquipModHP  = 1 + Σ(baseHpBonus  × qualMult × upgMult) + Σ(gemHpBonus)
+ *   EquipModATK = 1 + Σ(baseAtkBonus × qualMult × upgMult) + Σ(gemAtkBonus)
+ *   EquipModDEF = 1 + Σ(baseDefBonus × qualMult × upgMult) + Σ(gemDefBonus)
+ *   EquipModSPD = 1 + Σ(baseSpdBonus × qualMult × upgMult) + Σ(gemSpdBonus)
  *
  * Neutral gems add to element levels (not stats); stored in `elementEnchant`.
+ *
+ * Items within the same tier/slot have different distributions — e.g. Fire Sword
+ * has high ATK but negative DEF, while Mythril Shield has high DEF but negative ATK.
+ * See `content/data/gear-items.json` for the per-item registry.
  */
 export interface GearPiece {
   /** Unique identifier for this gear piece (e.g. from in-game export). */
@@ -33,14 +45,25 @@ export interface GearPiece {
   readonly name: string;
   /** Which slot this piece occupies. */
   readonly slot: GearSlot;
-  /**
-   * Uniform additive contribution to all four EquipMod values (quality + upgrades).
-   * Formula: qualityBase + upgradeLevel × 0.05.
-   */
-  readonly statMultiplierBonus: number;
+  /** Gear tier 1–5 (tier 5 = special items like Ele Twin Dagger). */
+  readonly tier: 1 | 2 | 3 | 4 | 5;
+
+  // ── Per-stat base bonuses at quality A, upgrade +0 ─────────────────────────
+  // These are the item's inherent stat distribution as fractions (0.20 = +20%).
+  // Negative values are allowed (e.g. Fire Sword: baseDefBonus = -0.05).
+  readonly baseHpBonus: number;
+  readonly baseAtkBonus: number;
+  readonly baseDefBonus: number;
+  readonly baseSpdBonus: number;
+
+  // ── Quality and upgrade (multiplicative on base stats) ─────────────────────
+  readonly quality: GearQuality;
+  readonly upgradeLevel: number;
+
+  // ── Gem bonuses (additive on top of base×quality×upgrade) ─────────────────
   /**
    * Water gem: adds this fraction to the HP EquipMod only.
-   * Formula: gemLevel × 0.01 × tier  (e.g. lv15 tier4 → 0.60)
+   * Formula: gemLevel × 0.01 × tier
    */
   readonly gemHpBonus?: number;
   /**
@@ -64,12 +87,8 @@ export interface GearPiece {
    * Also used for off-element gear penalties (negative values).
    */
   readonly elementEnchant?: Partial<ElementLevels>;
-  /** Gear tier 1–4, matching the dungeon material tiers (research §8.4). */
-  readonly tier: 1 | 2 | 3 | 4;
-  /** Upgrade level from the in-game export ("+N" suffix). Used for display and gear-swap UI. */
-  readonly upgradeLevel?: number;
-  /** Quality grade from the in-game export. Used for display and gear-swap UI. */
-  readonly quality?: GearQuality;
+
+  // ── Display / UI fields ────────────────────────────────────────────────────
   /** Gem type socketed into this piece. Used for display and gear-swap UI. */
   readonly gemType?: GemType;
   /** Gem level socketed into this piece. Used for display and gear-swap UI. */
@@ -102,31 +121,51 @@ export type EquipmentLoadout = {
  */
 export type GearInventory = ReadonlyArray<GearPiece>;
 
-// ── Gear multiplier formula ────────────────────────────────────────────────────
+// ── Gear formula helpers ──────────────────────────────────────────────────────
 
 /**
- * Community-estimated quality base values for `statMultiplierBonus`.
- * Scale: A=50% baseline, ±10% per tier. Source: ITRTG wiki; confidence: medium.
+ * Quality multipliers relative to A=1.00×.
+ * Each step away from A changes the multiplier by ±0.10.
+ * Source: itrtg.wiki.gg/wiki/Equip — high confidence.
  */
-export const GEAR_QUALITY_BASE: Readonly<Record<GearQuality, number>> = {
-  D: 0.20,
-  C: 0.30,
-  B: 0.40,
-  A: 0.50,
-  S: 0.60,
-  SS: 0.70,
-  SSS: 0.80,
+export const GEAR_QUALITY_MULT: Readonly<Record<GearQuality, number>> = {
+  F:   0.50,
+  E:   0.60,
+  D:   0.70,
+  C:   0.80,
+  B:   0.90,
+  A:   1.00,
+  S:   1.10,
+  SS:  1.20,
+  SSS: 1.30,
 };
 
-/** +5% stat multiplier per upgrade level. */
+/** +5% to upgradeMult per upgrade level. Max observed in-game: +20. */
 export const GEAR_UPGRADE_STEP = 0.05;
 
 /**
- * Compute `statMultiplierBonus` from quality and upgrade level.
- * Formula: max(0, qualityBase + upgradeLevel × 0.05)
+ * Compute the quality multiplier for a gear piece.
+ * Example: SSS → 1.30, A → 1.00, F → 0.50
  */
-export function computeGearMultiplier(quality: GearQuality, upgradeLevel: number): number {
-  return Math.max(0, GEAR_QUALITY_BASE[quality] + upgradeLevel * GEAR_UPGRADE_STEP);
+export function computeGearQualityMult(quality: GearQuality): number {
+  return GEAR_QUALITY_MULT[quality];
+}
+
+/**
+ * Compute the upgrade multiplier for a gear piece.
+ * Formula: 1 + upgradeLevel × 0.05
+ * Example: +20 → 2.00, +0 → 1.00
+ */
+export function computeGearUpgradeMult(upgradeLevel: number): number {
+  return 1 + upgradeLevel * GEAR_UPGRADE_STEP;
+}
+
+/**
+ * Compute the combined quality × upgrade multiplier.
+ * Use this for display purposes (e.g. "SSS+20 = 2.60×").
+ */
+export function computeGearCombinedMult(quality: GearQuality, upgradeLevel: number): number {
+  return computeGearQualityMult(quality) * computeGearUpgradeMult(upgradeLevel);
 }
 
 /**

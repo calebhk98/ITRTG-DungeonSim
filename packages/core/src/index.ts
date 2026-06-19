@@ -69,6 +69,24 @@ export type {
 // ── Content — dungeon registry ────────────────────────────────────────────────
 export { getDungeon, DUNGEON_REGISTRY } from './content/index.js';
 
+// ── Content — gear item registry ─────────────────────────────────────────────
+export {
+  GEAR_ITEM_REGISTRY,
+  lookupGearItem,
+  getGearItemFallback,
+} from './content/index.js';
+export type { GearItemSpec } from './content/index.js';
+
+// ── Gear formula helpers ──────────────────────────────────────────────────────
+export {
+  GEAR_QUALITY_MULT,
+  GEAR_UPGRADE_STEP,
+  computeGearQualityMult,
+  computeGearUpgradeMult,
+  computeGearCombinedMult,
+  computeGemStatBonus,
+} from './domain/gear.js';
+
 // ── Sim — RNG ─────────────────────────────────────────────────────────────────
 export type { Rng } from './sim/rng.js';
 export { mulberry32, ExpectedValueRng } from './sim/rng.js';

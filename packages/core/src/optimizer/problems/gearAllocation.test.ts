@@ -96,60 +96,46 @@ const team: Team = {
 // ── Gear pool ─────────────────────────────────────────────────────────────────
 
 const weaponA: GearPiece = {
-  id: 'weaponA',
-  name: 'Strong Weapon',
-  slot: 'weapon',
-  statMultiplierBonus: 0.5,
-  tier: 2,
+  id: 'weaponA', name: 'Strong Weapon', slot: 'weapon', tier: 2,
+  baseHpBonus: 0.5, baseAtkBonus: 0.5, baseDefBonus: 0.5, baseSpdBonus: 0.5,
+  quality: 'A', upgradeLevel: 0,
 };
 
 const weaponB: GearPiece = {
-  id: 'weaponB',
-  name: 'Weak Weapon',
-  slot: 'weapon',
-  statMultiplierBonus: 0.1,
-  tier: 1,
+  id: 'weaponB', name: 'Weak Weapon', slot: 'weapon', tier: 1,
+  baseHpBonus: 0.1, baseAtkBonus: 0.1, baseDefBonus: 0.1, baseSpdBonus: 0.1,
+  quality: 'A', upgradeLevel: 0,
 };
 
 const armorA: GearPiece = {
-  id: 'armorA',
-  name: 'Strong Armor',
-  slot: 'armor',
-  statMultiplierBonus: 0.4,
-  tier: 2,
+  id: 'armorA', name: 'Strong Armor', slot: 'armor', tier: 2,
+  baseHpBonus: 0.4, baseAtkBonus: 0.4, baseDefBonus: 0.4, baseSpdBonus: 0.4,
+  quality: 'A', upgradeLevel: 0,
 };
 
 const armorB: GearPiece = {
-  id: 'armorB',
-  name: 'Weak Armor',
-  slot: 'armor',
-  statMultiplierBonus: 0.05,
-  tier: 1,
+  id: 'armorB', name: 'Weak Armor', slot: 'armor', tier: 1,
+  baseHpBonus: 0.05, baseAtkBonus: 0.05, baseDefBonus: 0.05, baseSpdBonus: 0.05,
+  quality: 'A', upgradeLevel: 0,
 };
 
 const accessoryA: GearPiece = {
-  id: 'accessoryA',
-  name: 'Accessory',
-  slot: 'accessory',
-  statMultiplierBonus: 0.3,
-  tier: 2,
+  id: 'accessoryA', name: 'Accessory', slot: 'accessory', tier: 2,
+  baseHpBonus: 0.3, baseAtkBonus: 0.3, baseDefBonus: 0.3, baseSpdBonus: 0.3,
+  quality: 'A', upgradeLevel: 0,
 };
 
 const trinketA: GearPiece = {
-  id: 'trinketA',
-  name: 'Fire Trinket',
-  slot: 'trinket',
-  statMultiplierBonus: 0.2,
+  id: 'trinketA', name: 'Fire Trinket', slot: 'trinket', tier: 2,
+  baseHpBonus: 0.2, baseAtkBonus: 0.2, baseDefBonus: 0.2, baseSpdBonus: 0.2,
+  quality: 'A', upgradeLevel: 0,
   elementEnchant: { Fire: 10 },
-  tier: 2,
 };
 
 const trinketB: GearPiece = {
-  id: 'trinketB',
-  name: 'Plain Trinket',
-  slot: 'trinket',
-  statMultiplierBonus: 0.15,
-  tier: 1,
+  id: 'trinketB', name: 'Plain Trinket', slot: 'trinket', tier: 1,
+  baseHpBonus: 0.15, baseAtkBonus: 0.15, baseDefBonus: 0.15, baseSpdBonus: 0.15,
+  quality: 'A', upgradeLevel: 0,
 };
 
 const gearPool: readonly GearPiece[] = [

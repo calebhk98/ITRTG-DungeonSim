@@ -15,8 +15,11 @@ import {
   getDungeon,
   simulateRun,
   DEFAULT_CONSTANTS,
-  computeGearMultiplier,
+  computeGearCombinedMult,
   computeGemStatBonus,
+  lookupGearItem,
+  getGearItemFallback,
+  GEAR_ITEM_REGISTRY,
 } from '@itrtg-sim/core';
 
 // ── Action column parsing ─────────────────────────────────────────────────────
@@ -53,7 +56,7 @@ type GemTypeOption = GemType | 'none';
 
 interface SlotSpec {
   name: string;
-  tier: 1 | 2 | 3 | 4;
+  tier: 1 | 2 | 3 | 4 | 5;
   upgradeLevel: number;
   quality: GearQualityOption;
   gemType: GemTypeOption;
@@ -79,7 +82,7 @@ interface TeamSweep {
 }
 
 const GEAR_SLOTS: GearSlot[] = ['weapon', 'armor', 'accessory', 'trinket'];
-const QUALITIES: GearQualityOption[] = ['D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
+const QUALITIES: GearQualityOption[] = ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
 const GEM_TYPES: { value: GemTypeOption; label: string }[] = [
   { value: 'none',    label: '— no gem —' },
   { value: 'Fire',    label: 'Fire (ATK)' },
@@ -91,7 +94,7 @@ const GEM_TYPES: { value: GemTypeOption; label: string }[] = [
 
 function emptySlotSpec(
   name = '',
-  tier: 1 | 2 | 3 | 4 = 4,
+  tier: 1 | 2 | 3 | 4 | 5 = 4,
   upgradeLevel = 0,
   quality: GearQuality = 'SSS',
   gemType: GemTypeOption = 'none',
@@ -118,19 +121,30 @@ function applyOverrides(
         const { tier, gemType, gemLevel } = spec;
         const gemBonus = gemType !== 'none' ? computeGemStatBonus(gemType, gemLevel, tier) : 0;
         const elemBonus = gemType === 'Neutral' ? gemLevel * tier : 0;
+        const itemName = spec.name.trim();
+        const registryItem = lookupGearItem(itemName);
+        const fallback = getGearItemFallback(slot);
+        const baseHpBonus  = registryItem?.baseHpBonus  ?? fallback.baseHpBonus;
+        const baseAtkBonus = registryItem?.baseAtkBonus ?? fallback.baseAtkBonus;
+        const baseDefBonus = registryItem?.baseDefBonus ?? fallback.baseDefBonus;
+        const baseSpdBonus = registryItem?.baseSpdBonus ?? fallback.baseSpdBonus;
+        const resolvedTier = (registryItem?.tier ?? tier) as 1 | 2 | 3 | 4 | 5;
         newEquipment[slot] = {
           id:   `override-${slot}`,
-          name: spec.name.trim(),
+          name: itemName,
           slot,
-          tier,
-          statMultiplierBonus: computeGearMultiplier(spec.quality, spec.upgradeLevel),
+          tier: resolvedTier,
+          baseHpBonus,
+          baseAtkBonus,
+          baseDefBonus,
+          baseSpdBonus,
+          quality: spec.quality,
+          upgradeLevel: spec.upgradeLevel,
           ...(gemType === 'Water'   ? { gemHpBonus:  gemBonus } : {}),
           ...(gemType === 'Fire'    ? { gemAtkBonus: gemBonus } : {}),
           ...(gemType === 'Earth'   ? { gemDefBonus: gemBonus } : {}),
           ...(gemType === 'Wind'    ? { gemSpdBonus: gemBonus } : {}),
           ...(gemType === 'Neutral' ? { elementEnchant: { Fire: elemBonus, Water: elemBonus, Wind: elemBonus, Earth: elemBonus } as Partial<ElementLevels> } : {}),
-          upgradeLevel: spec.upgradeLevel,
-          quality: spec.quality,
           ...(gemType !== 'none' ? { gemType, gemLevel } : {}),
         };
       }
@@ -548,7 +562,7 @@ export default function ActiveTeamsTab({ roster, petExportText }: Props): React.
                 Leave a slot name blank to keep it as-is; uncheck the checkbox to unequip.
               </p>
               <p style={{ fontSize: 11, color: '#a1a1aa', margin: '-8px 0 12px' }}>
-                Stat bonus = qualityBase + upgrade × 5%  (SSS=80%, SS=70%, S=60%, A=50%, B=40%, C=30%, D=20%)
+                Formula: baseStat × qualityMult × (1 + upgrade×5%). Quality: F=0.50 … A=1.00 … SSS=1.30. Select an item from the dropdown to auto-fill tier and per-stat bonuses.
               </p>
 
               {uniquePets.map(({ name }) => {
@@ -594,13 +608,32 @@ export default function ActiveTeamsTab({ roster, petExportText }: Props): React.
 
                           {equipped && (
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 12 }}>
-                              <input
-                                type="text"
-                                placeholder="Item name"
-                                value={slotData.name}
-                                onChange={e => setSlotSpec(name, slot, 'name', e.target.value)}
-                                style={{ width: 160, fontSize: 12 }}
-                              />
+                              {(() => {
+                                const slotItems = Array.from(GEAR_ITEM_REGISTRY.values())
+                                  .filter(item => item.slot === slot)
+                                  .sort((a, b) => a.tier - b.tier || a.name.localeCompare(b.name));
+                                const isKnown = slotItems.some(i => i.name === slotData.name);
+                                return (
+                                  <select
+                                    value={isKnown ? slotData.name : '__custom__'}
+                                    onChange={e => {
+                                      const val = e.target.value;
+                                      if (val === '__custom__') return;
+                                      const item = GEAR_ITEM_REGISTRY.get(val);
+                                      if (item) {
+                                        setSlotSpec(name, slot, 'name', item.name);
+                                        setSlotSpec(name, slot, 'tier', item.tier);
+                                      }
+                                    }}
+                                    style={{ fontSize: 12, width: 170 }}
+                                  >
+                                    {!isKnown && <option value="__custom__">{slotData.name || '— pick item —'}</option>}
+                                    {slotItems.map(item => (
+                                      <option key={item.name} value={item.name}>T{item.tier} {item.name}</option>
+                                    ))}
+                                  </select>
+                                );
+                              })()}
                               <label style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
                                 <span style={{ color: '#71717a' }}>+</span>
                                 <input
@@ -635,18 +668,8 @@ export default function ActiveTeamsTab({ roster, petExportText }: Props): React.
                                   />
                                 </label>
                               )}
-                              <label style={{ display: 'flex', alignItems: 'center', gap: 3, fontSize: 12 }}>
-                                <span style={{ color: '#71717a' }}>T</span>
-                                <select
-                                  value={slotData.tier}
-                                  onChange={e => setSlotSpec(name, slot, 'tier', Number(e.target.value) as 1|2|3|4)}
-                                  style={{ fontSize: 12, width: 52 }}
-                                >
-                                  {([1,2,3,4] as const).map(t => <option key={t} value={t}>{t}</option>)}
-                                </select>
-                              </label>
                               <span style={{ color: '#71717a', fontSize: 11, alignSelf: 'center' }}>
-                                ≈{(computeGearMultiplier(slotData.quality, slotData.upgradeLevel) * 100).toFixed(0)}%
+                                ≈{(computeGearCombinedMult(slotData.quality, slotData.upgradeLevel) * 100).toFixed(0)}%
                                 {slotData.gemType !== 'none' && slotData.gemType !== 'Neutral' && (
                                   <> +{(computeGemStatBonus(slotData.gemType, slotData.gemLevel, slotData.tier) * 100).toFixed(0)}% {slotData.gemType === 'Water' ? 'HP' : slotData.gemType === 'Fire' ? 'ATK' : slotData.gemType === 'Earth' ? 'DEF' : 'SPD'}</>
                                 )}

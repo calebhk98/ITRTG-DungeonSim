@@ -56,7 +56,8 @@ import type { Pet } from '../../domain/pet.js';
 import type { Element } from '../../domain/element.js';
 import type { PetClassName } from '../../domain/class.js';
 import type { GearPiece, GearSlot, GearQuality, GemType, ElementLevels } from '../../domain/gear.js';
-import { GEAR_QUALITY_BASE, computeGearMultiplier, computeGemStatBonus } from '../../domain/gear.js';
+import { GEAR_QUALITY_MULT, computeGemStatBonus } from '../../domain/gear.js';
+import { lookupGearItem, getGearItemFallback } from '../../content/gearRegistry.js';
 import { asPetId } from '../../domain/ids.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -191,10 +192,10 @@ function parseGearString(
   const itemName = plusMatch[1]!.trim();
   const upgradeLevel = parseInt(plusMatch[2]!, 10);
 
-  // Extract quality token (SSS / SS / S / A / B / C / D)
-  const qualityMatch = /,\s*(SSS|SS|S|A|B|C|D)(\s*\(\d+\))?/.exec(trimmed);
+  // Extract quality token (SSS / SS / S / A / B / C / D / E / F)
+  const qualityMatch = /,\s*(SSS|SS|S|A|B|C|D|E|F)(\s*\(\d+\))?/.exec(trimmed);
   const qualityStr = qualityMatch !== null ? qualityMatch[1]! : '';
-  const quality = (qualityStr in GEAR_QUALITY_BASE) ? (qualityStr as GearQuality) : undefined;
+  const quality = (qualityStr in GEAR_QUALITY_MULT) ? (qualityStr as GearQuality) : undefined;
 
   const tier = gearTierHeuristic(itemName, qualityStr);
 
@@ -236,25 +237,35 @@ function parseGearString(
     }
   }
 
-  // Compute statMultiplierBonus from quality+upgrade (community-estimated).
-  // Used only in the forceDerive (gear what-if) path; observed stats bypass this.
-  const statMultiplierBonus = quality !== undefined
-    ? computeGearMultiplier(quality, isNaN(upgradeLevel) ? 0 : upgradeLevel)
-    : 0;
+  // Look up per-stat base bonuses from the gear registry.
+  // For unknown items, fall back to slot-based defaults.
+  // These only affect the forceDerive path; observed stats bypass gear entirely.
+  const registryItem = lookupGearItem(itemName);
+  const fallback = getGearItemFallback(slot);
+  const baseHpBonus  = registryItem?.baseHpBonus  ?? fallback.baseHpBonus;
+  const baseAtkBonus = registryItem?.baseAtkBonus ?? fallback.baseAtkBonus;
+  const baseDefBonus = registryItem?.baseDefBonus ?? fallback.baseDefBonus;
+  const baseSpdBonus = registryItem?.baseSpdBonus ?? fallback.baseSpdBonus;
+  const resolvedTier = registryItem?.tier ?? tier;
+  const resolvedQuality: GearQuality = quality ?? 'A';
+  const resolvedUpgrade = isNaN(upgradeLevel) ? 0 : upgradeLevel;
 
   const piece: GearPiece = {
     id: `${petName}-${slot}`,
     name: itemName,
     slot,
-    statMultiplierBonus,
-    tier,
+    tier: resolvedTier as 1 | 2 | 3 | 4 | 5,
+    baseHpBonus,
+    baseAtkBonus,
+    baseDefBonus,
+    baseSpdBonus,
+    quality: resolvedQuality,
+    upgradeLevel: resolvedUpgrade,
     ...(gemHpBonus  !== undefined ? { gemHpBonus  } : {}),
     ...(gemAtkBonus !== undefined ? { gemAtkBonus } : {}),
     ...(gemDefBonus !== undefined ? { gemDefBonus } : {}),
     ...(gemSpdBonus !== undefined ? { gemSpdBonus } : {}),
     ...(elementEnchant !== undefined ? { elementEnchant } : {}),
-    ...(!isNaN(upgradeLevel) ? { upgradeLevel } : {}),
-    ...(quality  !== undefined ? { quality  } : {}),
     ...(gemType  !== undefined ? { gemType  } : {}),
     ...(gemLevel !== undefined ? { gemLevel } : {}),
   };

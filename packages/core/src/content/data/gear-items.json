@@ -1,0 +1,59 @@
+{
+  "_comment": "Per-item base stat bonuses at quality A, upgrade +0. Source: itrtg.wiki.gg/wiki/Equip (high confidence).",
+  "items": [
+    { "name": "Iron Sword",       "slot": "weapon",    "tier": 1, "baseHpBonus":  0.02, "baseAtkBonus":  0.15, "baseDefBonus":  0.03, "baseSpdBonus": -0.05 },
+    { "name": "Fire Sword",       "slot": "weapon",    "tier": 1, "baseHpBonus":  0.00, "baseAtkBonus":  0.20, "baseDefBonus": -0.05, "baseSpdBonus":  0.00 },
+    { "name": "Water Spear",      "slot": "weapon",    "tier": 1, "baseHpBonus":  0.00, "baseAtkBonus":  0.15, "baseDefBonus":  0.00, "baseSpdBonus":  0.00 },
+    { "name": "Wood Axe",         "slot": "weapon",    "tier": 1, "baseHpBonus":  0.05, "baseAtkBonus":  0.10, "baseDefBonus":  0.00, "baseSpdBonus":  0.00 },
+    { "name": "Feather Bow",      "slot": "weapon",    "tier": 1, "baseHpBonus":  0.00, "baseAtkBonus":  0.11, "baseDefBonus": -0.03, "baseSpdBonus":  0.07 },
+
+    { "name": "Iron Vest",        "slot": "armor",     "tier": 1, "baseHpBonus":  0.15, "baseAtkBonus":  0.00, "baseDefBonus":  0.10, "baseSpdBonus": -0.05 },
+    { "name": "Fire Vest",        "slot": "armor",     "tier": 1, "baseHpBonus":  0.05, "baseAtkBonus":  0.08, "baseDefBonus":  0.07, "baseSpdBonus":  0.00 },
+    { "name": "Water Vest",       "slot": "armor",     "tier": 1, "baseHpBonus":  0.15, "baseAtkBonus":  0.00, "baseDefBonus":  0.05, "baseSpdBonus":  0.00 },
+    { "name": "Wooden Vest",      "slot": "armor",     "tier": 1, "baseHpBonus":  0.10, "baseAtkBonus":  0.00, "baseDefBonus":  0.10, "baseSpdBonus":  0.00 },
+    { "name": "Feather Vest",     "slot": "armor",     "tier": 1, "baseHpBonus":  0.06, "baseAtkBonus":  0.00, "baseDefBonus":  0.07, "baseSpdBonus":  0.07 },
+
+    { "name": "Iron Ring",        "slot": "accessory", "tier": 1, "baseHpBonus":  0.05, "baseAtkBonus":  0.05, "baseDefBonus":  0.05, "baseSpdBonus": -0.05 },
+    { "name": "Fire Gloves",      "slot": "accessory", "tier": 1, "baseHpBonus": -0.05, "baseAtkBonus":  0.15, "baseDefBonus": -0.05, "baseSpdBonus":  0.05 },
+    { "name": "Water Necklace",   "slot": "accessory", "tier": 1, "baseHpBonus":  0.00, "baseAtkBonus":  0.05, "baseDefBonus":  0.05, "baseSpdBonus":  0.00 },
+    { "name": "Wood Bracelet",    "slot": "accessory", "tier": 1, "baseHpBonus":  0.05, "baseAtkBonus":  0.00, "baseDefBonus":  0.05, "baseSpdBonus":  0.00 },
+    { "name": "Feather Ring",     "slot": "accessory", "tier": 1, "baseHpBonus":  0.00, "baseAtkBonus": -0.05, "baseDefBonus":  0.00, "baseSpdBonus":  0.15 },
+
+    { "name": "Steel Sword",      "slot": "weapon",    "tier": 2, "baseHpBonus":  0.05, "baseAtkBonus":  0.18, "baseDefBonus":  0.07, "baseSpdBonus": -0.10 },
+    { "name": "Flame Sword",      "slot": "weapon",    "tier": 2, "baseHpBonus":  0.00, "baseAtkBonus":  0.30, "baseDefBonus": -0.10, "baseSpdBonus":  0.00 },
+    { "name": "Flood Spear",      "slot": "weapon",    "tier": 2, "baseHpBonus":  0.00, "baseAtkBonus":  0.20, "baseDefBonus":  0.00, "baseSpdBonus":  0.00 },
+    { "name": "Tree Axe",         "slot": "weapon",    "tier": 2, "baseHpBonus":  0.07, "baseAtkBonus":  0.13, "baseDefBonus":  0.00, "baseSpdBonus":  0.00 },
+    { "name": "Storm Bow",        "slot": "weapon",    "tier": 2, "baseHpBonus":  0.00, "baseAtkBonus":  0.15, "baseDefBonus": -0.05, "baseSpdBonus":  0.10 },
+    { "name": "Howling Knife",    "slot": "weapon",    "tier": 2, "baseHpBonus": -0.09, "baseAtkBonus":  0.21, "baseDefBonus": -0.09, "baseSpdBonus":  0.21 },
+
+    { "name": "Titanium Sword",   "slot": "weapon",    "tier": 3, "baseHpBonus":  0.08, "baseAtkBonus":  0.22, "baseDefBonus":  0.10, "baseSpdBonus": -0.15 },
+    { "name": "Inferno Sword",    "slot": "weapon",    "tier": 3, "baseHpBonus":  0.00, "baseAtkBonus":  0.40, "baseDefBonus": -0.15, "baseSpdBonus":  0.00 },
+    { "name": "Tsunami Spear",    "slot": "weapon",    "tier": 3, "baseHpBonus":  0.00, "baseAtkBonus":  0.25, "baseDefBonus":  0.00, "baseSpdBonus":  0.00 },
+    { "name": "Forest Axe",       "slot": "weapon",    "tier": 3, "baseHpBonus":  0.10, "baseAtkBonus":  0.15, "baseDefBonus":  0.00, "baseSpdBonus":  0.00 },
+    { "name": "Hurricane Bow",    "slot": "weapon",    "tier": 3, "baseHpBonus":  0.00, "baseAtkBonus":  0.22, "baseDefBonus": -0.10, "baseSpdBonus":  0.13 },
+    { "name": "Thundering Knife", "slot": "weapon",    "tier": 3, "baseHpBonus":  0.00, "baseAtkBonus":  0.22, "baseDefBonus": -0.10, "baseSpdBonus":  0.13 },
+
+    { "name": "Mythril Shield",   "slot": "weapon",    "tier": 4, "baseHpBonus":  0.30, "baseAtkBonus": -0.20, "baseDefBonus":  0.55, "baseSpdBonus": -0.10 },
+    { "name": "Sun Sword",        "slot": "weapon",    "tier": 4, "baseHpBonus":  0.00, "baseAtkBonus":  0.65, "baseDefBonus": -0.10, "baseSpdBonus":  0.00 },
+    { "name": "Ocean Spear",      "slot": "weapon",    "tier": 4, "baseHpBonus":  0.00, "baseAtkBonus":  0.55, "baseDefBonus":  0.00, "baseSpdBonus":  0.00 },
+    { "name": "Jungle Axe",       "slot": "weapon",    "tier": 4, "baseHpBonus":  0.10, "baseAtkBonus":  0.45, "baseDefBonus":  0.10, "baseSpdBonus": -0.10 },
+    { "name": "Sky Bow",          "slot": "weapon",    "tier": 4, "baseHpBonus":  0.00, "baseAtkBonus":  0.40, "baseDefBonus": -0.10, "baseSpdBonus":  0.25 },
+    { "name": "Bursting Knife",   "slot": "weapon",    "tier": 4, "baseHpBonus": -0.09, "baseAtkBonus":  0.21, "baseDefBonus": -0.09, "baseSpdBonus":  0.21 },
+
+    { "name": "Mythril Armor",    "slot": "armor",     "tier": 4, "baseHpBonus":  0.30, "baseAtkBonus":  0.00, "baseDefBonus":  0.40, "baseSpdBonus": -0.10 },
+    { "name": "Sun Armor",        "slot": "armor",     "tier": 4, "baseHpBonus":  0.10, "baseAtkBonus":  0.10, "baseDefBonus":  0.20, "baseSpdBonus":  0.00 },
+    { "name": "Ocean Armor",      "slot": "armor",     "tier": 4, "baseHpBonus":  0.35, "baseAtkBonus":  0.00, "baseDefBonus":  0.15, "baseSpdBonus":  0.00 },
+    { "name": "Jungle Armor",     "slot": "armor",     "tier": 4, "baseHpBonus":  0.20, "baseAtkBonus":  0.00, "baseDefBonus":  0.25, "baseSpdBonus":  0.00 },
+    { "name": "Sky Armor",        "slot": "armor",     "tier": 4, "baseHpBonus":  0.10, "baseAtkBonus":  0.00, "baseDefBonus":  0.15, "baseSpdBonus":  0.20 },
+
+    { "name": "Mythril Ring",     "slot": "accessory", "tier": 4, "baseHpBonus":  0.15, "baseAtkBonus":  0.05, "baseDefBonus":  0.15, "baseSpdBonus": -0.05 },
+    { "name": "Sun Gloves",       "slot": "accessory", "tier": 4, "baseHpBonus": -0.05, "baseAtkBonus":  0.20, "baseDefBonus": -0.05, "baseSpdBonus":  0.10 },
+    { "name": "Ocean Necklace",   "slot": "accessory", "tier": 4, "baseHpBonus":  0.10, "baseAtkBonus":  0.10, "baseDefBonus":  0.10, "baseSpdBonus":  0.00 },
+    { "name": "Jungle Bracelet",  "slot": "accessory", "tier": 4, "baseHpBonus":  0.10, "baseAtkBonus":  0.05, "baseDefBonus":  0.10, "baseSpdBonus":  0.00 },
+    { "name": "Sky Ring",         "slot": "accessory", "tier": 4, "baseHpBonus":  0.00, "baseAtkBonus": -0.05, "baseDefBonus":  0.00, "baseSpdBonus":  0.20 },
+
+    { "name": "Ele Twin Dagger",  "slot": "weapon",    "tier": 5, "baseHpBonus": -0.10, "baseAtkBonus":  0.80, "baseDefBonus": -0.10, "baseSpdBonus":  0.45 },
+    { "name": "WonderAxe",        "slot": "weapon",    "tier": 5, "baseHpBonus":  0.00, "baseAtkBonus":  0.75, "baseDefBonus":  0.00, "baseSpdBonus":  0.00 },
+    { "name": "EnlightmentVest",  "slot": "armor",     "tier": 5, "baseHpBonus":  0.00, "baseAtkBonus":  0.00, "baseDefBonus":  0.00, "baseSpdBonus":  0.75 }
+  ]
+}

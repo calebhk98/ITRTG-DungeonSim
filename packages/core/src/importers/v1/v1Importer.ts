@@ -176,12 +176,20 @@ function mapGearPiece(
   const tier = mapGearTier(raw.tier, raw.gearId, petId, warnings);
   const enchant = mapEnchant(raw.enchant, raw.gearId, petId, warnings);
 
+  // v1 format provides a single uniform bonus; treat as equal base stats at A/+0
+  // so that qualityMult(A) × upgradeMult(0) × bonus = bonus (identity).
+  const bonus: number = raw.bonus ?? 0;
   const piece: GearPiece = {
     id: raw.gearId,
     name: raw.label,
     slot,
-    statMultiplierBonus: raw.bonus,
     tier,
+    baseHpBonus:  bonus,
+    baseAtkBonus: bonus,
+    baseDefBonus: bonus,
+    baseSpdBonus: bonus,
+    quality: 'A',
+    upgradeLevel: 0,
     ...(enchant !== undefined ? { elementEnchant: enchant } : {}),
   };
   return piece;
