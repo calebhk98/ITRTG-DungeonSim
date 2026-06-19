@@ -15,7 +15,8 @@ import {
   simulateRun,
   DEFAULT_CONSTANTS,
 } from '@itrtg-sim/core';
-import type { Pet, PetId, Team, RunResult, GearPiece, GearSlot, ElementLevels } from '@itrtg-sim/core';
+import type { Pet, PetId, Team, RunResult, GearSlot, GearQuality, GemType, ElementLevels } from '@itrtg-sim/core';
+import { computeGearMultiplier, computeGemStatBonus } from '@itrtg-sim/core';
 
 // ── Action → DungeonId mapping ────────────────────────────────────────────────
 
@@ -168,32 +169,49 @@ export function resolveActiveTeams(
 // ── Gear override ─────────────────────────────────────────────────────────────
 
 /**
- * Spec for overriding one gear slot on a pet. Only the fields you want to change
- * are required — `statMultiplierBonus` is mandatory, everything else is optional.
+ * Spec for overriding one gear slot on a pet.
+ *
+ * All fields are optional — omitted fields default to the pet's current gear
+ * (when pre-filled) or to sensible defaults. Set the slot to `null` to unequip.
+ *
+ * Gem formula (confirmed from ITRTG wiki):
+ *   Fire  gem → ATK bonus: gemLevel × 1% × tier
+ *   Water gem → HP  bonus: gemLevel × 1% × tier
+ *   Earth gem → DEF bonus: gemLevel × 1% × tier
+ *   Wind  gem → SPD bonus: gemLevel × 1% × tier
+ *   Neutral gem → all element levels: gemLevel × tier (additive integer)
  *
  * Example JSON:
  * ```json
  * {
  *   "Cat": {
- *     "armor": { "statMultiplierBonus": 0.25, "elementEnchant": { "Earth": 50 } }
+ *     "armor": { "name": "Mythril Armor", "upgradeLevel": 20, "quality": "SSS", "tier": 4, "gemType": "Water", "gemLevel": 15 }
  *   },
  *   "Dog": {
- *     "weapon": { "statMultiplierBonus": 0.20 },
+ *     "weapon": { "name": "Godly Hammer", "upgradeLevel": 20, "quality": "SSS", "tier": 4, "gemType": "Earth", "gemLevel": 15 },
  *     "accessory": null
  *   }
  * }
  * ```
- * Set a slot to `null` to unequip it. Use `--force-derive` with this flag so
- * re-derived stats are used instead of the imported observed stats.
  */
+export interface GearSlotSpec {
+  name?: string;
+  tier?: 1 | 2 | 3 | 4;
+  upgradeLevel?: number;
+  quality?: GearQuality;
+  gemType?: GemType;
+  gemLevel?: number;
+}
+
 export type GearOverrideSpec = Record<
   string, // pet display name
-  Partial<Record<GearSlot, Pick<GearPiece, 'statMultiplierBonus'> & { elementEnchant?: Partial<ElementLevels> } | null>>
+  Partial<Record<GearSlot, GearSlotSpec | null>>
 >;
 
 /**
  * Apply a `GearOverrideSpec` to a roster, returning a new roster with the
- * modified equipment.  Pets not mentioned in the spec are returned unchanged.
+ * modified equipment. Pets not mentioned in the spec are returned unchanged.
+ * Use with `forceDerive: true` so re-derived stats incorporate the new gear.
  */
 export function applyGearOverrides(
   roster: ReadonlyMap<PetId, Pet>,
@@ -206,17 +224,36 @@ export function applyGearOverrides(
     if (pet === undefined) continue;
 
     const newEquipment = { ...pet.equipment };
-    for (const [slot, spec] of Object.entries(slotOverrides) as [GearSlot, typeof slotOverrides[GearSlot]][]) {
-      if (spec === null || spec === undefined) {
+    for (const [slot, spec] of Object.entries(slotOverrides) as [GearSlot, GearSlotSpec | null | undefined][]) {
+      if (spec === null) {
         delete newEquipment[slot];
-      } else {
+      } else if (spec !== undefined) {
+        const current = pet.equipment[slot];
+        const tier    = spec.tier      ?? current?.tier      ?? 4;
+        const quality = spec.quality   ?? current?.quality   ?? 'SSS';
+        const upg     = spec.upgradeLevel ?? current?.upgradeLevel ?? 0;
+        const gemType = spec.gemType   ?? current?.gemType;
+        const gemLevel = spec.gemLevel ?? current?.gemLevel ?? 0;
+
+        const gemBonus  = gemType !== undefined && gemType !== 'Neutral'
+          ? computeGemStatBonus(gemType, gemLevel, tier) : 0;
+        const elemBonus = gemType === 'Neutral' ? gemLevel * tier : 0;
+
         newEquipment[slot] = {
-          id:                 `override-${slot}`,
-          name:               `Override ${slot}`,
+          id:   `override-${slot}`,
+          name: spec.name ?? current?.name ?? `${slot}`,
           slot,
-          tier:               4,
-          statMultiplierBonus: spec.statMultiplierBonus,
-          ...(spec.elementEnchant !== undefined ? { elementEnchant: spec.elementEnchant } : {}),
+          tier,
+          statMultiplierBonus: computeGearMultiplier(quality, upg),
+          ...(gemType === 'Water'   ? { gemHpBonus:  gemBonus } : {}),
+          ...(gemType === 'Fire'    ? { gemAtkBonus: gemBonus } : {}),
+          ...(gemType === 'Earth'   ? { gemDefBonus: gemBonus } : {}),
+          ...(gemType === 'Wind'    ? { gemSpdBonus: gemBonus } : {}),
+          ...(gemType === 'Neutral' ? { elementEnchant: { Fire: elemBonus, Water: elemBonus, Wind: elemBonus, Earth: elemBonus } as Partial<ElementLevels> } : {}),
+          upgradeLevel: upg,
+          quality,
+          ...(gemType  !== undefined ? { gemType  } : {}),
+          ...(gemLevel > 0          ? { gemLevel } : {}),
         };
       }
     }
