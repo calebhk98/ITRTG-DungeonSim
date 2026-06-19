@@ -243,9 +243,27 @@ export function scaleEnemyToContext(
   //   Neutral: each element = 0.75 × effectiveLevel
   //   Non-neutral: primary = 50 + 3 × effectiveLevel; weakness = -50; others = 0
   let elementLevels: ElementLevels;
+
+  // Compute element level scale factor (mirrors stat scaling for expDiff/expSqrtDiff)
+  let elemFactor = 1;
+  const spec2 = archetype.scaling;
+  if (spec2.kind === 'expDiff') {
+    elemFactor = Math.pow(spec2.factor, opts.difficulty);
+  } else if (spec2.kind === 'expSqrtDiff') {
+    elemFactor = Math.pow(2, opts.difficulty / 2);
+  }
+
   if (archetype.elementLevels !== undefined) {
-    // Use the real element levels from the data.
-    elementLevels = archetype.elementLevels;
+    if (elemFactor !== 1) {
+      elementLevels = {
+        Fire:  archetype.elementLevels.Fire  * elemFactor,
+        Water: archetype.elementLevels.Water * elemFactor,
+        Wind:  archetype.elementLevels.Wind  * elemFactor,
+        Earth: archetype.elementLevels.Earth * elemFactor,
+      };
+    } else {
+      elementLevels = archetype.elementLevels;
+    }
   } else if (archetype.element === 'Neutral') {
     const lvl = 0.75 * effectiveLevel;
     elementLevels = { Fire: lvl, Water: lvl, Wind: lvl, Earth: lvl };
