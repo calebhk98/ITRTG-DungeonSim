@@ -7449,8 +7449,8 @@
           "chance": 3
         }
       ],
-      "scaling": 0,
-      "attackScaling": 0,
+      "scaling": 0.1,
+      "attackScaling": 0.1,
       "boss": false,
       "row": 248
     },
