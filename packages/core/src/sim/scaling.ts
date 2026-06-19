@@ -272,9 +272,9 @@ export function scaleEnemyToContext(
     const primary = 50 + 3 * effectiveLevel;
     const weaknessMap: Record<string, keyof ElementLevels> = {
       Fire:  'Water',
-      Water: 'Wind',
-      Wind:  'Earth',
-      Earth: 'Fire',
+      Water: 'Earth',
+      Earth: 'Wind',
+      Wind:  'Fire',
     };
     const weakEl = weaknessMap[archetype.element] as keyof ElementLevels | undefined;
     // Build a mutable record first to avoid the index-signature cast issue

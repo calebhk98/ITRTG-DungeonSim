@@ -116,7 +116,8 @@ Four elements (Fire/Water/Wind/Earth) used in elemental damage:
 
 - **Neutral pets:** each element = `0.75 × DL`
 - **Non-neutral pets:** primary = `50 + 3 × DL`; weakness element = `-50`; others = `0`
-- Weakness cycle: **Water > Fire > Wind > Earth > Water**
+- Weakness cycle (confirmed from wiki): **Fire → Water → Earth → Wind → Fire**
+  - Fire is weak to Water; Water is weak to Earth; Earth is weak to Wind; Wind is weak to Fire
 - Equipment enchantments **add** to element levels (then Dojo/Strategy multipliers apply).
 
 ### 5.4 Growth — the master stat

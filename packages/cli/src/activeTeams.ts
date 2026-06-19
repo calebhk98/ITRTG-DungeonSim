@@ -15,7 +15,7 @@ import {
   simulateRun,
   DEFAULT_CONSTANTS,
 } from '@itrtg-sim/core';
-import type { Pet, PetId, Team, RunResult } from '@itrtg-sim/core';
+import type { Pet, PetId, Team, RunResult, GearPiece, GearSlot, ElementLevels } from '@itrtg-sim/core';
 
 // ── Action → DungeonId mapping ────────────────────────────────────────────────
 
@@ -165,6 +165,68 @@ export function resolveActiveTeams(
   return { activeTeams, warnings };
 }
 
+// ── Gear override ─────────────────────────────────────────────────────────────
+
+/**
+ * Spec for overriding one gear slot on a pet. Only the fields you want to change
+ * are required — `statMultiplierBonus` is mandatory, everything else is optional.
+ *
+ * Example JSON:
+ * ```json
+ * {
+ *   "Cat": {
+ *     "armor": { "statMultiplierBonus": 0.25, "elementEnchant": { "Earth": 50 } }
+ *   },
+ *   "Dog": {
+ *     "weapon": { "statMultiplierBonus": 0.20 },
+ *     "accessory": null
+ *   }
+ * }
+ * ```
+ * Set a slot to `null` to unequip it. Use `--force-derive` with this flag so
+ * re-derived stats are used instead of the imported observed stats.
+ */
+export type GearOverrideSpec = Record<
+  string, // pet display name
+  Partial<Record<GearSlot, Pick<GearPiece, 'statMultiplierBonus'> & { elementEnchant?: Partial<ElementLevels> } | null>>
+>;
+
+/**
+ * Apply a `GearOverrideSpec` to a roster, returning a new roster with the
+ * modified equipment.  Pets not mentioned in the spec are returned unchanged.
+ */
+export function applyGearOverrides(
+  roster: ReadonlyMap<PetId, Pet>,
+  overrides: GearOverrideSpec,
+): Map<PetId, Pet> {
+  const result = new Map<PetId, Pet>(roster);
+
+  for (const [petName, slotOverrides] of Object.entries(overrides)) {
+    const pet = [...result.values()].find(p => p.displayName === petName);
+    if (pet === undefined) continue;
+
+    const newEquipment = { ...pet.equipment };
+    for (const [slot, spec] of Object.entries(slotOverrides) as [GearSlot, typeof slotOverrides[GearSlot]][]) {
+      if (spec === null || spec === undefined) {
+        delete newEquipment[slot];
+      } else {
+        newEquipment[slot] = {
+          id:                 `override-${slot}`,
+          name:               `Override ${slot}`,
+          slot,
+          tier:               4,
+          statMultiplierBonus: spec.statMultiplierBonus,
+          ...(spec.elementEnchant !== undefined ? { elementEnchant: spec.elementEnchant } : {}),
+        };
+      }
+    }
+
+    result.set(pet.id, { ...pet, equipment: newEquipment });
+  }
+
+  return result;
+}
+
 // ── Sweep runner ──────────────────────────────────────────────────────────────
 
 export interface DifficultyResult {
@@ -179,6 +241,8 @@ export function sweepDifficulties(
   depth: 1 | 2 | 3 | 4,
   rooms: number,
   nrdcCompletions: number,
+  roster: ReadonlyMap<PetId, Pet>,
+  forceDerive = false,
 ): DifficultyResult[] {
   const dungeon = getDungeon(dungeonId);
   if (dungeon === undefined) return [];
@@ -195,7 +259,7 @@ export function sweepDifficulties(
         nrdcCompletions,
         evaluationMode: 'expected',
       },
-      { dungeon, roster: new Map(), constants: DEFAULT_CONSTANTS },
+      { dungeon, roster, constants: DEFAULT_CONSTANTS, forceDerive },
     );
     results.push({ difficulty: d as Difficulty, result });
   }

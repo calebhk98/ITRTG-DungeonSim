@@ -332,7 +332,7 @@ export function makeGearAllocationProblem(inputs: GearAllocationInputs): SearchP
 
     let result;
     try {
-      result = simulateRun(config, { ...baseDeps, roster: clonedRoster });
+      result = simulateRun(config, { ...baseDeps, roster: clonedRoster, forceDerive: true });
     } catch {
       // simulateRun throws if a petId is missing from the roster; shouldn't
       // happen after our validation but we guard defensively.

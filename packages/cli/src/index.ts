@@ -46,7 +46,9 @@ import {
   resolveActiveTeams,
   sweepDifficulties,
   formatActiveTeamsReport,
+  applyGearOverrides,
 } from './activeTeams.js';
+import type { GearOverrideSpec } from './activeTeams.js';
 import { parseStatisticsExport } from '@itrtg-sim/core';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
@@ -632,6 +634,15 @@ program
   )
   .option('--depth <n>', 'depth tier to sweep 1–4 (default: 4)', '4')
   .option('--rooms <n>', 'rooms per run 1–60 (default: 60)', '60')
+  .option(
+    '--gear-override <file>',
+    'JSON file specifying gear changes per pet (see docs). Use with --force-derive.',
+  )
+  .option(
+    '--force-derive',
+    'Re-derive pet stats from formula + equipment instead of using imported observed stats. ' +
+    'Required when using --gear-override.',
+  )
   .action(
     (options: {
       petExport: string;
@@ -639,6 +650,8 @@ program
       stats?: string;
       depth: string;
       rooms: string;
+      gearOverride?: string;
+      forceDerive?: boolean;
     }) => {
       // Read files
       const petExportPath = resolvePath(options.petExport);
@@ -675,7 +688,28 @@ program
       }
 
       // Import pets
-      const { pets, warnings: importWarnings } = importPetExport(petExportText);
+      const { pets, roster: baseRoster, warnings: importWarnings } = importPetExport(petExportText);
+
+      // Apply gear overrides if provided
+      let roster = baseRoster;
+      const forceDerive = options.forceDerive === true;
+      if (options.gearOverride !== undefined) {
+        let overrideSpec: GearOverrideSpec;
+        try {
+          overrideSpec = JSON.parse(readFileSync(resolvePath(options.gearOverride), 'utf-8')) as GearOverrideSpec;
+        } catch (e) {
+          console.error(`Error: cannot read/parse gear override file "${options.gearOverride}": ${String(e)}`);
+          process.exit(1);
+        }
+        roster = applyGearOverrides(roster, overrideSpec);
+        if (!forceDerive) {
+          console.warn(
+            'Warning: --gear-override was provided without --force-derive. ' +
+            'Gear changes will have no effect on imported pets that have observed stats. ' +
+            'Add --force-derive to re-derive stats from the formula.',
+          );
+        }
+      }
 
       // Resolve teams + dungeons
       const { activeTeams, warnings: teamWarnings } = resolveActiveTeams(
@@ -699,7 +733,7 @@ program
       for (const at of activeTeams) {
         sweepsByTeam.set(
           at.teamIndex,
-          sweepDifficulties(at.team, at.dungeonId, depth, rooms, nrdcCompletions),
+          sweepDifficulties(at.team, at.dungeonId, depth, rooms, nrdcCompletions, roster, forceDerive),
         );
       }
 

@@ -103,6 +103,13 @@ export interface SimulateRunDeps {
    * Omit (or pass {}) for baseline "no modifiers" simulation.
    */
   globals?: GlobalModifiers;
+  /**
+   * When `true`, bypass `Pet.observed` and re-derive all stats from the formula
+   * (DL + growth + equipment). Required for gear what-if simulations on imported
+   * rosters, where `Pet.equipment` has been modified but `Pet.observed` still holds
+   * the original game-reported stats.
+   */
+  forceDerive?: boolean;
 }
 
 /**
@@ -179,7 +186,7 @@ function runSingleTrial(
   strategy: CombatStrategy,
   rng: Rng,
 ): RunResult {
-  const { dungeon, roster, constants, globals } = deps;
+  const { dungeon, roster, constants, globals, forceDerive } = deps;
 
   // ── Step 1: Derive ally CombatContexts ────────────────────────────────────
   // Build once — we carry `currentHp` forward across rooms (HP persistence).
@@ -198,6 +205,7 @@ function runSingleTrial(
       row: slot.row,
       constants,
       ...(globals !== undefined ? { globals } : {}),
+      ...(forceDerive === true ? { forceDerive: true } : {}),
     });
     allies.push(ctx);
   }
