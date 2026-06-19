@@ -129,6 +129,16 @@ describe('petExportImporter.import(): Mouse spot-check', () => {
   it('Mouse: weapon has Earth gem enchant (lv 15)', () => {
     expect(mouse?.equipment.weapon?.elementEnchant?.Earth).toBe(15);
   });
+
+  it('Mouse: weapon has upgradeLevel and quality stored', () => {
+    // Fixture: "Godly Hammer + 20, SSS, Earth gem lv 15"
+    expect(mouse?.equipment.weapon?.upgradeLevel).toBe(20);
+    expect(mouse?.equipment.weapon?.quality).toBe('SSS');
+  });
+
+  it('Mouse: weapon statMultiplierBonus = SSS base (0.30) + 20 × 0.05 = 1.30', () => {
+    expect(mouse?.equipment.weapon?.statMultiplierBonus).toBeCloseTo(1.30, 5);
+  });
 });
 
 // ── import(): AntQueen spot-check (None class) ────────────────────────────────

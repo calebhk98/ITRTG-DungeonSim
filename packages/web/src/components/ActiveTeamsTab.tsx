@@ -5,6 +5,7 @@ import type {
   DungeonId,
   Difficulty,
   GearSlot,
+  GearQuality,
   ElementLevels,
 } from '@itrtg-sim/core';
 import {
@@ -42,10 +43,31 @@ function parseActionColumn(text: string): Map<string, string> {
   return result;
 }
 
+// ── Gear quality → statMultiplierBonus formula ────────────────────────────────
+// Community-estimated; reliable for relative comparisons (±20% absolute).
+
+const QUALITY_BASE: Record<GearQuality, number> = {
+  D: -0.30, C: -0.20, B: -0.10, A: 0.00, S: 0.10, SS: 0.20, SSS: 0.30,
+};
+const UPGRADE_STEP = 0.05;
+
+function computeMultiplier(quality: GearQuality, upgradeLevel: number): number {
+  return Math.max(0, QUALITY_BASE[quality] + upgradeLevel * UPGRADE_STEP);
+}
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type SlotOverride = { bonus: number; enchantEl: string; enchantVal: number } | null;
-type GearOverrides = Record<string, Partial<Record<GearSlot, SlotOverride>>>;
+type GearQualityOption = GearQuality;
+
+interface SlotSpec {
+  name: string;
+  upgradeLevel: number;
+  quality: GearQualityOption;
+  gemElement: keyof ElementLevels | '';
+  gemLevel: number;
+}
+
+type GearOverrides = Record<string, Partial<Record<GearSlot, SlotSpec | null>>>;
 
 interface DiffResult {
   difficulty: Difficulty;
@@ -64,9 +86,14 @@ interface TeamSweep {
 }
 
 const GEAR_SLOTS: GearSlot[] = ['weapon', 'armor', 'accessory', 'trinket'];
+const QUALITIES: GearQualityOption[] = ['D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
 const ELEMENTS: (keyof ElementLevels)[] = ['Fire', 'Water', 'Wind', 'Earth'];
 
-// ── Gear override helpers ─────────────────────────────────────────────────────
+function emptySlotSpec(name = '', upgradeLevel = 0, quality: GearQuality = 'SSS', gemElement: keyof ElementLevels | '' = '', gemLevel = 0): SlotSpec {
+  return { name, upgradeLevel, quality, gemElement, gemLevel };
+}
+
+// ── Gear override application ─────────────────────────────────────────────────
 
 function applyOverrides(
   roster: ReadonlyMap<PetId, Pet>,
@@ -77,19 +104,21 @@ function applyOverrides(
     const petOvr = overrides[pet.displayName];
     if (petOvr === undefined) continue;
     const newEquipment = { ...pet.equipment };
-    for (const [slot, ovr] of Object.entries(petOvr) as [GearSlot, SlotOverride][]) {
-      if (ovr === null) {
+    for (const [slot, spec] of Object.entries(petOvr) as [GearSlot, SlotSpec | null | undefined][]) {
+      if (spec === null) {
         delete newEquipment[slot];
-      } else {
+      } else if (spec !== undefined && spec.name.trim() !== '') {
         newEquipment[slot] = {
           id:   `override-${slot}`,
-          name: `Override ${slot}`,
+          name: spec.name.trim(),
           slot,
           tier: 4 as const,
-          statMultiplierBonus: ovr.bonus / 100,
-          ...(ovr.enchantEl !== ''
-            ? { elementEnchant: { [ovr.enchantEl]: ovr.enchantVal } as Partial<ElementLevels> }
+          statMultiplierBonus: computeMultiplier(spec.quality, spec.upgradeLevel),
+          ...(spec.gemElement !== ''
+            ? { elementEnchant: { [spec.gemElement]: spec.gemLevel } as Partial<ElementLevels> }
             : {}),
+          upgradeLevel: spec.upgradeLevel,
+          quality: spec.quality,
         };
       }
     }
@@ -144,8 +173,8 @@ function runSweeps(
 
 function cellBg(cleared: boolean, overrideCleared?: boolean): string {
   if (overrideCleared === undefined) return cleared ? '#dcfce7' : '#fee2e2';
-  if (cleared && !overrideCleared) return '#fca5a5'; // regression
-  if (!cleared && overrideCleared) return '#bbf7d0'; // improvement
+  if (cleared && !overrideCleared) return '#fca5a5';
+  if (!cleared && overrideCleared) return '#bbf7d0';
   return cleared ? '#dcfce7' : '#fee2e2';
 }
 
@@ -156,14 +185,30 @@ function cellLabel(cleared: boolean, overrideCleared?: boolean): string {
   return cleared ? '✓' : '✗';
 }
 
+// ── Gear slot display ──────────────────────────────────────────────────────────
+
+function gearLabel(piece: { name: string; upgradeLevel?: number; quality?: string; elementEnchant?: Partial<ElementLevels> } | undefined): string {
+  if (piece === undefined) return '—';
+  let label = piece.name;
+  if (piece.upgradeLevel !== undefined) label += ` +${piece.upgradeLevel}`;
+  if (piece.quality !== undefined) label += ` ${piece.quality}`;
+  if (piece.elementEnchant !== undefined) {
+    const gems = Object.entries(piece.elementEnchant)
+      .filter(([, v]) => v !== undefined && (v as number) > 0)
+      .map(([el, v]) => `${el} lv${v as number}`);
+    if (gems.length > 0) label += ` (${gems.join(', ')})`;
+  }
+  return label;
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 interface Props {
   roster: ReadonlyMap<PetId, Pet>;
+  petExportText: string;
 }
 
-export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
-  const [petExportText, setPetExportText]     = useState('');
+export default function ActiveTeamsTab({ roster, petExportText }: Props): React.ReactElement {
   const [dungeonTeamText, setDungeonTeamText] = useState('');
   const [depth, setDepth]       = useState<1 | 2 | 3 | 4>(4);
   const [rooms, setRooms]       = useState(60);
@@ -180,17 +225,12 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
   const [overrideSweeps, setOverrideSweeps] = useState<TeamSweep[] | null>(null);
   const [overrideRunning, setOverrideRunning] = useState(false);
 
-  // Collect all active team info (shared by both sweep and gear-override)
   type ActiveTeamInfo = { teamIndex: number; team: import('@itrtg-sim/core').Team; dungeonId: DungeonId; petNames: string[]; petIds: PetId[] };
   const [activeTeams, setActiveTeams] = useState<ActiveTeamInfo[]>([]);
 
   function resolveTeams(): { teams: ActiveTeamInfo[]; warns: string[] } | null {
     const warns: string[] = [];
 
-    if (!petExportText.trim() && !dungeonTeamText.trim()) {
-      setError('Paste your pet export and dungeon teams export first.');
-      return null;
-    }
     if (!dungeonTeamText.trim()) {
       setError('Dungeon teams export is required (---DungeonTeamsStart---).');
       return null;
@@ -215,7 +255,6 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
         warns.push(`Team ${teamIndex}: no resolved slots; skipping.`);
         continue;
       }
-      // Find dungeon via action column — check each pet until one matches
       let dungeonId: DungeonId | null = null;
       for (const slot of team.slots) {
         const name   = slot.petId as string;
@@ -225,7 +264,7 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
       }
       if (dungeonId === null) {
         if (petExportText.trim() === '') {
-          warns.push(`Team ${teamIndex}: pet export not provided; cannot detect dungeon. Using Scrapyard as fallback.`);
+          warns.push(`Team ${teamIndex}: pet export not imported yet; cannot detect dungeon. Using Scrapyard as fallback.`);
           dungeonId = 'Scrapyard';
         } else {
           warns.push(`Team ${teamIndex}: cannot detect dungeon from Action column; skipping.`);
@@ -254,15 +293,31 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
       setSweeps(results);
       setActiveTeams(resolved.teams);
       setWarnings(resolved.warns);
-      // Init gear overrides for all unique pets
+
+      // Init gear overrides: pre-fill from current roster equipment
       const initOverrides: GearOverrides = {};
       const seen = new Set<string>();
       for (const at of resolved.teams) {
         for (const name of at.petNames) {
-          if (!seen.has(name)) {
-            seen.add(name);
-            initOverrides[name] = {};
+          if (seen.has(name)) continue;
+          seen.add(name);
+          const pet = roster.get(name as PetId) ?? [...roster.values()].find(p => p.displayName === name);
+          const slotSpecs: Partial<Record<GearSlot, SlotSpec | null>> = {};
+          for (const slot of GEAR_SLOTS) {
+            const piece = pet?.equipment[slot];
+            if (piece !== undefined) {
+              slotSpecs[slot] = emptySlotSpec(
+                piece.name,
+                piece.upgradeLevel ?? 0,
+                (piece.quality as GearQuality | undefined) ?? 'SSS',
+                (Object.keys(piece.elementEnchant ?? {})[0] as keyof ElementLevels | undefined) ?? '',
+                Object.values(piece.elementEnchant ?? {})[0] ?? 0,
+              );
+            } else {
+              slotSpecs[slot] = null;
+            }
           }
+          initOverrides[name] = slotSpecs;
         }
       }
       setGearOverrides(initOverrides);
@@ -287,18 +342,40 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
     }
   }
 
-  function setSlotOverride(petName: string, slot: GearSlot, field: keyof Exclude<SlotOverride, null>, value: string | number) {
+  function setSlotSpec(petName: string, slot: GearSlot, field: keyof SlotSpec, value: string | number) {
     setGearOverrides(prev => {
       const petOvr  = prev[petName] ?? {};
-      const slotOvr = (petOvr[slot] ?? { bonus: 0, enchantEl: '', enchantVal: 0 }) as Exclude<SlotOverride, null>;
-      return {
-        ...prev,
-        [petName]: { ...petOvr, [slot]: { ...slotOvr, [field]: value } },
-      };
+      const cur     = petOvr[slot] ?? emptySlotSpec();
+      const updated = cur === null ? emptySlotSpec() : { ...cur, [field]: value };
+      return { ...prev, [petName]: { ...petOvr, [slot]: updated } };
     });
   }
 
-  // Unique pets across all active teams
+  function toggleSlot(petName: string, slot: GearSlot, equip: boolean) {
+    setGearOverrides(prev => {
+      const petOvr = prev[petName] ?? {};
+      if (equip) {
+        const pet = roster.get(petName as PetId) ?? [...roster.values()].find(p => p.displayName === petName);
+        const piece = pet?.equipment[slot];
+        return {
+          ...prev,
+          [petName]: {
+            ...petOvr,
+            [slot]: emptySlotSpec(
+              piece?.name ?? '',
+              piece?.upgradeLevel ?? 0,
+              (piece?.quality as GearQuality | undefined) ?? 'SSS',
+              (Object.keys(piece?.elementEnchant ?? {})[0] as keyof ElementLevels | undefined) ?? '',
+              Object.values(piece?.elementEnchant ?? {})[0] ?? 0,
+            ),
+          },
+        };
+      } else {
+        return { ...prev, [petName]: { ...petOvr, [slot]: null } };
+      }
+    });
+  }
+
   const uniquePets = Array.from(
     new Map(
       activeTeams.flatMap(at =>
@@ -307,16 +384,25 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
     ).values()
   );
 
+  const petExportProvided = petExportText.trim() !== '';
+
   return (
     <div>
       {/* ── Inputs ─────────────────────────────────────────────────────────── */}
       <div className="card">
         <h2>Active Teams — Detect &amp; Sweep</h2>
         <p style={{ color: '#71717a', fontSize: 12, margin: '0 0 12px' }}>
-          Import your pets on the <strong>Import</strong> tab first, then paste your dungeon-teams
-          export here. The pet export is optional but needed to auto-detect which dungeon each team
-          is running.
+          Import your pets on the <strong>Import</strong> tab, then paste your dungeon-teams export
+          below. The pet export you already imported is used automatically to detect which dungeon
+          each team is running — no need to paste it again.
         </p>
+
+        {!petExportProvided && (
+          <div className="warning" style={{ marginBottom: 12 }}>
+            Pet export not yet imported. Go to the <strong>Import</strong> tab first. Dungeon
+            auto-detection will fall back to Scrapyard until the export is available.
+          </div>
+        )}
 
         <div className="field" style={{ marginBottom: 10 }}>
           <label>Dungeon Teams Export <span style={{ color: '#71717a', fontWeight: 400 }}>(---DungeonTeamsStart---)</span></label>
@@ -325,16 +411,6 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
             value={dungeonTeamText}
             onChange={e => setDungeonTeamText(e.target.value)}
             placeholder="Paste dungeon teams export here…"
-          />
-        </div>
-
-        <div className="field" style={{ marginBottom: 10 }}>
-          <label>Pet Export <span style={{ color: '#71717a', fontWeight: 400 }}>(for dungeon auto-detection — optional)</span></label>
-          <textarea
-            rows={4}
-            value={petExportText}
-            onChange={e => setPetExportText(e.target.value)}
-            placeholder="Paste pet export here (used to read Action column)…"
           />
         </div>
 
@@ -454,9 +530,13 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
           {gearOpen && (
             <>
               <p style={{ fontSize: 12, color: '#71717a', margin: '0 0 12px' }}>
-                Specify hypothetical gear bonuses per pet. Stats are re-derived from DL + growth +
-                the gear below (ignoring your imported observed stats). Use this to answer "how much
-                would better gear help?"
+                Swap gear on any pet and see how it affects dungeon clears. Stats are re-derived
+                from DL + growth + the gear below (formula path; observed stats are not used).
+                Current gear is pre-filled from your import — change any field to model a swap.
+                Leave a slot name blank to keep it as-is; uncheck the checkbox to unequip.
+              </p>
+              <p style={{ fontSize: 11, color: '#a1a1aa', margin: '-8px 0 12px' }}>
+                Stat bonus = qualityBase + upgrade × 5%  (SSS=+30%, SS=+20%, S=+10%, A=0%, B=−10%)
               </p>
 
               {uniquePets.map(({ name }) => {
@@ -464,8 +544,8 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
                 const obs = pet?.observed?.stats;
                 const petOvr = gearOverrides[name] ?? {};
                 return (
-                  <div key={name} style={{ marginBottom: 16, paddingBottom: 16, borderBottom: '1px solid #e4e4e7' }}>
-                    <div style={{ fontWeight: 600, marginBottom: 6 }}>
+                  <div key={name} style={{ marginBottom: 20, paddingBottom: 16, borderBottom: '1px solid #e4e4e7' }}>
+                    <div style={{ fontWeight: 600, marginBottom: 8 }}>
                       {name}
                       {obs !== undefined && (
                         <span style={{ fontWeight: 400, fontSize: 12, color: '#71717a', marginLeft: 8 }}>
@@ -473,55 +553,85 @@ export default function ActiveTeamsTab({ roster }: Props): React.ReactElement {
                         </span>
                       )}
                     </div>
-                    <div style={{ overflowX: 'auto' }}>
-                      <table style={{ fontSize: 12 }}>
-                        <thead>
-                          <tr>
-                            <th>Slot</th>
-                            <th>Stat Bonus %</th>
-                            <th>Enchant Element</th>
-                            <th>Enchant Value</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {GEAR_SLOTS.map(slot => {
-                            const so = petOvr[slot] ?? { bonus: 0, enchantEl: '', enchantVal: 0 };
-                            return (
-                              <tr key={slot}>
-                                <td style={{ textTransform: 'capitalize' }}>{slot}</td>
-                                <td>
+
+                    {GEAR_SLOTS.map(slot => {
+                      const currentPiece = pet?.equipment[slot];
+                      const spec = petOvr[slot];
+                      const equipped = spec !== null && spec !== undefined;
+                      const slotData: SlotSpec = equipped
+                        ? (spec as SlotSpec)
+                        : emptySlotSpec(currentPiece?.name ?? '', currentPiece?.upgradeLevel ?? 0, (currentPiece?.quality as GearQuality | undefined) ?? 'SSS');
+
+                      return (
+                        <div key={slot} style={{ display: 'grid', gridTemplateColumns: '90px 1fr', gap: 8, marginBottom: 8, alignItems: 'start' }}>
+                          <div style={{ fontWeight: 500, fontSize: 13, textTransform: 'capitalize', paddingTop: 4 }}>
+                            <label style={{ display: 'flex', alignItems: 'center', gap: 4, cursor: 'pointer' }}>
+                              <input
+                                type="checkbox"
+                                checked={equipped}
+                                onChange={e => toggleSlot(name, slot, e.target.checked)}
+                              />
+                              {slot}
+                            </label>
+                            {currentPiece !== undefined && (
+                              <div style={{ fontSize: 10, color: '#a1a1aa', marginTop: 2, paddingLeft: 18 }}>
+                                {gearLabel(currentPiece)}
+                              </div>
+                            )}
+                          </div>
+
+                          {equipped && (
+                            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, fontSize: 12 }}>
+                              <input
+                                type="text"
+                                placeholder="Item name"
+                                value={slotData.name}
+                                onChange={e => setSlotSpec(name, slot, 'name', e.target.value)}
+                                style={{ width: 160, fontSize: 12 }}
+                              />
+                              <label style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                                <span style={{ color: '#71717a' }}>+</span>
+                                <input
+                                  type="number" min={0} max={50}
+                                  value={slotData.upgradeLevel}
+                                  onChange={e => setSlotSpec(name, slot, 'upgradeLevel', Math.max(0, Number(e.target.value)))}
+                                  style={{ width: 52, fontSize: 12 }}
+                                />
+                              </label>
+                              <select
+                                value={slotData.quality}
+                                onChange={e => setSlotSpec(name, slot, 'quality', e.target.value as GearQuality)}
+                                style={{ fontSize: 12 }}
+                              >
+                                {QUALITIES.map(q => <option key={q} value={q}>{q}</option>)}
+                              </select>
+                              <select
+                                value={slotData.gemElement}
+                                onChange={e => setSlotSpec(name, slot, 'gemElement', e.target.value)}
+                                style={{ fontSize: 12 }}
+                              >
+                                <option value="">— no gem —</option>
+                                {ELEMENTS.map(el => <option key={el} value={el}>{el} gem</option>)}
+                              </select>
+                              {slotData.gemElement !== '' && (
+                                <label style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
+                                  <span style={{ color: '#71717a' }}>lv</span>
                                   <input
-                                    type="number" min={0} max={100} step={0.5}
-                                    value={(so as Exclude<SlotOverride, null>).bonus}
-                                    onChange={e => setSlotOverride(name, slot, 'bonus', Number(e.target.value))}
-                                    style={{ width: 70 }}
+                                    type="number" min={0}
+                                    value={slotData.gemLevel}
+                                    onChange={e => setSlotSpec(name, slot, 'gemLevel', Math.max(0, Number(e.target.value)))}
+                                    style={{ width: 52, fontSize: 12 }}
                                   />
-                                </td>
-                                <td>
-                                  <select
-                                    value={(so as Exclude<SlotOverride, null>).enchantEl}
-                                    onChange={e => setSlotOverride(name, slot, 'enchantEl', e.target.value)}
-                                    style={{ fontSize: 12 }}
-                                  >
-                                    <option value="">— none —</option>
-                                    {ELEMENTS.map(el => <option key={el} value={el}>{el}</option>)}
-                                  </select>
-                                </td>
-                                <td>
-                                  <input
-                                    type="number" min={0} step={1}
-                                    value={(so as Exclude<SlotOverride, null>).enchantVal}
-                                    onChange={e => setSlotOverride(name, slot, 'enchantVal', Number(e.target.value))}
-                                    style={{ width: 70 }}
-                                    disabled={(so as Exclude<SlotOverride, null>).enchantEl === ''}
-                                  />
-                                </td>
-                              </tr>
-                            );
-                          })}
-                        </tbody>
-                      </table>
-                    </div>
+                                </label>
+                              )}
+                              <span style={{ color: '#71717a', fontSize: 11, alignSelf: 'center' }}>
+                                ≈{(computeMultiplier(slotData.quality, slotData.upgradeLevel) * 100).toFixed(0)}%
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 );
               })}

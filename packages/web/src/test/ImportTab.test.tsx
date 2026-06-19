@@ -16,7 +16,7 @@ const SAMPLE_EXPORT = readFileSync(
 // Wrapper component to capture roster state changes
 function TestWrapper() {
   const [roster, setRoster] = useState<ReadonlyMap<PetId, Pet>>(new Map());
-  return <ImportTab roster={roster} setRoster={setRoster} />;
+  return <ImportTab roster={roster} setRoster={setRoster} setRawPetExport={() => {}} />;
 }
 
 describe('ImportTab', () => {

@@ -14,6 +14,9 @@ export type GearSlot = 'weapon' | 'armor' | 'accessory' | 'trinket';
  *
  * Research §5.3: Equipment enchantments add to element levels.
  */
+/** Quality grades as they appear in the in-game export (low → high). */
+export type GearQuality = 'D' | 'C' | 'B' | 'A' | 'S' | 'SS' | 'SSS';
+
 export interface GearPiece {
   /** Unique identifier for this gear piece (e.g. from in-game export). */
   readonly id: string;
@@ -29,10 +32,15 @@ export interface GearPiece {
   /**
    * Optional elemental enchantment. Values are ADDED to the pet's computed
    * elemental levels before Dojo/Strategy modifiers apply (research §5.3).
+   * Negative values reduce element levels (from off-element gear penalties).
    */
   readonly elementEnchant?: Partial<ElementLevels>;
   /** Gear tier 1–4, matching the dungeon material tiers (research §8.4). */
   readonly tier: 1 | 2 | 3 | 4;
+  /** Upgrade level from the in-game export ("+N" suffix). Used for display and gear-swap UI. */
+  readonly upgradeLevel?: number;
+  /** Quality grade from the in-game export. Used for display and gear-swap UI. */
+  readonly quality?: GearQuality;
 }
 
 /**

@@ -55,7 +55,7 @@ import { defaultRegistry } from '../registry.js';
 import type { Pet } from '../../domain/pet.js';
 import type { Element } from '../../domain/element.js';
 import type { PetClassName } from '../../domain/class.js';
-import type { GearPiece, GearSlot, ElementLevels } from '../../domain/gear.js';
+import type { GearPiece, GearSlot, GearQuality, ElementLevels } from '../../domain/gear.js';
 import { asPetId } from '../../domain/ids.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -123,7 +123,21 @@ function parseCommaInt(raw: string): number {
 /**
  * Quality tokens that appear in the export (SSS, SS, S, A, B, C, …).
  * Higher-quality tokens map to higher tiers via the heuristic below.
+ *
+ * statMultiplierBonus formula (community-estimated, ±10% per quality tier, 5% per upgrade):
+ *   bonus = qualityBase[quality] + upgradeLevel × 0.05
+ * Source: ITRTG wiki; confidence: medium (±20% absolute, reliable for relative comparisons).
  */
+const QUALITY_BASE: Readonly<Record<GearQuality, number>> = {
+  D: -0.30,
+  C: -0.20,
+  B: -0.10,
+  A:  0.00,
+  S:  0.10,
+  SS: 0.20,
+  SSS: 0.30,
+};
+const UPGRADE_STEP = 0.05; // +5% per upgrade level
 
 /**
  * Tier-4 gear name keywords (best-effort subset from known end-game items).
@@ -192,11 +206,12 @@ function parseGearString(
     return null;
   }
   const itemName = plusMatch[1]!.trim();
-  // upgrade level captured but not stored in GearPiece (no field for it)
+  const upgradeLevel = parseInt(plusMatch[2]!, 10);
 
   // Extract quality token (SSS / SS / S / A / B / C / …) — first all-caps word after the comma
   const qualityMatch = /,\s*(SSS|SS|S|A|B|C|D)(\s*\(\d+\))?/.exec(trimmed);
-  const quality = qualityMatch !== null ? qualityMatch[1]! : '';
+  const qualityStr = qualityMatch !== null ? qualityMatch[1]! : '';
+  const quality = (qualityStr in QUALITY_BASE) ? (qualityStr as GearQuality) : undefined;
 
   // Extract gem: "Water gem lv 12", "Earth gem lv 15", etc.
   const gemMatch = /(\w+)\s+gem\s+lv\s+(\d+)/i.exec(trimmed);
@@ -215,23 +230,24 @@ function parseGearString(
     // "Neutral gem" is valid in the export but contributes no element level bonus — skip silently.
   }
 
-  const tier = gearTierHeuristic(itemName, quality);
+  const tier = gearTierHeuristic(itemName, qualityStr);
+
+  // Compute statMultiplierBonus from quality+upgrade (community-estimated formula).
+  // Observed stats already include all gear; this value is used only in the forceDerive
+  // (gear what-if) path. Relative comparisons between gear options are reliable even
+  // if absolute accuracy is ±20%.
+  const qualityBase = quality !== undefined ? QUALITY_BASE[quality] : 0;
+  const statMultiplierBonus = Math.max(0, qualityBase + (isNaN(upgradeLevel) ? 0 : upgradeLevel * UPGRADE_STEP));
 
   const piece: GearPiece = {
     id: `${petName}-${slot}`,
     name: itemName,
     slot,
-    /**
-     * statMultiplierBonus is set to 0.
-     * The real per-piece multiplier is not included in the pet export; the
-     * observed HP/atk/def/spd columns already capture the combined gear
-     * contribution. Setting 0 here means the formula path (forceDerive=true)
-     * will underestimate gear; that is acceptable for the observed-stats
-     * fast path where this field is irrelevant.
-     */
-    statMultiplierBonus: 0,
+    statMultiplierBonus,
     tier,
     ...(elementEnchant !== undefined ? { elementEnchant } : {}),
+    ...(!isNaN(upgradeLevel) ? { upgradeLevel } : {}),
+    ...(quality !== undefined ? { quality } : {}),
   };
 
   return piece;

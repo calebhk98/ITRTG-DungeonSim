@@ -10,6 +10,7 @@ type Tab = 'import' | 'simulate' | 'optimize' | 'active-teams';
 export default function App(): React.ReactElement {
   const [activeTab, setActiveTab] = useState<Tab>('import');
   const [roster, setRoster] = useState<ReadonlyMap<PetId, Pet>>(new Map());
+  const [rawPetExport, setRawPetExport] = useState('');
 
   return (
     <div>
@@ -42,7 +43,7 @@ export default function App(): React.ReactElement {
       </div>
 
       {activeTab === 'import' && (
-        <ImportTab roster={roster} setRoster={setRoster} />
+        <ImportTab roster={roster} setRoster={setRoster} setRawPetExport={setRawPetExport} />
       )}
       {activeTab === 'simulate' && (
         <SimulateTab roster={roster} />
@@ -51,7 +52,7 @@ export default function App(): React.ReactElement {
         <OptimizeTab roster={roster} />
       )}
       {activeTab === 'active-teams' && (
-        <ActiveTeamsTab roster={roster} />
+        <ActiveTeamsTab roster={roster} petExportText={rawPetExport} />
       )}
     </div>
   );
