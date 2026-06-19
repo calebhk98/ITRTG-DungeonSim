@@ -124,18 +124,23 @@ function parseCommaInt(raw: string): number {
  * Quality tokens that appear in the export (SSS, SS, S, A, B, C, …).
  * Higher-quality tokens map to higher tiers via the heuristic below.
  *
- * statMultiplierBonus formula (community-estimated, ±10% per quality tier, 5% per upgrade):
+ * statMultiplierBonus formula (community-estimated):
  *   bonus = qualityBase[quality] + upgradeLevel × 0.05
- * Source: ITRTG wiki; confidence: medium (±20% absolute, reliable for relative comparisons).
+ *
+ * Quality scale: F=0%, E=10%, D=20%, C=30%, B=40%, A=50%, S=60%, SS=70%, SSS=80%.
+ * A-quality is the baseline (50% base, no upgrades).  Each grade = ±10%.
+ * Upgrade step: +5% per level (so A+20 = 50%+100% = 150% = 1.50 bonus).
+ * Source: ITRTG wiki (via pet-dungeon gear pages); confidence: medium
+ * (pet gear vs adventure gear distinction uncertain; reliable for relative comparisons).
  */
 const QUALITY_BASE: Readonly<Record<GearQuality, number>> = {
-  D: -0.30,
-  C: -0.20,
-  B: -0.10,
-  A:  0.00,
-  S:  0.10,
-  SS: 0.20,
-  SSS: 0.30,
+  D: 0.20,
+  C: 0.30,
+  B: 0.40,
+  A: 0.50,
+  S: 0.60,
+  SS: 0.70,
+  SSS: 0.80,
 };
 const UPGRADE_STEP = 0.05; // +5% per upgrade level
 

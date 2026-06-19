@@ -47,7 +47,7 @@ function parseActionColumn(text: string): Map<string, string> {
 // Community-estimated; reliable for relative comparisons (±20% absolute).
 
 const QUALITY_BASE: Record<GearQuality, number> = {
-  D: -0.30, C: -0.20, B: -0.10, A: 0.00, S: 0.10, SS: 0.20, SSS: 0.30,
+  D: 0.20, C: 0.30, B: 0.40, A: 0.50, S: 0.60, SS: 0.70, SSS: 0.80,
 };
 const UPGRADE_STEP = 0.05;
 
@@ -536,7 +536,7 @@ export default function ActiveTeamsTab({ roster, petExportText }: Props): React.
                 Leave a slot name blank to keep it as-is; uncheck the checkbox to unequip.
               </p>
               <p style={{ fontSize: 11, color: '#a1a1aa', margin: '-8px 0 12px' }}>
-                Stat bonus = qualityBase + upgrade × 5%  (SSS=+30%, SS=+20%, S=+10%, A=0%, B=−10%)
+                Stat bonus = qualityBase + upgrade × 5%  (SSS=80%, SS=70%, S=60%, A=50%, B=40%, C=30%, D=20%)
               </p>
 
               {uniquePets.map(({ name }) => {
