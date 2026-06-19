@@ -175,7 +175,7 @@ Atk/Def/Spd = ((1 + 2.4 * DL) * (1 + TotalGrowth/200000) * EquipMod * DojoMod + 
 
 - `DL` = Dungeon Level
 - `TotalGrowth` = pet's total growth
-- `EquipMod` = gear multiplier (gear pieces stack **additively**, then multiply base)
+- `EquipMod` = per-stat gear multiplier; see §12 for the full quality × upgrade formula
 - `DojoMod` = multiplicative Dojo bonus
 - `StratRoomMod` = **additive** Strategy Room bonus (only for pets on the active team)
 - `ClassMod` = class modifier (see §5.5)
@@ -640,6 +640,99 @@ bombs, and Nanotraps are **not currently modeled** — they would require:
 1. Inventory/capacity tracking (items carried per run).
 2. Auto-trigger logic (when/how items are used during combat).
 3. Stat/damage adjustments mid-run (Speed debuffs, healing actions, etc.).
+
+---
+
+## 12. Gear / Equipment System
+
+> **Source:** https://itrtg.wiki.gg/wiki/Equip — official wiki. **Confidence: high.**
+
+### 12.1 Overview
+
+Pet gear occupies named slots (weapon, armor, accessory, etc.). A piece of gear
+contributes a **per-stat base bonus** (at quality A, upgrade +0) that scales
+multiplicatively by a quality multiplier and an upgrade multiplier:
+
+```
+effectiveStat = baseStatBonus × qualityMult × upgradeMult
+```
+
+This is a **fully multiplicative** formula — quality and upgrade do not add flat
+values; they scale the item's base bonus. Different stats on the same item have
+**different** base bonuses (see §12.4 examples).
+
+### 12.2 Quality grades
+
+There are **9 quality grades** from lowest to highest. The multiplier is anchored
+at A = 1.00×:
+
+| Grade | Multiplier |
+|---|---|
+| F | 0.50× |
+| E | 0.60× |
+| D | 0.70× |
+| C | 0.80× |
+| B | 0.90× |
+| **A** | **1.00×** (baseline) |
+| S | 1.10× |
+| SS | 1.20× |
+| SSS | 1.30× |
+
+### 12.3 Upgrade levels
+
+Items are upgraded from **+0 to +20**. Each +1 adds **5% to upgradeMult**:
+
+```
+upgradeMult = 1.00 + 0.05 × upgradeLevel
+```
+
+So +20 = 2.00× (doubling the base bonus).
+
+Combined example: SSS quality, +20 upgrade → `1.30 × 2.00 = 2.60×` the base bonus.
+
+### 12.4 Per-item base stat bonuses (examples)
+
+Items within the same tier/slot have **different per-stat distributions** — there is
+no uniform "one multiplier fits all stats" model. Known examples (quality A, upgrade +0):
+
+| Item | Slot | ATK | DEF | HP | SPD | Notes |
+|---|---|---|---|---|---|---|
+| Fire Sword | Weapon | +20% | — | — | — | Emphasises ATK |
+| Mythril Shield | Armor | — | +55% | — | — | Emphasises DEF |
+
+(Additional items are enumerated in `packages/core/src/content/data/gear-items.json`.)
+
+### 12.5 Gear tiers
+
+Gear is organised into **5 tiers** corresponding to material quality:
+
+| Tier | Typical source | Notes |
+|---|---|---|
+| 1 | D1 dungeon drops | Basic items |
+| 2 | D1 boss / crafted from T1 | |
+| 3 | D2–D3 / Infinity Tower | Magic/sacred variants |
+| 4 | D4 / Tower | Elemental bars (Inferno Stone, Mythril, etc.) |
+| 5 | Special drops | Elite items (e.g., Ele Twin Dagger) |
+
+### 12.6 Effective-stat formula (full)
+
+For a single gear piece providing a bonus to stat S:
+
+```
+effectiveBonus_S = baseBonus_S × (1.00 + 0.05 × upgradeLevel) × qualityMult
+```
+
+`EquipMod` in the pet stat formula (§6.1) is the product of all equipped gear
+bonuses for that stat (they combine multiplicatively across pieces).
+
+### 12.7 Simulator notes
+
+- The gear item registry lives in `packages/core/src/content/data/gear-items.json`.
+- Pets imported from the real game export carry `Pet.observed` (pre-computed stats
+  that already include gear). `deriveCombatContext` uses those directly **unless**
+  `forceDerive: true` is set — meaning gear what-if analysis requires `forceDerive`.
+- Gear optimization is therefore a **no-op on observed-stat imported rosters** unless
+  `forceDerive` is threaded through the optimizer adapters (see CLAUDE.md — Deferred).
 
 ---
 
