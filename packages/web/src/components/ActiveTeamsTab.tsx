@@ -14,6 +14,7 @@ import {
   getDungeon,
   simulateRun,
   DEFAULT_CONSTANTS,
+  computeGearMultiplier,
 } from '@itrtg-sim/core';
 
 // ── Action column parsing ─────────────────────────────────────────────────────
@@ -41,18 +42,6 @@ function parseActionColumn(text: string): Map<string, string> {
     if (name && action) result.set(name, action);
   }
   return result;
-}
-
-// ── Gear quality → statMultiplierBonus formula ────────────────────────────────
-// Community-estimated; reliable for relative comparisons (±20% absolute).
-
-const QUALITY_BASE: Record<GearQuality, number> = {
-  D: 0.20, C: 0.30, B: 0.40, A: 0.50, S: 0.60, SS: 0.70, SSS: 0.80,
-};
-const UPGRADE_STEP = 0.05;
-
-function computeMultiplier(quality: GearQuality, upgradeLevel: number): number {
-  return Math.max(0, QUALITY_BASE[quality] + upgradeLevel * UPGRADE_STEP);
 }
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -113,7 +102,7 @@ function applyOverrides(
           name: spec.name.trim(),
           slot,
           tier: 4 as const,
-          statMultiplierBonus: computeMultiplier(spec.quality, spec.upgradeLevel),
+          statMultiplierBonus: computeGearMultiplier(spec.quality, spec.upgradeLevel),
           ...(spec.gemElement !== ''
             ? { elementEnchant: { [spec.gemElement]: spec.gemLevel } as Partial<ElementLevels> }
             : {}),
@@ -625,7 +614,7 @@ export default function ActiveTeamsTab({ roster, petExportText }: Props): React.
                                 </label>
                               )}
                               <span style={{ color: '#71717a', fontSize: 11, alignSelf: 'center' }}>
-                                ≈{(computeMultiplier(slotData.quality, slotData.upgradeLevel) * 100).toFixed(0)}%
+                                ≈{(computeGearMultiplier(slotData.quality, slotData.upgradeLevel) * 100).toFixed(0)}%
                               </span>
                             </div>
                           )}

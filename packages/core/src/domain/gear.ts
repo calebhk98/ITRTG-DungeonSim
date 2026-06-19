@@ -68,3 +68,32 @@ export type EquipmentLoadout = {
  * optimizer dimension; candidate assignments reference pieces by `GearPiece.id`.
  */
 export type GearInventory = ReadonlyArray<GearPiece>;
+
+// ── Gear multiplier formula ────────────────────────────────────────────────────
+
+/**
+ * Community-estimated quality base values for `statMultiplierBonus`.
+ * Scale: A=50% baseline, ±10% per tier. Source: ITRTG wiki; confidence: medium.
+ * (Pet dungeon vs adventure-mode gear distinction is uncertain; reliable for
+ * relative comparisons between gear options.)
+ */
+export const GEAR_QUALITY_BASE: Readonly<Record<GearQuality, number>> = {
+  D: 0.20,
+  C: 0.30,
+  B: 0.40,
+  A: 0.50,
+  S: 0.60,
+  SS: 0.70,
+  SSS: 0.80,
+};
+
+/** +5% stat multiplier per upgrade level. */
+export const GEAR_UPGRADE_STEP = 0.05;
+
+/**
+ * Compute `statMultiplierBonus` from quality and upgrade level.
+ * Formula: max(0, qualityBase + upgradeLevel × 0.05)
+ */
+export function computeGearMultiplier(quality: GearQuality, upgradeLevel: number): number {
+  return Math.max(0, GEAR_QUALITY_BASE[quality] + upgradeLevel * GEAR_UPGRADE_STEP);
+}

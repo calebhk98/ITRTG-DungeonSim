@@ -56,6 +56,7 @@ import type { Pet } from '../../domain/pet.js';
 import type { Element } from '../../domain/element.js';
 import type { PetClassName } from '../../domain/class.js';
 import type { GearPiece, GearSlot, GearQuality, ElementLevels } from '../../domain/gear.js';
+import { GEAR_QUALITY_BASE, GEAR_UPGRADE_STEP, computeGearMultiplier } from '../../domain/gear.js';
 import { asPetId } from '../../domain/ids.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -120,29 +121,7 @@ function parseCommaInt(raw: string): number {
 
 // ── Gear parsing ───────────────────────────────────────────────────────────────
 
-/**
- * Quality tokens that appear in the export (SSS, SS, S, A, B, C, …).
- * Higher-quality tokens map to higher tiers via the heuristic below.
- *
- * statMultiplierBonus formula (community-estimated):
- *   bonus = qualityBase[quality] + upgradeLevel × 0.05
- *
- * Quality scale: F=0%, E=10%, D=20%, C=30%, B=40%, A=50%, S=60%, SS=70%, SSS=80%.
- * A-quality is the baseline (50% base, no upgrades).  Each grade = ±10%.
- * Upgrade step: +5% per level (so A+20 = 50%+100% = 150% = 1.50 bonus).
- * Source: ITRTG wiki (via pet-dungeon gear pages); confidence: medium
- * (pet gear vs adventure gear distinction uncertain; reliable for relative comparisons).
- */
-const QUALITY_BASE: Readonly<Record<GearQuality, number>> = {
-  D: 0.20,
-  C: 0.30,
-  B: 0.40,
-  A: 0.50,
-  S: 0.60,
-  SS: 0.70,
-  SSS: 0.80,
-};
-const UPGRADE_STEP = 0.05; // +5% per upgrade level
+/** Quality tokens valid in the export — used to validate before casting. */
 
 /**
  * Tier-4 gear name keywords (best-effort subset from known end-game items).
@@ -216,7 +195,7 @@ function parseGearString(
   // Extract quality token (SSS / SS / S / A / B / C / …) — first all-caps word after the comma
   const qualityMatch = /,\s*(SSS|SS|S|A|B|C|D)(\s*\(\d+\))?/.exec(trimmed);
   const qualityStr = qualityMatch !== null ? qualityMatch[1]! : '';
-  const quality = (qualityStr in QUALITY_BASE) ? (qualityStr as GearQuality) : undefined;
+  const quality = (qualityStr in GEAR_QUALITY_BASE) ? (qualityStr as GearQuality) : undefined;
 
   // Extract gem: "Water gem lv 12", "Earth gem lv 15", etc.
   const gemMatch = /(\w+)\s+gem\s+lv\s+(\d+)/i.exec(trimmed);
@@ -241,8 +220,9 @@ function parseGearString(
   // Observed stats already include all gear; this value is used only in the forceDerive
   // (gear what-if) path. Relative comparisons between gear options are reliable even
   // if absolute accuracy is ±20%.
-  const qualityBase = quality !== undefined ? QUALITY_BASE[quality] : 0;
-  const statMultiplierBonus = Math.max(0, qualityBase + (isNaN(upgradeLevel) ? 0 : upgradeLevel * UPGRADE_STEP));
+  const statMultiplierBonus = quality !== undefined
+    ? computeGearMultiplier(quality, isNaN(upgradeLevel) ? 0 : upgradeLevel)
+    : 0;
 
   const piece: GearPiece = {
     id: `${petName}-${slot}`,
