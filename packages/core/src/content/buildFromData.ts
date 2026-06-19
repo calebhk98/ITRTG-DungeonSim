@@ -73,6 +73,10 @@ interface RawEnemy {
   readonly scaling: number;
   readonly attackScaling: number;
   readonly boss: boolean;
+  /** Optional override: 'expDiff' or 'expSqrtDiff' takes precedence over linear derivation. */
+  readonly scalingKind?: 'expDiff' | 'expSqrtDiff';
+  /** Required when scalingKind is 'expDiff'. Default 1.4 (Ancient Mimic, research §7.2). */
+  readonly scalingFactor?: number;
 }
 
 // ── Element validation ────────────────────────────────────────────────────────
@@ -93,18 +97,23 @@ function toElement(raw: string): Element {
 /**
  * Derive a `ScalingSpec` from the raw per-stat rates in the enemy data.
  *
- * Formula: `perDiff[stat] = round(base × rate)`
- *   which means `stat(difficulty) = base + perDiff × difficulty`
- *               = `base + round(base × rate) × difficulty`
+ * If `scalingKind` is set in the raw data, it takes precedence:
+ *   - 'expDiff':     `stat(d) = base × scalingFactor^d`  (e.g. Ancient Mimic: ×1.4^d)
+ *   - 'expSqrtDiff': `stat(d) = base × (√2)^d`          (e.g. Scrapyard Railgun)
  *
- * This is the linearised additive approximation of `base × (1 + rate × d)`.
- * The two are equivalent when `rate` is small and `difficulty` is an integer;
- * rounding is applied once at archetype-build time so the sim math is clean.
+ * Otherwise, linear derivation from the scaling/attackScaling rates:
+ *   `perDiff[stat] = round(base × rate)`
+ *   so `stat(d) = base + perDiff × d`
  *
- * When both rates are 0, the enemy does not scale — we return a `linear` spec
- * with all-zero perDiff (the scaler simply returns base stats at any difficulty).
+ * When both rates are 0 (and no scalingKind), the enemy does not scale.
  */
 function deriveScalingSpec(enemy: RawEnemy): ScalingSpec {
+  if (enemy.scalingKind === 'expDiff') {
+    return { kind: 'expDiff', factor: enemy.scalingFactor ?? 1.4 };
+  }
+  if (enemy.scalingKind === 'expSqrtDiff') {
+    return { kind: 'expSqrtDiff' };
+  }
   if (enemy.scaling === 0 && enemy.attackScaling === 0) {
     return { kind: 'linear', perDiff: {} };
   }

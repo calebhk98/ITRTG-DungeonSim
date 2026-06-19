@@ -76,14 +76,15 @@ describe('Real enemy stats (from data/enemies.json)', () => {
     expect(a!.elementLevels!.Fire).toBe(-40);
   });
 
-  it('Scrapyard D4 enemy Nanobots: scaling=0, perDiff all zero', () => {
+  it('Scrapyard D4 enemy Nanobots: linear scaling 0.2/0.25', () => {
     const a = ALL_ARCHETYPES['Nanobots'];
     expect(a).toBeDefined();
     expect(a!.scaling.kind).toBe('linear');
     if (a!.scaling.kind === 'linear') {
-      // scaling=0 and attackScaling=0 in data → no perDiff entries
-      expect(a!.scaling.perDiff.hp ?? 0).toBe(0);
-      expect(a!.scaling.perDiff.atk ?? 0).toBe(0);
+      // scaling=0.2 → perDiff.hp = round(8888 * 0.2) = 1778
+      expect(a!.scaling.perDiff.hp).toBe(Math.round(8888 * 0.2));
+      // attackScaling=0.25 → perDiff.atk = round(8888 * 0.25) = 2222
+      expect(a!.scaling.perDiff.atk).toBe(Math.round(8888 * 0.25));
     }
   });
 });
@@ -390,12 +391,14 @@ describe('Scaling integration — scaleEnemyStats with real data-driven archetyp
     expect(stats.atk).toBe(88 + 35 * 10);    // 438
   });
 
-  it('Nanobots (scaling=0) at Diff 10 returns same as Diff 0', () => {
+  it('Nanobots (D4 linear scaling 0.2/0.25) at Diff 10 is stronger than Diff 0', () => {
     const a = ALL_ARCHETYPES['Nanobots']!;
     const d0 = scaleEnemyStats(a, { difficulty: 0 }, DEFAULT_CONSTANTS);
     const d10 = scaleEnemyStats(a, { difficulty: 10 }, DEFAULT_CONSTANTS);
-    expect(d10.hp).toBe(d0.hp);
-    expect(d10.atk).toBe(d0.atk);
+    // perDiff.hp = round(8888 * 0.2) = 1778; at diff 10: 8888 + 1778*10 = 26668
+    expect(d10.hp).toBe(8888 + Math.round(8888 * 0.2) * 10);
+    expect(d10.hp).toBeGreaterThan(d0.hp);
+    expect(d10.atk).toBeGreaterThan(d0.atk);
   });
 
   it('D1 scaling: Diff 10 AngelSlimy is strictly stronger than Diff 0', () => {
@@ -404,5 +407,28 @@ describe('Scaling integration — scaleEnemyStats with real data-driven archetyp
     const d10 = scaleEnemyStats(a, { difficulty: 10 }, DEFAULT_CONSTANTS);
     expect(d10.hp).toBeGreaterThan(d0.hp);
     expect(d10.atk).toBeGreaterThan(d0.atk);
+  });
+
+  it('YogSothoth (D4 boss expDiff 1.3): kind=expDiff, Diff 0 = base stats', () => {
+    const a = ALL_ARCHETYPES['YogSothoth']!;
+    expect(a.scaling.kind).toBe('expDiff');
+    if (a.scaling.kind === 'expDiff') expect(a.scaling.factor).toBe(1.3);
+    const d0 = scaleEnemyStats(a, { difficulty: 0 }, DEFAULT_CONSTANTS);
+    expect(d0.hp).toBe(300000);
+    expect(d0.atk).toBe(12000);
+  });
+
+  it('YogSothoth at Diff 5: hp = 300000 × 1.3^5 ≈ 1.07M', () => {
+    const a = ALL_ARCHETYPES['YogSothoth']!;
+    const d5 = scaleEnemyStats(a, { difficulty: 5 }, DEFAULT_CONSTANTS);
+    expect(d5.hp).toBeCloseTo(300000 * Math.pow(1.3, 5), 0);
+    expect(d5.atk).toBeCloseTo(12000 * Math.pow(1.3, 5), 0);
+  });
+
+  it('YogSothoth Diff 10 is ~13.8× harder than Diff 0', () => {
+    const a = ALL_ARCHETYPES['YogSothoth']!;
+    const d0  = scaleEnemyStats(a, { difficulty: 0 }, DEFAULT_CONSTANTS);
+    const d10 = scaleEnemyStats(a, { difficulty: 10 }, DEFAULT_CONSTANTS);
+    expect(d10.hp / d0.hp).toBeCloseTo(Math.pow(1.3, 10), 3);
   });
 });
