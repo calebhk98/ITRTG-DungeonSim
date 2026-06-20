@@ -129,3 +129,12 @@ export const DUNGEON_REGISTRY: ReadonlyMap<DungeonId, Dungeon> = new Map<Dungeon
 export function getDungeon(id: DungeonId): Dungeon | undefined {
   return DUNGEON_REGISTRY.get(id);
 }
+
+// ── Gear item registry ────────────────────────────────────────────────────────
+
+export {
+  GEAR_ITEM_REGISTRY,
+  lookupGearItem,
+  getGearItemFallback,
+} from './gearRegistry.js';
+export type { GearItemSpec } from './gearRegistry.js';

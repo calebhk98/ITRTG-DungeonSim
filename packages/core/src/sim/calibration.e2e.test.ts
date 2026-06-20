@@ -117,9 +117,11 @@ describe('Sim calibration — clearable depth scales with pet strength', () => {
     expect(clears(mid, 4, 0)).toBe(false);
   });
 
-  it('a CL100/DL600 squad can clear D4, even at difficulty 10', () => {
+  it('a CL100/DL600 squad clears D4-0 through D4-7 but fails D4-8 (1.4^d scaling)', () => {
     expect(clears(strong, 4, 0)).toBe(true);
-    expect(clears(strong, 4, 10)).toBe(true);
+    expect(clears(strong, 4, 7)).toBe(true);
+    expect(clears(strong, 4, 8)).toBe(false);
+    expect(clears(strong, 4, 10)).toBe(false);
   });
 
   it('deeper clear capability is monotonic in pet strength', () => {

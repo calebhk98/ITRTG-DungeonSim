@@ -8,9 +8,10 @@ import sampleExportUrl from '../fixtures/petExport.txt?url';
 interface ImportTabProps {
   roster: ReadonlyMap<PetId, Pet>;
   setRoster: (r: ReadonlyMap<PetId, Pet>) => void;
+  setRawPetExport: (text: string) => void;
 }
 
-export default function ImportTab({ roster, setRoster }: ImportTabProps): React.ReactElement {
+export default function ImportTab({ roster, setRoster, setRawPetExport }: ImportTabProps): React.ReactElement {
   const [text, setText] = useState('');
   const [warnings, setWarnings] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -27,6 +28,7 @@ export default function ImportTab({ roster, setRoster }: ImportTabProps): React.
         map.set(pet.id, pet);
       }
       setRoster(map);
+      setRawPetExport(text);
       setWarnings(Array.from(result.warnings));
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : String(err));

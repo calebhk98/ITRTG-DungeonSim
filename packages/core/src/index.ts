@@ -47,9 +47,45 @@ export type {
   PetEquipBonus,
   PetTotals,
 } from './importers/real/statistics.js';
+// Real ITRTG dungeon-teams export → parsed team assignments.
+export {
+  detectDungeonTeams,
+  parseDungeonTeams,
+  resolveDungeonTeam,
+  resolveDungeonTeams,
+} from './importers/real/dungeonTeams.js';
+export type {
+  RawTeamSlot,
+  ParsedDungeonTeam,
+  ParsedDungeonTeams,
+} from './importers/real/dungeonTeams.js';
+// Real ITRTG pet-equipment-IDs export → parsed item ID assignments.
+export { detectPetEquip, parsePetEquip } from './importers/real/petEquip.js';
+export type {
+  PetEquipmentIds,
+  ParsedPetEquip,
+} from './importers/real/petEquip.js';
 
 // ── Content — dungeon registry ────────────────────────────────────────────────
 export { getDungeon, DUNGEON_REGISTRY } from './content/index.js';
+
+// ── Content — gear item registry ─────────────────────────────────────────────
+export {
+  GEAR_ITEM_REGISTRY,
+  lookupGearItem,
+  getGearItemFallback,
+} from './content/index.js';
+export type { GearItemSpec } from './content/index.js';
+
+// ── Gear formula helpers ──────────────────────────────────────────────────────
+export {
+  GEAR_QUALITY_MULT,
+  GEAR_UPGRADE_STEP,
+  computeGearQualityMult,
+  computeGearUpgradeMult,
+  computeGearCombinedMult,
+  computeGemStatBonus,
+} from './domain/gear.js';
 
 // ── Sim — RNG ─────────────────────────────────────────────────────────────────
 export type { Rng } from './sim/rng.js';

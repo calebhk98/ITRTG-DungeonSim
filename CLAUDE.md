@@ -54,6 +54,13 @@ Key directories under `packages/core/src/`:
 ## Simulation model notes
 - **EV vs Monte-Carlo** is a strategy choice (`CombatStrategy` + `Rng`), sharing one combat
   resolver. EV = fast/deterministic (optimizer inner loop); MC = sampled (final re-rank).
+- **Gear model:** each item has per-stat base bonuses (HP, ATK, DEF, SPD) at quality A /
+  upgrade +0; the effective bonus is `baseBonus × qualityMult × upgradeMult` where
+  qualityMult runs F=0.50× … SSS=1.30× and upgradeMult = `1 + 0.05 × upgradeLevel`
+  (+0 to +20). Formula is fully multiplicative — not a uniform scalar. Items differ in
+  their per-stat distributions (e.g., Fire Sword emphasises ATK, Mythril Shield DEF).
+  Gear tiers 1–5; tier 5 = special items (e.g., Ele Twin Dagger). Known items are in
+  `content/data/gear-items.json`. Source: itrtg.wiki.gg/wiki/Equip (high confidence).
 - **Observed-stats fast path:** pets imported from the real export carry `Pet.observed`
   (the game's already-computed stats). `deriveCombatContext` uses those directly unless
   `forceDerive: true`. Consequence: **equipment/gear changes don't affect observed pets**,

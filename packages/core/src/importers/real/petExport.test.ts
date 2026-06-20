@@ -126,8 +126,25 @@ describe('petExportImporter.import(): Mouse spot-check', () => {
     expect(mouse?.equipment.weapon?.slot).toBe('weapon');
   });
 
-  it('Mouse: weapon has Earth gem enchant (lv 15)', () => {
-    expect(mouse?.equipment.weapon?.elementEnchant?.Earth).toBe(15);
+  it('Mouse: weapon has Earth gem (gemType=Earth, gemLevel=15)', () => {
+    // Fixture: "Godly Hammer + 20, SSS, Earth gem lv 15"
+    // Earth gem → DEF bonus, not elementEnchant
+    expect(mouse?.equipment.weapon?.gemType).toBe('Earth');
+    expect(mouse?.equipment.weapon?.gemLevel).toBe(15);
+    expect(mouse?.equipment.weapon?.elementEnchant).toBeUndefined();
+  });
+
+  it('Mouse: weapon gemDefBonus = 15 × 0.01 × tier4 = 0.60', () => {
+    expect(mouse?.equipment.weapon?.gemDefBonus).toBeCloseTo(0.60, 5);
+  });
+
+  it('Mouse: weapon has upgradeLevel and quality stored', () => {
+    expect(mouse?.equipment.weapon?.upgradeLevel).toBe(20);
+    expect(mouse?.equipment.weapon?.quality).toBe('SSS');
+  });
+
+  it('Mouse: weapon upgradeLevel = 20', () => {
+    expect(mouse?.equipment.weapon?.upgradeLevel).toBe(20);
   });
 });
 

@@ -12,6 +12,7 @@ import { resolve } from '../constants/types.js';
 import type { GameConstants } from '../constants/types.js';
 import type { CombatContext } from '../domain/combat.js';
 import type { ElementLevels } from '../domain/gear.js';
+import { computeGearQualityMult, computeGearUpgradeMult } from '../domain/gear.js';
 import type { Pet } from '../domain/pet.js';
 import type { Row } from '../domain/team.js';
 import type { PetClassName } from '../domain/class.js';
@@ -216,18 +217,35 @@ export function deriveCombatContext(input: StatDerivationInput): CombatContext {
   const DL = pet.dungeonLevel;
   const CL = pet.classLevel;
 
-  // ── Step 1: EquipMod ────────────────────────────────────────────────────────
-  // Research §6.1: gear pieces stack additively, then the total multiplies base.
-  // TODO: per-stat gear bonuses — currently `statMultiplierBonus` is a single
-  //       scalar that applies uniformly to all stats. Future refinement will add
-  //       per-stat enchant fields (e.g. atkBonus, defBonus) to GearPiece.
-  let equipBonusSum = 0;
+  // ── Step 1: EquipMod (per-stat) ─────────────────────────────────────────────
+  // Research §12 (itrtg.wiki.gg/wiki/Equip): each gear piece contributes
+  // per-stat base bonuses multiplied by quality × upgrade multipliers.
+  //   effectiveStat = baseStatBonus × qualityMult × upgradeMult
+  //   EquipModHP  = 1 + Σ(baseHpBonus  × qMult × uMult) + Σ(gemHpBonus)
+  //   EquipModATK = 1 + Σ(baseAtkBonus × qMult × uMult) + Σ(gemAtkBonus)
+  //   EquipModDEF = 1 + Σ(baseDefBonus × qMult × uMult) + Σ(gemDefBonus)
+  //   EquipModSPD = 1 + Σ(baseSpdBonus × qMult × uMult) + Σ(gemSpdBonus)
+  let hpGearSum = 0, atkGearSum = 0, defGearSum = 0, spdGearSum = 0;
+  let gemHpSum = 0, gemAtkSum = 0, gemDefSum = 0, gemSpdSum = 0;
   for (const piece of Object.values(pet.equipment)) {
     if (piece !== undefined) {
-      equipBonusSum += piece.statMultiplierBonus;
+      const qMult = computeGearQualityMult(piece.quality);
+      const uMult = computeGearUpgradeMult(piece.upgradeLevel);
+      const combined = qMult * uMult;
+      hpGearSum  += piece.baseHpBonus  * combined;
+      atkGearSum += piece.baseAtkBonus * combined;
+      defGearSum += piece.baseDefBonus * combined;
+      spdGearSum += piece.baseSpdBonus * combined;
+      gemHpSum  += piece.gemHpBonus  ?? 0;
+      gemAtkSum += piece.gemAtkBonus ?? 0;
+      gemDefSum += piece.gemDefBonus ?? 0;
+      gemSpdSum += piece.gemSpdBonus ?? 0;
     }
   }
-  const equipMod = 1 + equipBonusSum;
+  const equipModHp  = 1 + hpGearSum  + gemHpSum;
+  const equipModAtk = 1 + atkGearSum + gemAtkSum;
+  const equipModDef = 1 + defGearSum + gemDefSum;
+  const equipModSpd = 1 + spdGearSum + gemSpdSum;
 
   // ── Step 2: growthFactor ────────────────────────────────────────────────────
   // Research §5.4 / §6.1: `(1 + TotalGrowth / 200,000)`.
@@ -266,15 +284,12 @@ export function deriveCombatContext(input: StatDerivationInput): CombatContext {
   }
 
   // ── Step 5: Stat derivation ─────────────────────────────────────────────────
-  // Research §6.1 formula (same structure for all four stats):
-  //   stat = (base × growthFactor × EquipMod × statMultiplier + statAdditive) × ClassMod
-  const innerHp  = hpBase  * growthFactor * equipMod * statMultiplier + statAdditive;
-  const innerAds = adsBase * growthFactor * equipMod * statMultiplier + statAdditive;
-
-  const hp  = innerHp  * classModHp;
-  const atk = innerAds * classMod.atk;
-  const def = innerAds * classMod.def;
-  const spd = innerAds * classMod.spd;
+  // Research §6.1: stat = (base × growthFactor × EquipMod × statMultiplier + statAdditive) × ClassMod
+  // Each stat uses its own EquipMod (gem bonuses are stat-specific).
+  const hp  = (hpBase  * growthFactor * equipModHp  * statMultiplier + statAdditive) * classModHp;
+  const atk = (adsBase * growthFactor * equipModAtk * statMultiplier + statAdditive) * classMod.atk;
+  const def = (adsBase * growthFactor * equipModDef * statMultiplier + statAdditive) * classMod.def;
+  const spd = (adsBase * growthFactor * equipModSpd * statMultiplier + statAdditive) * classMod.spd;
 
   // ── Step 6: Element levels (§5.3) ──────────────────────────────────────────
   // Step 6a: Base element levels from pet type.

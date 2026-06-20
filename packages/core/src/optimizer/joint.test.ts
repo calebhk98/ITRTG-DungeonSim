@@ -94,25 +94,19 @@ const roster = new Map<ReturnType<typeof asPetId>, Pet>(
 
 const gearPool: GearInventory = [
   {
-    id: 'weaponA',
-    name: 'Strong Weapon',
-    slot: 'weapon',
-    statMultiplierBonus: 0.30,
-    tier: 1,
+    id: 'weaponA', name: 'Strong Weapon', slot: 'weapon', tier: 1,
+    baseHpBonus: 0.30, baseAtkBonus: 0.30, baseDefBonus: 0.30, baseSpdBonus: 0.30,
+    quality: 'A', upgradeLevel: 0,
   } satisfies GearPiece,
   {
-    id: 'armorA',
-    name: 'Strong Armor',
-    slot: 'armor',
-    statMultiplierBonus: 0.25,
-    tier: 1,
+    id: 'armorA', name: 'Strong Armor', slot: 'armor', tier: 1,
+    baseHpBonus: 0.25, baseAtkBonus: 0.25, baseDefBonus: 0.25, baseSpdBonus: 0.25,
+    quality: 'A', upgradeLevel: 0,
   } satisfies GearPiece,
   {
-    id: 'trinketA',
-    name: 'Basic Trinket',
-    slot: 'trinket',
-    statMultiplierBonus: 0.15,
-    tier: 1,
+    id: 'trinketA', name: 'Basic Trinket', slot: 'trinket', tier: 1,
+    baseHpBonus: 0.15, baseAtkBonus: 0.15, baseDefBonus: 0.15, baseSpdBonus: 0.15,
+    quality: 'A', upgradeLevel: 0,
   } satisfies GearPiece,
 ];
 

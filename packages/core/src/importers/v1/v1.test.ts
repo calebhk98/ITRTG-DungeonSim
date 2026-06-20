@@ -86,7 +86,7 @@ describe('v1Importer.import()', () => {
     expect(blaze.equipment.weapon?.name).toBe('Dragon Staff');
     expect(blaze.equipment.weapon?.slot).toBe('weapon');
     expect(blaze.equipment.weapon?.tier).toBe(4);
-    expect(blaze.equipment.weapon?.statMultiplierBonus).toBe(0.35);
+    expect(blaze.equipment.weapon?.baseAtkBonus).toBe(0.35);
     expect(blaze.equipment.weapon?.elementEnchant?.Fire).toBe(5);
 
     expect(blaze.equipment.armor).toBeDefined();

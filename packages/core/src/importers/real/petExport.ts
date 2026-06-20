@@ -55,7 +55,9 @@ import { defaultRegistry } from '../registry.js';
 import type { Pet } from '../../domain/pet.js';
 import type { Element } from '../../domain/element.js';
 import type { PetClassName } from '../../domain/class.js';
-import type { GearPiece, GearSlot, ElementLevels } from '../../domain/gear.js';
+import type { GearPiece, GearSlot, GearQuality, GemType, ElementLevels } from '../../domain/gear.js';
+import { GEAR_QUALITY_MULT, computeGemStatBonus } from '../../domain/gear.js';
+import { lookupGearItem, getGearItemFallback } from '../../content/gearRegistry.js';
 import { asPetId } from '../../domain/ids.js';
 
 // ── Constants ──────────────────────────────────────────────────────────────────
@@ -120,10 +122,7 @@ function parseCommaInt(raw: string): number {
 
 // ── Gear parsing ───────────────────────────────────────────────────────────────
 
-/**
- * Quality tokens that appear in the export (SSS, SS, S, A, B, C, …).
- * Higher-quality tokens map to higher tiers via the heuristic below.
- */
+/** Quality tokens valid in the export — used to validate before casting. */
 
 /**
  * Tier-4 gear name keywords (best-effort subset from known end-game items).
@@ -151,16 +150,8 @@ function gearTierHeuristic(name: string, quality: string): 1 | 2 | 3 | 4 {
   return 1;
 }
 
-/**
- * Maps gem element strings from the export to ElementLevels keys.
- * The export uses "Water gem lv 15", "Fire gem lv 10", etc.
- */
-const GEM_ELEMENT_MAP: Readonly<Record<string, keyof ElementLevels>> = {
-  Water: 'Water',
-  Fire: 'Fire',
-  Wind: 'Wind',
-  Earth: 'Earth',
-};
+/** Gem type tokens as they appear in the export (case-insensitive match on first word). */
+const VALID_GEM_TYPES = new Set<string>(['Fire', 'Water', 'Wind', 'Earth', 'Neutral']);
 
 /**
  * Parse a single gear slot string.
@@ -171,6 +162,13 @@ const GEM_ELEMENT_MAP: Readonly<Record<string, keyof ElementLevels>> = {
  *   "Ear Muffs + 20, SSS"
  *   "none"
  *   ""
+ *
+ * Gem formula:
+ *   Fire  gem → gemAtkBonus = gemLevel × 0.01 × tier
+ *   Water gem → gemHpBonus  = gemLevel × 0.01 × tier
+ *   Wind  gem → gemSpdBonus = gemLevel × 0.01 × tier
+ *   Earth gem → gemDefBonus = gemLevel × 0.01 × tier
+ *   Neutral gem → elementEnchant = { Fire/Water/Wind/Earth: gemLevel × tier } (integer)
  *
  * Returns null for "none"/empty strings (slot absent).
  */
@@ -192,46 +190,84 @@ function parseGearString(
     return null;
   }
   const itemName = plusMatch[1]!.trim();
-  // upgrade level captured but not stored in GearPiece (no field for it)
+  const upgradeLevel = parseInt(plusMatch[2]!, 10);
 
-  // Extract quality token (SSS / SS / S / A / B / C / …) — first all-caps word after the comma
-  const qualityMatch = /,\s*(SSS|SS|S|A|B|C|D)(\s*\(\d+\))?/.exec(trimmed);
-  const quality = qualityMatch !== null ? qualityMatch[1]! : '';
+  // Extract quality token (SSS / SS / S / A / B / C / D / E / F)
+  const qualityMatch = /,\s*(SSS|SS|S|A|B|C|D|E|F)(\s*\(\d+\))?/.exec(trimmed);
+  const qualityStr = qualityMatch !== null ? qualityMatch[1]! : '';
+  const quality = (qualityStr in GEAR_QUALITY_MULT) ? (qualityStr as GearQuality) : undefined;
 
-  // Extract gem: "Water gem lv 12", "Earth gem lv 15", etc.
+  const tier = gearTierHeuristic(itemName, qualityStr);
+
+  // Extract gem: "Fire gem lv 15", "Neutral gem lv 12", etc.
   const gemMatch = /(\w+)\s+gem\s+lv\s+(\d+)/i.exec(trimmed);
+  let gemType: GemType | undefined;
+  let gemLevel: number | undefined;
+  let gemHpBonus: number | undefined;
+  let gemAtkBonus: number | undefined;
+  let gemDefBonus: number | undefined;
+  let gemSpdBonus: number | undefined;
   let elementEnchant: Partial<ElementLevels> | undefined;
+
   if (gemMatch !== null) {
-    const gemEl = gemMatch[1]!;
+    const rawGemType = gemMatch[1]!;
+    // Capitalise first letter to normalise (e.g. "water" → "Water")
+    const normGemType = rawGemType.charAt(0).toUpperCase() + rawGemType.slice(1).toLowerCase();
     const gemLv = parseInt(gemMatch[2]!, 10);
-    const mappedEl = GEM_ELEMENT_MAP[gemEl];
-    if (mappedEl !== undefined && !isNaN(gemLv)) {
-      elementEnchant = { [mappedEl]: gemLv };
-    } else if (gemEl.toLowerCase() !== 'neutral') {
+
+    if (VALID_GEM_TYPES.has(normGemType) && !isNaN(gemLv)) {
+      gemType = normGemType as GemType;
+      gemLevel = gemLv;
+      const bonus = computeGemStatBonus(gemType, gemLv, tier);
+      switch (gemType) {
+        case 'Water':   gemHpBonus  = bonus; break;
+        case 'Fire':    gemAtkBonus = bonus; break;
+        case 'Earth':   gemDefBonus = bonus; break;
+        case 'Wind':    gemSpdBonus = bonus; break;
+        case 'Neutral': {
+          const elemBonus = gemLv * tier;
+          elementEnchant = { Fire: elemBonus, Water: elemBonus, Wind: elemBonus, Earth: elemBonus };
+          break;
+        }
+      }
+    } else {
       warnings.push(
-        `Pet "${petName}", slot "${slot}": unrecognised gem element "${gemEl}" in "${trimmed}"; gem skipped.`,
+        `Pet "${petName}", slot "${slot}": unrecognised gem "${rawGemType}" in "${trimmed}"; gem skipped.`,
       );
     }
-    // "Neutral gem" is valid in the export but contributes no element level bonus — skip silently.
   }
 
-  const tier = gearTierHeuristic(itemName, quality);
+  // Look up per-stat base bonuses from the gear registry.
+  // For unknown items, fall back to slot-based defaults.
+  // These only affect the forceDerive path; observed stats bypass gear entirely.
+  const registryItem = lookupGearItem(itemName);
+  const fallback = getGearItemFallback(slot);
+  const baseHpBonus  = registryItem?.baseHpBonus  ?? fallback.baseHpBonus;
+  const baseAtkBonus = registryItem?.baseAtkBonus ?? fallback.baseAtkBonus;
+  const baseDefBonus = registryItem?.baseDefBonus ?? fallback.baseDefBonus;
+  const baseSpdBonus = registryItem?.baseSpdBonus ?? fallback.baseSpdBonus;
+  const resolvedTier = registryItem?.tier ?? tier;
+  const resolvedQuality: GearQuality = quality ?? 'A';
+  const resolvedUpgrade = isNaN(upgradeLevel) ? 0 : upgradeLevel;
 
   const piece: GearPiece = {
     id: `${petName}-${slot}`,
     name: itemName,
     slot,
-    /**
-     * statMultiplierBonus is set to 0.
-     * The real per-piece multiplier is not included in the pet export; the
-     * observed HP/atk/def/spd columns already capture the combined gear
-     * contribution. Setting 0 here means the formula path (forceDerive=true)
-     * will underestimate gear; that is acceptable for the observed-stats
-     * fast path where this field is irrelevant.
-     */
-    statMultiplierBonus: 0,
-    tier,
+    tier: resolvedTier as 1 | 2 | 3 | 4 | 5,
+    baseHpBonus,
+    baseAtkBonus,
+    baseDefBonus,
+    baseSpdBonus,
+    quality: resolvedQuality,
+    upgradeLevel: resolvedUpgrade,
+    ...(gemHpBonus  !== undefined ? { gemHpBonus  } : {}),
+    ...(gemAtkBonus !== undefined ? { gemAtkBonus } : {}),
+    ...(gemDefBonus !== undefined ? { gemDefBonus } : {}),
+    ...(gemSpdBonus !== undefined ? { gemSpdBonus } : {}),
     ...(elementEnchant !== undefined ? { elementEnchant } : {}),
+    ...(gemType  !== undefined ? { gemType  } : {}),
+    ...(gemLevel !== undefined ? { gemLevel } : {}),
   };
 
   return piece;

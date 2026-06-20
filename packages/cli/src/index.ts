@@ -41,6 +41,15 @@ import {
   formatMultiTeamResult,
   formatTrace,
 } from './format.js';
+import {
+  importPetExport,
+  resolveActiveTeams,
+  sweepDifficulties,
+  formatActiveTeamsReport,
+  applyGearOverrides,
+} from './activeTeams.js';
+import type { GearOverrideSpec } from './activeTeams.js';
+import { parseStatisticsExport } from '@itrtg-sim/core';
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -599,6 +608,154 @@ program
       if (trace.length > 0) {
         console.log(formatTrace(trace));
       }
+    },
+  );
+
+// ── active-teams ──────────────────────────────────────────────────────────────
+
+program
+  .command('active-teams')
+  .description(
+    'Simulate all active dungeon teams from the in-game export files.\n' +
+    'Reads DungeonTeamsStart + pet export, auto-detects each team\'s dungeon\n' +
+    'from the Action column, then sweeps depth/difficulty to show clear status.',
+  )
+  .requiredOption(
+    '--pet-export <file>',
+    'pet export text file (NameElementGrowthDungeon_LevelC.txt or similar)',
+  )
+  .requiredOption(
+    '--dungeon-teams <file>',
+    'dungeon teams export text file containing ---DungeonTeamsStart---',
+  )
+  .option(
+    '--stats <file>',
+    'statistics export text file (for NRDC completions; optional)',
+  )
+  .option('--depth <n>', 'depth tier to sweep 1–4 (default: 4)', '4')
+  .option('--rooms <n>', 'rooms per run 1–60 (default: 60)', '60')
+  .option(
+    '--gear-override <file>',
+    'JSON file specifying gear changes per pet (see docs). Use with --force-derive.',
+  )
+  .option(
+    '--force-derive',
+    'Re-derive pet stats from formula + equipment instead of using imported observed stats. ' +
+    'Required when using --gear-override.',
+  )
+  .action(
+    (options: {
+      petExport: string;
+      dungeonTeams: string;
+      stats?: string;
+      depth: string;
+      rooms: string;
+      gearOverride?: string;
+      forceDerive?: boolean;
+    }) => {
+      // Read files
+      const petExportPath = resolvePath(options.petExport);
+      const dungeonTeamsPath = resolvePath(options.dungeonTeams);
+
+      let petExportText: string;
+      let dungeonTeamText: string;
+
+      try {
+        petExportText = readFileSync(petExportPath, 'utf-8');
+      } catch (e) {
+        console.error(`Error: cannot read pet export file "${options.petExport}": ${String(e)}`);
+        process.exit(1);
+      }
+
+      try {
+        dungeonTeamText = readFileSync(dungeonTeamsPath, 'utf-8');
+      } catch (e) {
+        console.error(
+          `Error: cannot read dungeon teams file "${options.dungeonTeams}": ${String(e)}`,
+        );
+        process.exit(1);
+      }
+
+      // Parse optional stats for NRDC completions
+      let nrdcCompletions = 0;
+      if (options.stats !== undefined) {
+        try {
+          const statsText = readFileSync(resolvePath(options.stats), 'utf-8');
+          nrdcCompletions = parseStatisticsExport(statsText).nrdcCompletions;
+        } catch (e) {
+          console.warn(`Warning: could not read stats file "${options.stats}": ${String(e)}`);
+        }
+      }
+
+      // Import pets
+      const { pets, roster: baseRoster, warnings: importWarnings } = importPetExport(petExportText);
+
+      // Apply gear overrides if provided
+      let roster = baseRoster;
+      const forceDerive = options.forceDerive === true;
+      if (options.gearOverride !== undefined) {
+        let overrideSpec: GearOverrideSpec;
+        try {
+          overrideSpec = JSON.parse(readFileSync(resolvePath(options.gearOverride), 'utf-8')) as GearOverrideSpec;
+        } catch (e) {
+          console.error(`Error: cannot read/parse gear override file "${options.gearOverride}": ${String(e)}`);
+          process.exit(1);
+        }
+        roster = applyGearOverrides(roster, overrideSpec);
+        if (!forceDerive) {
+          console.warn(
+            'Warning: --gear-override was provided without --force-derive. ' +
+            'Gear changes will have no effect on imported pets that have observed stats. ' +
+            'Add --force-derive to re-derive stats from the formula.',
+          );
+        }
+      }
+
+      // Resolve teams + dungeons
+      const { activeTeams, warnings: teamWarnings } = resolveActiveTeams(
+        dungeonTeamText,
+        petExportText,
+        pets,
+      );
+
+      const depth = parseDepth(options.depth);
+      const rooms = parsePositiveInt(options.rooms, '--rooms');
+
+      if (depth === 4 && nrdcCompletions < 20) {
+        console.warn(
+          `Warning: D4 requires 20 NRDC completions but stats show ${nrdcCompletions}. ` +
+            'Pass --stats to load your completions, or use --depth 3.',
+        );
+      }
+
+      // Sweep each team
+      const sweepsByTeam = new Map<number, ReturnType<typeof sweepDifficulties>>();
+      for (const at of activeTeams) {
+        sweepsByTeam.set(
+          at.teamIndex,
+          sweepDifficulties(at.team, at.dungeonId, depth, rooms, nrdcCompletions, roster, forceDerive),
+        );
+      }
+
+      // Combine warnings (show import warnings only if there are non-routine ones)
+      const routineImportWarnings = new Set([
+        'Training stats',
+        'growthRequiredForEvolution',
+      ]);
+      const filteredImportWarnings = importWarnings.filter(
+        w => !routineImportWarnings.has(w.slice(0, 20)),
+      );
+
+      const allWarnings = [
+        ...filteredImportWarnings,
+        ...teamWarnings,
+      ];
+
+      console.log(
+        formatActiveTeamsReport(activeTeams, sweepsByTeam, depth, nrdcCompletions, allWarnings),
+      );
+
+      console.log(`\n(Imported ${pets.length} pets; ${activeTeams.length} active teams simulated.)`);
     },
   );
 

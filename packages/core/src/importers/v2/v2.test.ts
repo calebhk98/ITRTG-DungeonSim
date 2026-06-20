@@ -96,7 +96,7 @@ describe('v2Importer.import()', () => {
     expect(vixie.equipment.weapon?.name).toBe('Gale Dagger');
     expect(vixie.equipment.weapon?.slot).toBe('weapon');
     expect(vixie.equipment.weapon?.tier).toBe(4);
-    expect(vixie.equipment.weapon?.statMultiplierBonus).toBe(0.40);
+    expect(vixie.equipment.weapon?.baseAtkBonus).toBe(0.40);
     expect(vixie.equipment.weapon?.elementEnchant?.Wind).toBe(6);
 
     expect(vixie.equipment.armor).toBeDefined();
