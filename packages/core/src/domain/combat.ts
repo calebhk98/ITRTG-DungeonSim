@@ -56,6 +56,20 @@ export interface CombatContext {
    */
   readonly assignedClass: PetClassName | null;
 
+  /**
+   * Class Level of the originating pet (research §13). Many combat specials scale
+   * with CL (e.g. Archer's extra-attack chance, Honeybadger's damage multiplier).
+   * Optional/0 for enemies and pre-evolution pets.
+   */
+  readonly classLevel?: number;
+
+  /**
+   * True if this combatant is a depth boss. Several specials behave differently
+   * versus bosses (Ghost's Scare is weaker, Undine's AoE does not hit bosses,
+   * Elephant's burn is halved). Optional/false for normal enemies and all pets.
+   */
+  readonly isBoss?: boolean;
+
   /** Row determines the back-row damage penalty (research §6.2 Step 5, §3). */
   readonly row: Row;
 
@@ -70,4 +84,18 @@ export interface CombatContext {
    * Tracked here so the combat resolver can mutate a working copy.
    */
   currentHp: number;
+
+  // ── Mutable in-combat stat-modifier overlay (research §13 debuffs) ───────────
+  // `stats` is immutable (the derived single source of truth), so debuffs/buffs
+  // applied during a fight (Ghost's Scare, Hourglass's slow) are expressed as
+  // multipliers here. The combat resolver reads `stat × (mod ?? 1)` everywhere.
+  // Default (undefined) means 1.0 — no modification — so combatants without any
+  // special interaction behave exactly as before.
+
+  /** Multiplier on effective Attack (Scare debuff sets this ≤ 1). */
+  atkMod?: number;
+  /** Multiplier on effective Defense (Scare debuff sets this ≤ 1). */
+  defMod?: number;
+  /** Multiplier on effective Speed (Hourglass slow sets this ≤ 1). */
+  spdMod?: number;
 }

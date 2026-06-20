@@ -16,11 +16,22 @@ export type { ElementLevels } from './gear.js';
  */
 export type AbilityFlag =
   | 'supporterDmgReduction'   // Supporter CL50: ~50% team-wide damage reduction
-  | 'succubusHeal'            // Succubus CL100: self-heal up to 1/3 max HP per hit
+  | 'succubusHeal'            // Succubus: self-heal (CL/3)% of max HP per single-target hit
   | 'luckyCoin'               // Lucky Coin: 7/77/777/7777 random damage per attack
   | 'clamGpDouble'            // Clam: doubles GP from events it survives
   | 'chameleonElement'        // Chameleon: freely change element
   | 'vesuviusGrowth'          // Vesuvius: generates extra dungeon growth
+  // ── Combat specials (research §13; modelled in sim/combat.ts) ────────────────
+  | 'cannotAttack'           // Ghost: never deals attack damage (only debuffs)
+  | 'scareDebuff'            // Ghost: start-of-turn, halve a random enemy's ATK & DEF (30% vs bosses)
+  | 'snipeTriple'            // Sniper: one action/turn, attacks last, ×3 damage, ignores back-row penalty
+  | 'bowExtraAttack'         // Archer: chance (20 + 1.25×CL)% for an extra attack (needs a Bow)
+  | 'windExtraHits'          // Sylph: +1 extra hit per 450 Wind element, capped at 7
+  | 'undineAoe'              // Undine: start-of-turn AoE %-max-HP to non-boss enemies, cap 10%
+  | 'counterAttack'          // Leviathan: counter for 10% of own max HP when hit
+  | 'burnAttackers'          // Elephant: burns attackers for 3% (1.5% boss) of their max HP
+  | 'slowEnemies'            // Hourglass: start-of-turn, slow all enemies by (10 + 0.2×CL)%
+  | 'honeyBadgerDamage'      // Honeybadger: own damage multiplier of (1 + 0.01×CL), stun-immune
   | (string & Record<never, never>); // open union — any future ability flag string
 
 /**

@@ -736,6 +736,84 @@ bonuses for that stat (they combine multiplicatively across pieces).
 
 ---
 
+## 13. Pet Combat Specials
+
+> **Source:** official wiki `itrtg.wiki.gg` (individual pet pages, Dungeons,
+> Token Pet Guide). **Confidence: high** unless noted. Machine-readable catalogue:
+> `data/pets/special-pets.json`. Engine flags: `packages/core/src/domain/pet.ts`
+> (`AbilityFlag`); behaviour: `packages/core/src/sim/combat.ts`.
+
+Most dungeon pets carry **two distinct kinds** of special, which must not be conflated:
+
+1. **Pet auras** — a passive `+X% × CL` bonus to the **player God's** damage, gated
+   on *your* class (e.g. "+2% × CL single-target if you are an Assassin"). These
+   modify the player's stats, **not** how the pet acts in a room. Out of scope for
+   the per-pet combat model (Rabbit, Black Hole Chan, and the Assassin auras of
+   Sniper/Archer/Lucky Coin/Hwangeum Pig/Honeybadger are all of this type).
+2. **Dungeon specials** — change how the **pet itself** acts/attacks/defends in the
+   room. These are what the simulator models.
+
+### 13.1 Corrections to common assumptions
+
+- **Rabbit** has **no extra-attacks mechanic** — it is a Mage *multi-target damage*
+  aura (`+0.51% × CL`). The "more attacks when improved" pet is **Sylph** (Wind-scaled
+  extra hits) or **Archer** (Bow extra-attack chance).
+- **Sniper** is a **pet**, not a class. Innately: one action/turn, **attacks last**,
+  **×3 damage**, +30% ATK / −10% HP/DEF/SPD, **exempt from the back-row penalty**,
+  +25% vs Flying-Eyeball-marked targets. Its "only if a certain class" line is the
+  *separate* aura: +2% × CL **only if you ARE an Assassin**.
+- **Ghost** **cannot attack at all**; its only contribution is the start-of-turn
+  **Scare** debuff (and item drop-rate as a Rogue).
+
+### 13.2 Specials modelled in the simulator
+
+Implemented in `sim/combat.ts`, driven by `AbilityFlag`s on the combatant.
+Several scale with **Class Level (CL)**, now carried on `CombatContext.classLevel`,
+or with **element levels**; debuffs use the mutable `atkMod`/`defMod`/`spdMod`
+overlay (the derived `stats` stay immutable).
+
+| Pet / source | Flag | Modelled behaviour |
+|---|---|---|
+| **Ghost** | `cannotAttack` | Deals no attack damage. |
+| **Ghost** | `scareDebuff` | Start of turn: halve a random enemy's ATK & DEF (×0.7 vs bosses); applied as a floor so repeats don't collapse to zero. |
+| **Sniper** | `snipeTriple` | ×3 damage; forced to 1 action/turn; resolves last; ignores back-row penalty. |
+| **Archer** | `bowExtraAttack` | Extra action with chance `min(100%, (20 + 1.25×CL)%)`. |
+| **Sylph** | `windExtraHits` | `+min(7, floor(Wind/450))` extra hits. |
+| **Undine** | `undineAoe` | Start of turn: `min(10%, (1 + Water/500)%)` of max HP to all **non-boss** enemies, ignoring defence. |
+| **Leviathan** | `counterAttack` | Reflects `10% × maxHP` per hit taken back at the attacker. |
+| **Elephant** | `burnAttackers` | Burns attackers for `3%` (`1.5%` if attacker is a boss) of their max HP per hit. |
+| **Hourglass** | `slowEnemies` | Start of turn: slow all enemies by `(10 + 0.2×CL)%` (multiplicative, floored at 5%). |
+| **Honeybadger** | `honeyBadgerDamage` | Own damage ×`(1 + 0.01×CL)`. |
+| **Succubus** | `succubusHeal` | Lifesteal: heal `min(damageDealt, maxHP × CL/300)` per hit (CL100 ≈ 1/3). |
+| **Lucky Coin** | `luckyCoin` | Random true-damage burst (7/77/777/7777), bypassing defence/multipliers. |
+| **Supporter (class)** | `supporterDmgReduction` | Team-wide incoming-damage reduction (modelled flat 50% = a CL50 supporter present). |
+
+**Action-economy note:** extra hits/actions multiply through the normal speed→actions
+table; Lucky-Coin true damage is added *after* the ×3/Honeybadger multiplier (it
+bypasses multipliers). Counter/burn reactions scale with the number of connected
+hits so EV and Monte-Carlo modes agree. Tests: `sim/combat.specials.test.ts`.
+
+### 13.3 Catalogued but not yet modelled
+
+These require mechanics the resolver does not have yet (multi-turn DoTs, party
+shields/heals, focus-fire targeting, stun/charm crowd control, periodic
+every-N-turns nukes). They are captured in `data/pets/special-pets.json` with
+`simModeled: false` so they can be wired in later:
+
+- **Basilisk / Arachne** — stacking poison DoT + enemy element debuff (persists after death).
+- **Salamander / Mist Sphere / Gnome / Mermaid / Azure Dragon** — heals, shields, soul-clones.
+- **Flying Eyeball** — marks the lowest-HP enemy; team focus-fires it for bonus damage.
+- **Cherub / Crocodile / Fool** — stun / charm / confuse crowd control.
+- **Hwangeum Pig** — 15% max-HP nuke every 3 turns (Assassin only, not bosses).
+- **Tödlicher Löffel** — per-hit enemy DEF/element shred; counts as all non-neutral elements.
+- **Defender (class) intercept** — 50% chance to take `(10+CL)%` of a hit aimed at an ally.
+
+> **Boss interactions** are pervasive: Scare, Elephant burn, Undine AoE, Hourglass
+> slow and several debuffs are weaker or disabled versus bosses. The sim threads an
+> `isBoss` flag onto enemy `CombatContext`s so these conditions are expressible.
+
+---
+
 ## Open Questions / Uncertainty
 
 - Exact **DL XP-per-room** formula not located (referenced but not published on

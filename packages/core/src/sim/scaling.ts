@@ -293,6 +293,8 @@ export function scaleEnemyToContext(
     elementLevels,
     element: archetype.element,
     assignedClass: null,
+    classLevel: 0,
+    isBoss: archetype.isBoss,
     row: 'front',
     abilities: [],
     currentHp: stats.hp,

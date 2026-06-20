@@ -256,13 +256,16 @@ const ABILITY_REGISTRY: ReadonlyArray<AbilityModifier> = [
   },
 
   // ── succubusHeal ─────────────────────────────────────────────────────────────
-  // Research §5.6: "Succubus: self-heals up to 1/3 max HP per single-target attack (CL 100)".
-  // Applied when the ATTACKER has this flag.
-  // Heals the attacker by min(rawDamage, stats.hp / 3).
+  // Research §13: "Succubus: single-target attacks self-heal (CL/3)% of max HP"
+  // (CL100 → 33.3%). Applied when the ATTACKER has this flag. Modelled as lifesteal:
+  // heals min(damage dealt, maxHp × CL/300). Falls back to the CL100 cap (1/3) when
+  // no class level is recorded, preserving the original behaviour.
   {
     flag: 'succubusHeal',
     apply(ctx: AbilityHookContext): number {
-      const healAmt = Math.min(ctx.rawDamage, ctx.attacker.stats.hp / 3);
+      const cl = ctx.attacker.classLevel ?? 100;
+      const healCap = ctx.attacker.stats.hp * (cl / 300);
+      const healAmt = Math.min(ctx.rawDamage, healCap);
       ctx.attacker.currentHp = Math.min(
         ctx.attacker.stats.hp,
         ctx.attacker.currentHp + healAmt,
@@ -335,9 +338,87 @@ const ABILITY_REGISTRY_BY_FLAG: ReadonlyMap<string, ReadonlyArray<AbilityModifie
  */
 function effectiveAttackerSpeed(attacker: CombatContext, constants: GameConstants): number {
   const frontBonus = resolve(constants.damage.frontRowSpeedBonus); // 0.20
-  return attacker.row === 'front'
-    ? attacker.stats.spd * (1 + frontBonus)
-    : attacker.stats.spd;
+  const base = effSpd(attacker);
+  return attacker.row === 'front' ? base * (1 + frontBonus) : base;
+}
+
+// ── Combat specials (research §13) ──────────────────────────────────────────────
+//
+// These small pure helpers read the mutable stat-modifier overlay and the ability
+// flags on a `CombatContext`. They keep `resolveRound` readable: a combatant with
+// no specials and no debuffs flows through every helper as the identity (mod = 1,
+// no extra actions, no damage multiplier), so the baseline damage pipeline is
+// numerically unchanged.
+
+/** Class Level of a combatant (0 when not recorded — enemies, pre-evolution pets). */
+function clOf(ctx: CombatContext): number {
+  return ctx.classLevel ?? 0;
+}
+
+/** Effective Attack after the in-combat modifier overlay (Scare debuff, etc.). */
+function effAtk(ctx: CombatContext): number {
+  return ctx.stats.atk * (ctx.atkMod ?? 1);
+}
+
+/** Effective Defense after the in-combat modifier overlay. */
+function effDef(ctx: CombatContext): number {
+  return ctx.stats.def * (ctx.defMod ?? 1);
+}
+
+/** Effective Speed after the in-combat modifier overlay (Hourglass slow, etc.). */
+function effSpd(ctx: CombatContext): number {
+  return ctx.stats.spd * (ctx.spdMod ?? 1);
+}
+
+/** A combatant that cannot deal attack damage (Ghost) — only its specials act. */
+function cannotAttack(ctx: CombatContext): boolean {
+  return ctx.abilities.includes('cannotAttack');
+}
+
+/** A combatant that always resolves its attack last in the turn order (Sniper). */
+function attacksLast(ctx: CombatContext): boolean {
+  return ctx.abilities.includes('snipeTriple');
+}
+
+/**
+ * Outgoing-damage multiplier from attacker abilities (research §13):
+ *   - Sniper (`snipeTriple`): ×3.
+ *   - Honeybadger (`honeyBadgerDamage`): ×(1 + 0.01 × CL), replacing the
+ *     blacksmith weapon bonus.
+ * Lucky-Coin "true damage" is added AFTER this multiplier (it bypasses multipliers),
+ * so it is handled by the per-hit registry rather than here.
+ */
+function attackerDamageMult(ctx: CombatContext): number {
+  let m = 1;
+  if (ctx.abilities.includes('snipeTriple')) m *= 3;
+  if (ctx.abilities.includes('honeyBadgerDamage')) m *= 1 + 0.01 * clOf(ctx);
+  return m;
+}
+
+/**
+ * Number of actions an attacker takes this turn, after special action-economy
+ * modifiers (research §13):
+ *   - Sniper (`snipeTriple`): exactly 1 action regardless of speed.
+ *   - Archer (`bowExtraAttack`): chance (20 + 1.25 × CL)% (cap 100%) of one extra
+ *     action. EV adds the fractional expectation; MC rolls it.
+ *   - Sylph (`windExtraHits`): +1 guaranteed hit per 450 Wind element, capped at 7.
+ */
+function attackerActionCount(
+  ctx: CombatContext,
+  baseActions: number,
+  strategy: CombatStrategy,
+): number {
+  if (ctx.abilities.includes('snipeTriple')) return 1;
+  let actions = baseActions;
+  if (ctx.abilities.includes('bowExtraAttack')) {
+    const p = Math.min(1, (20 + 1.25 * clOf(ctx)) / 100);
+    const r = strategy.roll(p);
+    actions += typeof r === 'number' ? r : r ? 1 : 0;
+  }
+  if (ctx.abilities.includes('windExtraHits')) {
+    actions += Math.min(7, Math.floor(ctx.elementLevels.Wind / 450));
+  }
+  return actions;
 }
 
 /**
@@ -436,22 +517,29 @@ export function resolveRound(
     defenders: ReadonlyArray<CombatContext>,
     defenderSideHasSupporter: boolean,
   ): void {
+    // Ghost and other `cannotAttack` pets never deal attack damage — their only
+    // contribution is the start-of-turn special phase (e.g. Scare), handled
+    // separately. They still "act", but produce no hits.
+    if (cannotAttack(attacker)) return;
+
     const target = pickTarget(defenders);
     if (target === undefined) return; // all defenders dead — nothing to do
 
     const attackerKey = combatantKey(attacker);
     const targetKey = combatantKey(target);
 
-    // ── Speed → actions ──────────────────────────────────────────────────
-    const actions = strategy.actionsForSpeed(attacker.stats.spd, constants);
+    // ── Speed → actions (with special action-economy, §13) ───────────────
+    const baseActions = strategy.actionsForSpeed(effSpd(attacker), constants);
+    const actions = attackerActionCount(attacker, baseActions, strategy);
 
     // ── Effective attacker speed (front-row bonus, §6.2) ─────────────────
     const effAtkSpd = effectiveAttackerSpeed(attacker, constants);
+    const targetSpd = effSpd(target);
 
     // ── Hit chance (§6.2) ────────────────────────────────────────────────
     //   hit% = min(1, max(hitChanceFloor, effAtkSpd / (defenderSpd × 1.2)))
     const hitFloor = resolve(constants.damage.hitChanceFloor); // 0.05
-    const hitChance = Math.min(1, Math.max(hitFloor, effAtkSpd / (target.stats.spd * 1.2)));
+    const hitChance = Math.min(1, Math.max(hitFloor, effAtkSpd / (targetSpd * 1.2)));
 
     // ── Elemental levels (§6.2 Step 2) ──────────────────────────────────
     const { A: rawA, D: rawD } = pickElementalLevels(
@@ -463,28 +551,33 @@ export function resolveRound(
 
     // ── Defense factor (§6.2 Step 3) ─────────────────────────────────────
     const K = resolve(constants.damage.defenseSoftCapK); // 200
-    const defFactor = 1 - target.stats.def / (target.stats.def + K);
+    const tgtDef = effDef(target);
+    const defFactor = 1 - tgtDef / (tgtDef + K);
 
     // ── Speed damage (§6.2 Step 4) ────────────────────────────────────────
     const divisor = resolve(constants.damage.speedDamageDivisor); // 2
-    const speedDmg = Math.max(0, (effAtkSpd - target.stats.spd) / divisor);
+    const speedDmg = Math.max(0, (effAtkSpd - targetSpd) / divisor);
 
     // ── Back-row modifier (§6.2 Step 5) ──────────────────────────────────
     const backPenalty = resolve(constants.damage.backRowPenalty); // 0.80
     const classMods = resolve(constants.classMods);
     const ignoresBackRow =
-      attacker.assignedClass !== null &&
-      (classMods[attacker.assignedClass]?.ignoresBackRowPenalty ?? false);
+      (attacker.assignedClass !== null &&
+        (classMods[attacker.assignedClass]?.ignoresBackRowPenalty ?? false)) ||
+      attacker.abilities.includes('snipeTriple'); // Sniper ignores back-row penalty (§13)
     const backRowMod = attacker.row === 'back' && !ignoresBackRow ? backPenalty : 1.0;
 
+    // ── Special outgoing-damage multiplier (§13: Sniper ×3, Honeybadger) ──
+    const dmgMult = attackerDamageMult(attacker);
+
     // ── Base damage (§6.2 Step 1) ─────────────────────────────────────────
-    const baseDmg = attacker.stats.atk - target.stats.def / 2;
+    const baseDmg = effAtk(attacker) - tgtDef / 2;
 
     // ── Per-hit damage ────────────────────────────────────────────────────
     //   (BaseDmg × ElementalFactor × DefenseFactor + SpeedDmg) × backRowMod
     //   Minimum: 1 when BaseDmg > 0; otherwise 0 (can't deal negative).
     const rawPerHit =
-      (Math.max(0, baseDmg) * elemFactor * defFactor + speedDmg) * backRowMod;
+      (Math.max(0, baseDmg) * elemFactor * defFactor + speedDmg) * backRowMod * dmgMult;
     const clampedPerHit = baseDmg > 0 ? Math.max(1, rawPerHit) : Math.max(0, rawPerHit);
 
     // ── Accumulate damage ─────────────────────────────────────────────────
@@ -540,16 +633,22 @@ export function resolveRound(
       }
     };
 
+    // `landedHits` = expected (EV) or counted (MC) number of hits that connect.
+    // Drives per-hit defender reactions (counter / burn) so EV and MC agree.
+    let landedHits: number;
     if (isEvMode) {
       // EV mode: one composite hit weighted by hitChance × actions.
       // effectiveDamage = clampedPerHit × hitChance × actions
-      applyHit(clampedPerHit * hitChance * actions);
+      landedHits = hitChance * actions;
+      applyHit(clampedPerHit * landedHits);
     } else {
       // MC mode: integer loop over actions, each gated by an independent roll.
+      landedHits = 0;
       const intActions = Math.round(actions);
       for (let i = 0; i < intActions; i++) {
         if (target.currentHp <= 0) break; // target already dead
         if (strategy.roll(hitChance)) {
+          landedHits += 1;
           applyHit(clampedPerHit);
         }
       }
@@ -560,7 +659,90 @@ export function resolveRound(
       attackerKey,
       (damageByAttacker.get(attackerKey) ?? 0) + totalDmgThisAttacker,
     );
+
+    // ── Defender reactions (research §13) ────────────────────────────────
+    // Fire once per connected hit, scaled by `landedHits` for EV/MC parity.
+    //   - Leviathan (`counterAttack`): reflect 10% of the defender's max HP.
+    //   - Elephant (`burnAttackers`): burn the attacker for 3% of its max HP
+    //     (1.5% when the attacker is a boss).
+    // Reactions do not themselves trigger further reactions.
+    if (landedHits > 0 && (attacker.currentHp > 0 || isEvMode)) {
+      let reactionDmg = 0;
+      if (target.abilities.includes('counterAttack')) {
+        reactionDmg += target.stats.hp * 0.1 * landedHits;
+      }
+      if (target.abilities.includes('burnAttackers')) {
+        const burnPct = attacker.isBoss === true ? 0.015 : 0.03;
+        reactionDmg += attacker.stats.hp * burnPct * landedHits;
+      }
+      if (reactionDmg > 0) {
+        attacker.currentHp -= reactionDmg;
+        damageByAttacker.set(targetKey, (damageByAttacker.get(targetKey) ?? 0) + reactionDmg);
+        if (attacker.currentHp <= 0) recordDeath(attackerKey);
+      }
+    }
   }
+
+  /**
+   * Apply every `actors`-side start-of-turn special against the `opponents` side
+   * (research §13). Mutates the opponents' modifier overlay and/or `currentHp`.
+   */
+  function applyStartOfTurnSpecials(
+    actors: ReadonlyArray<CombatContext>,
+    opponents: ReadonlyArray<CombatContext>,
+  ): void {
+    for (const actor of actors) {
+      if (actor.currentHp <= 0) continue;
+
+      // Ghost — Scare: halve a random living enemy's ATK & DEF (30% reduction vs
+      // bosses). Modelled as a floor (set-to, not compounding) so repeated turns
+      // converge to the stated cap rather than collapsing the stat to zero.
+      if (actor.abilities.includes('scareDebuff')) {
+        const living = opponents.filter(o => o.currentHp > 0);
+        if (living.length > 0) {
+          const t = living[rng.int(living.length)] ?? living[0]!;
+          const floorMod = t.isBoss === true ? 0.7 : 0.5;
+          t.atkMod = Math.min(t.atkMod ?? 1, floorMod);
+          t.defMod = Math.min(t.defMod ?? 1, floorMod);
+        }
+      }
+
+      // Hourglass — slow ALL enemies by (10 + 0.2×CL)% (multiplicative, stacks
+      // across turns, floored at 5% of base speed).
+      if (actor.abilities.includes('slowEnemies')) {
+        const reduction = Math.min(0.95, (10 + 0.2 * clOf(actor)) / 100);
+        for (const t of opponents) {
+          if (t.currentHp <= 0) continue;
+          t.spdMod = Math.max(0.05, (t.spdMod ?? 1) * (1 - reduction));
+        }
+      }
+
+      // Undine — passive AoE %-max-HP damage to all non-boss enemies, ignoring
+      // defence. Scales with Undine's Water element; capped at 10% of max HP.
+      if (actor.abilities.includes('undineAoe')) {
+        const pct = Math.min(0.1, (1 + actor.elementLevels.Water / 500) / 100);
+        const actorKey = combatantKey(actor);
+        let dealt = 0;
+        for (const t of opponents) {
+          if (t.currentHp <= 0 || t.isBoss === true) continue;
+          const dmg = t.stats.hp * pct;
+          t.currentHp -= dmg;
+          dealt += dmg;
+          if (t.currentHp <= 0) recordDeath(combatantKey(t));
+        }
+        if (dealt > 0) {
+          damageByAttacker.set(actorKey, (damageByAttacker.get(actorKey) ?? 0) + dealt);
+        }
+      }
+    }
+  }
+
+  // ── Start-of-turn special phase (research §13) ───────────────────────────────
+  // Runs before any attacks: enemy debuffs (Scare, Hourglass slow) and pre-attack
+  // AoE (Undine) resolve first, so they affect this turn's hits and can fell an
+  // enemy before it acts. Each side's specials target the opposing side.
+  applyStartOfTurnSpecials(allies, enemies);
+  applyStartOfTurnSpecials(enemies, allies);
 
   // ── Build the interleaved action order for this turn (§6.6.1) ────────────────
   const order: OrderedCombatant[] = [];
@@ -576,6 +758,15 @@ export function resolveRound(
     );
   } else {
     shuffleInPlace(order, rng);
+  }
+
+  // Snipers (`attacksLast`) always resolve at the very end of the turn order,
+  // regardless of speed (research §13). Stable partition preserves relative order.
+  const lastActors = order.filter(o => attacksLast(o.ctx));
+  if (lastActors.length > 0) {
+    const rest = order.filter(o => !attacksLast(o.ctx));
+    order.length = 0;
+    order.push(...rest, ...lastActors);
   }
 
   // EV mode approximates the expectation over random action orders as a
